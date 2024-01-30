@@ -30,7 +30,7 @@ yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
 3. Then after all the import statements add the following line:
 
    ```ts
-   import { TimeSaverPage } from 'backstage-plugin-time-saver';
+   import { TimeSaverPage } from '@tduniec/backstage-plugin-time-saver';
    ```
 
 4. In this same file just before the closing `</ FlatRoutes>`, this will be near the bottom of the file, add this line:

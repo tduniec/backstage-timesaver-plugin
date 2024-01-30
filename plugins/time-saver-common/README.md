@@ -29,7 +29,7 @@ yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver-common
 2. Wire up the API implementation to your App.tsx:
 
 ```tsx
-import { timeSaverPermission } from 'backstage-plugin-time-saver-common';
+import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common';
 
 ...
 
@@ -48,7 +48,7 @@ import { timeSaverPermission } from 'backstage-plugin-time-saver-common';
 
 ```tsx
 
-import { timeSaverPermission } from 'backstage-plugin-time-saver-common';
+import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common';
 
 ...
 
@@ -65,7 +65,7 @@ import { timeSaverPermission } from 'backstage-plugin-time-saver-common';
 ```
 
 ```ts
-import { timeSaverPermission } from 'backstage-plugin-time-saver-common';
+import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common';
 
 ...
 
