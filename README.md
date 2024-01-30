@@ -12,7 +12,7 @@ This plugin provides an implementation of charts and statistics related to your 
 ![Screenshot of the AllStats plugin Charts](./plugins/time-saver/docs/tsAllStats.png)
 ![Screenshot of the AllStats2 plugin Charts](./plugins/time-saver/docs/tsAllStats2.png)
 ![Screenshot of the ByTeam plugin Charts](./plugins/time-saver/docs/tsByTeam.png)
-![Screenshot of the ByTemplate plugin Charts](./plugins/time-saver/docs/tsBytemplate.png)
+![Screenshot of the ByTemplate plugin Charts](./plugins/time-saver/docs/tsByTemplate.png)
 
 ## Installation
 
