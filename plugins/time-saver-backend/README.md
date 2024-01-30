@@ -7,6 +7,9 @@ This plugin provides an implementation of charts and statistics related to your 
 - [time-saver](./time-saver)
 - [time-saver-common](./time-saver-common)
 
+## Code
+https://github.com/tduniec/backstage-timesaver-plugin.git 
+
 ## Installation
 
 1. Install the plugin package in your Backstage app:
