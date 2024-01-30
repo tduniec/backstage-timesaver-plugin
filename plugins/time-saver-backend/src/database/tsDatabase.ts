@@ -22,7 +22,7 @@ import { ConfigReader } from '@backstage/config';
 import { Knex } from 'knex';
 
 const migrationsDir = resolvePackagePath(
-  'backstage-plugin-time-saver-backend',
+  '@tduniec/backstage-plugin-time-saver-backend',
   'migrations',
 );
 
