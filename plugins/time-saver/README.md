@@ -12,10 +12,10 @@ https://github.com/tduniec/backstage-timesaver-plugin.git
 
 ## Screens
 
-![Screenshot of the AllStats plugin Charts](docs/tsAllStats.png)
-![Screenshot of the AllStats2 plugin Charts](docs/tsAllStats2.png)
-![Screenshot of the ByTeam plugin Charts](docs/tsByTeam.png)
-![Screenshot of the ByTemplate plugin Charts](docs/tsBytemplate.png)
+![Screenshot of the AllStats plugin Charts](https://raw.githubusercontent.com/tduniec/backstage-timesaver-plugin/main/plugins/time-saver/docs/tsAllStats.png)
+![Screenshot of the AllStats2 plugin Charts](https://raw.githubusercontent.com/tduniec/backstage-timesaver-plugin/main/plugins/time-saver/docs/tsAllStats2.png)
+![Screenshot of the ByTeam plugin Charts](https://raw.githubusercontent.com/tduniec/backstage-timesaver-plugin/main/plugins/time-saver/docs/tsByTeam.png)
+![Screenshot of the ByTemplate plugin Charts](https://raw.githubusercontent.com/tduniec/backstage-timesaver-plugin/main/plugins/time-saver/docs/tsByTemplate.png)
 
 ## Installation
 
