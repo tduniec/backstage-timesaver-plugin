@@ -4,8 +4,8 @@ This plugin provides an implementation of charts and statistics related to your 
 
 ## Dependencies
 
-- [time-saver](./time-saver)
-- [time-saver-backend](./time-saver-backend)
+- [time-saver](../time-saver)
+- [time-saver-backend](../time-saver-backend)
 
 ## Code
 https://github.com/tduniec/backstage-timesaver-plugin.git 
@@ -16,14 +16,14 @@ https://github.com/tduniec/backstage-timesaver-plugin.git
 
 ```sh
 # From your Backstage root directory
-yarn add --cwd packages/backend @backstage/backstage-plugin-time-saver-common
+yarn add --cwd packages/backend @tduniec/backstage-plugin-time-saver-common
 ```
 
 or
 
 ```sh
 # From your Backstage root directory
-yarn add --cwd packages/app @backstage/backstage-plugin-time-saver-common
+yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver-common
 ```
 
 2. Wire up the API implementation to your App.tsx:

@@ -4,8 +4,8 @@ This plugin provides an implementation of charts and statistics related to your 
 
 ## Dependencies
 
-- [time-saver](./time-saver)
-- [time-saver-common](./time-saver-common)
+- [time-saver](../time-saver)
+- [time-saver-common](../time-saver-common)
 
 ## Code
 https://github.com/tduniec/backstage-timesaver-plugin.git 
@@ -16,7 +16,7 @@ https://github.com/tduniec/backstage-timesaver-plugin.git
 
 ```sh
 # From your Backstage root directory
-yarn add --cwd packages/backend @backstage/backstage-plugin-time-saver-backend
+yarn add --cwd packages/backend @tduniec/backstage-plugin-time-saver-backend
 ```
 
 2. Wire up the API implementation to your App in timeSaver.ts file in `packages/backend/src/plugins/`:
