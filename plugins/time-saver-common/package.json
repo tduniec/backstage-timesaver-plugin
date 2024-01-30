@@ -1,11 +1,14 @@
 {
-  "name": "backstage-plugin-time-saver-common",
+  "name": "@tduniec/backstage-plugin-time-saver-common",
   "description": "Common functionalities for the time-saver plugin",
   "version": "0.1.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
-  "repository": "https://github.com/tduniec/backstage-timesaver-plugin.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tduniec/backstage-timesaver-plugin.git"
+  },
   "author": "tduniec <tomekduniec@gmail.com>",
   "publishConfig": {
     "access": "public",
@@ -33,5 +36,13 @@
   },
   "files": [
     "dist"
+  ],
+  "bugs": {
+    "url": "https://github.com/tduniec/backstage-timesaver-plugin/issues"
+  },
+  "homepage": "https://github.com/tduniec/backstage-timesaver-plugin#readme",
+  "keywords": [
+    "backstage",
+    "time-saver"
   ]
 }
