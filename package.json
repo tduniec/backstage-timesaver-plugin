@@ -1,6 +1,9 @@
 {
   "name": "backstage-timesaver-plugin",
   "version": "1.0.0",
+  "engines": {
+    "node": "18 || 20"
+  },
   "workspaces": {
   "packages": [
     "plugins/*"
