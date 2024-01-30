@@ -19,7 +19,7 @@ https://github.com/tduniec/backstage-timesaver-plugin.git
 yarn add --cwd packages/backend @tduniec/backstage-plugin-time-saver-backend
 ```
 
-2. Wire up the API implementation to your App in timeSaver.ts file in `packages/backend/src/plugins/`:
+2. Wire up the API implementation to your App in `timeSaver.ts` file in `packages/backend/src/plugins/`:
 
 ```ts
 import { createRouter } from '@tduniec/backstage-plugin-time-saver-backend';
@@ -50,7 +50,7 @@ const timeSaverEnv = useHotMemoize(module, () => createEnv('timesaver'));
 
 ...
 
-apiRouter.use('/time-saver', await signals(timeSaverEnv));
+apiRouter.use('/time-saver', await timeSaver(timeSaverEnv));
 
 ```
 
