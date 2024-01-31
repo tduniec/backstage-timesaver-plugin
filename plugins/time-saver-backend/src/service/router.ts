@@ -52,9 +52,9 @@ export async function createRouter(
   const kx = await tsDatabaseInstance.get();
   await TsDatabase.runMigrations(kx);
 
-  const tsHandler = new TimeSaverHandler(logger, kx);
+  const tsHandler = new TimeSaverHandler(logger, config, kx);
   const apiHandler = new TsApi(logger, config, kx);
-  const tsScheduler = new TsScheduler(logger, kx);
+  const tsScheduler = new TsScheduler(logger, config, kx);
 
   const taskRunner = scheduler.createScheduledTaskRunner(
     TS_PLUGIN_DEFAULT_SCHEDULE,

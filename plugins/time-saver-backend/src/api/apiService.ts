@@ -127,7 +127,7 @@ export class TsApi {
     try {
       const tsConfig = JSON.parse(String(tsConfigObj));
       const taskTemplateList = await new ScaffolderClient(
-        this.logger,
+        this.logger, this.config
       ).fetchTemplatesFromScaffolder();
       for (let i = 0; i < taskTemplateList.length; i++) {
         const singleTemplate = taskTemplateList[i];

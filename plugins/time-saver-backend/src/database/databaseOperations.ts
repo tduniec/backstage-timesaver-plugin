@@ -325,7 +325,7 @@ export class DatabaseOperations {
 
   async getTemplateCount(tableName: string, column: string) {
     try {
-      const result = await this.knex.table(tableName).count(column).as('count');
+      const result = await this.knex.table(tableName).count(column).as('count').distinct(column);
       const rows = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return rows;

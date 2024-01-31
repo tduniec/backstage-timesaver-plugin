@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Config } from '@backstage/config';
 import { Logger } from 'winston';
 
 export class ScaffolderClient {
-  constructor(private readonly logger: Logger) {}
-  private readonly backendUrl = 'http://127.0.0.1:7007';
+  constructor(private readonly logger: Logger, private readonly config: Config) {}
+  private readonly backendUrl = this.config.getString('backend.baseUrl');
 
   async fetchTemplatesFromScaffolder() {
     const templatePath = '/api/scaffolder/v2/tasks';
