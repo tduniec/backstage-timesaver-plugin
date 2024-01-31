@@ -15,12 +15,14 @@
  */
 import { Config } from '@backstage/config';
 import { Logger } from 'winston';
+import jwt from 'jsonwebtoken';
+import * as base64 from 'base64-js';
 
 export class ScaffolderClient {
-  constructor(private readonly logger: Logger, private readonly config: Config) {}
+  constructor(private readonly logger: Logger, private readonly config: Config) { }
 
   async fetchTemplatesFromScaffolder() {
-    const backendUrl = this.config.getOptionalString('backend.baseUrl');
+    const backendUrl = 'http://127.0.0.1:7007';
     const templatePath = '/api/scaffolder/v2/tasks';
     const callUrl = `${backendUrl}${templatePath}`;
 
@@ -28,6 +30,7 @@ export class ScaffolderClient {
     try {
       const response = await fetch(callUrl, {
         method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + await this.generateBackendToken(this.config, 'backstage-server') },
       });
       this.logger.info(response);
       const data = await response.json();
@@ -41,4 +44,25 @@ export class ScaffolderClient {
     }
     return templateTaskList;
   }
+
+  async generateBackendToken(config: Config, name?: string) {
+
+    const keyConfig: any = config.getOptional("backend.auth.keys");
+    const key = keyConfig[0].secret
+    const decodedBytes = this.decodeFromBase64(key);
+    const tokenSub = name ?? 'backstage-server'
+
+    const payload = {
+      sub: tokenSub,
+      exp: Math.floor(Date.now() / 1000) + 3600, // Current timestamp + 1 hours in seconds
+    };
+
+    const encodedJwt = jwt.sign(payload, decodedBytes, { algorithm: 'HS256' });
+    return encodedJwt
+  }
+
+  decodeFromBase64(input: string): Buffer {
+    return Buffer.from(base64.toByteArray(input));
+  }
+
 }
