@@ -135,7 +135,7 @@ export function DailyTimeSummaryLineChartTemplateWise({
         .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
 
       return {
-        label: template_name,
+        label: tn,
         data: templateData,
         fill: false,
         borderColor: getRandomColor(),

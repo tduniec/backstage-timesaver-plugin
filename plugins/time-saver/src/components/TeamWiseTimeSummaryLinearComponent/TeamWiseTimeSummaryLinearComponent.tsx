@@ -137,7 +137,7 @@ export function TeamWiseTimeSummaryLinearChart({
         .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
 
       return {
-        label: team,
+        label: tm,
         data: templateData,
         fill: false,
         borderColor: getRandomColor(),

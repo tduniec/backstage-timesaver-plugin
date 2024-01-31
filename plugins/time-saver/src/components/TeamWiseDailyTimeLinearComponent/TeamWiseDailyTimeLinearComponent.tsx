@@ -135,7 +135,7 @@ export function DailyTimeSummaryLineChartTeamWise({
         }));
 
       return {
-        label: team,
+        label: tm,
         data: templateData,
         fill: false,
         borderColor: getRandomColor(),

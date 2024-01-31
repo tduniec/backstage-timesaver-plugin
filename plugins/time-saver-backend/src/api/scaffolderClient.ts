@@ -18,11 +18,11 @@ import { Logger } from 'winston';
 
 export class ScaffolderClient {
   constructor(private readonly logger: Logger, private readonly config: Config) {}
-  private readonly backendUrl = this.config.getString('backend.baseUrl');
 
   async fetchTemplatesFromScaffolder() {
+    const backendUrl = this.config.getOptionalString('backend.baseUrl');
     const templatePath = '/api/scaffolder/v2/tasks';
-    const callUrl = `${this.backendUrl}${templatePath}`;
+    const callUrl = `${backendUrl}${templatePath}`;
 
     let templateTaskList = [];
     try {

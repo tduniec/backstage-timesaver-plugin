@@ -147,7 +147,7 @@ export class TsApi {
       this.logger.error(`problem with template backward migration`, error);
       return {
         status: 'error',
-        error: error,
+        error: error as Error,
       };
     }
     return {
@@ -217,7 +217,7 @@ export class TsApi {
 
   public async getTemplateCount() {
     const queryResult = (
-      await this.db.getTemplateCount(this.tsTableName, 'template_task_id')
+      await this.db.getTemplateCount()
     )[0];
     const outputBody = {
       templateTasks: queryResult.count,
