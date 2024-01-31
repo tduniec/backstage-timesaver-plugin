@@ -73,13 +73,12 @@ export function DailyTimeSummaryLineChartTemplateWise({
   }
 
   let filteredData: DailyTimeSummaryResponse;
-  let filteredStats;
   if (template_name) {
-    filteredData = data;
-    filteredStats = filteredData.stats.filter(
-      stat => stat.template_name === template_name,
-    );
-    filteredData.stats = filteredStats;
+    filteredData = {
+      stats: data.stats.filter(
+        stat => stat.template_name === template_name,
+      )
+    }
   } else {
     filteredData = data;
   }
@@ -136,7 +135,7 @@ export function DailyTimeSummaryLineChartTemplateWise({
         .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
 
       return {
-        label: template_name,
+        label: tn,
         data: templateData,
         fill: false,
         borderColor: getRandomColor(),

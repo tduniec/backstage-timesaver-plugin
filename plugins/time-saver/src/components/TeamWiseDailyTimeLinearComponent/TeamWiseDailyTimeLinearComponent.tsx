@@ -72,12 +72,11 @@ export function DailyTimeSummaryLineChartTeamWise({
   if (!data) {
     return <CircularProgress />;
   }
-  let filteredData;
-  let filteredStats;
+  let filteredData:DailyTimeSummaryResponse 
   if (team) {
-    filteredData = data;
-    filteredStats = filteredData.stats.filter(stat => stat.team === team);
-    filteredData.stats = filteredStats;
+    filteredData = {
+      stats: data.stats.filter(stat => stat.team === team)
+    }
   } else {
     filteredData = data;
   }
@@ -128,7 +127,7 @@ export function DailyTimeSummaryLineChartTeamWise({
   const allData = {
     labels: uniqueDates,
     datasets: uniqueTeams.map(tm => {
-      const templateData = data.stats
+      const templateData = filteredData.stats
         .filter((stat: { team: string | undefined }) => stat.team === tm)
         .map((stat: { date: any; total_time_saved: any }) => ({
           x: stat.date,
@@ -136,7 +135,7 @@ export function DailyTimeSummaryLineChartTeamWise({
         }));
 
       return {
-        label: team,
+        label: tm,
         data: templateData,
         fill: false,
         borderColor: getRandomColor(),

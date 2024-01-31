@@ -323,10 +323,13 @@ export class DatabaseOperations {
     }
   }
 
-  async getTemplateCount(tableName: string, column: string) {
+  async getTemplateCount() {
     try {
-      const result = await this.knex.table(tableName).count(column).as('count');
-      const rows = result;
+      const result = await this.knex.raw(`
+        select count(*) from (select distinct(template_task_id) from ts_template_time_savings ) as unique_templates
+        `
+      );      
+      const rows = result.rows;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return rows;
     } catch (error) {

@@ -17,16 +17,17 @@ import { Logger } from 'winston';
 import { Knex } from 'knex';
 import { DatabaseOperations } from '../database/databaseOperations';
 import { ScaffolderClient } from '../api/scaffolderClient';
+import { Config } from '@backstage/config';
 
 export class TimeSaverHandler {
-  constructor(private readonly logger: Logger, knex: Knex) {
+  constructor(private readonly logger: Logger, private readonly config: Config, knex: Knex) {
     this.db = new DatabaseOperations(knex, logger);
   }
   private readonly db: DatabaseOperations;
   private readonly tsTableName = 'ts_template_time_savings';
 
   async fetchTemplates() {
-    const scaffolderClient = new ScaffolderClient(this.logger);
+    const scaffolderClient = new ScaffolderClient(this.logger, this.config);
     this.logger.info(`START - Collecting Time Savings data from templates...}`);
 
     let templateTaskList = [];
