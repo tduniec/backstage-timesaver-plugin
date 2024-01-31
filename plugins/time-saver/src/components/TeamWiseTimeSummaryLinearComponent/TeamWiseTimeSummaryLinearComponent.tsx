@@ -75,12 +75,11 @@ export function TeamWiseTimeSummaryLinearChart({
     return <CircularProgress />;
   }
 
-  let filteredData;
-  let filteredStats;
+  let filteredData: TeamWiseTimeSummaryLinearResponse
   if (team) {
-    filteredData = data;
-    filteredStats = filteredData.stats.filter(stat => stat.team === team);
-    filteredData.stats = filteredStats;
+    filteredData = {
+      stats: data.stats.filter(stat => stat.team === team)
+    }
   } else {
     filteredData = data;
   }
@@ -133,7 +132,7 @@ export function TeamWiseTimeSummaryLinearChart({
   const allData = {
     labels: uniqueDates,
     datasets: uniqueTeams.map(tm => {
-      const templateData = data.stats
+      const templateData = filteredData.stats
         .filter(stat => stat.team === tm)
         .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
 
