@@ -23,7 +23,7 @@ Please follow the instructions in each plugin README.md
 Configure your template definition like described below:
 Provide an object under `metadata`. Provide quantities of saved time by each group executing one template in **_hours_** preferably
 
-```yaml
+```diff
  apiVersion: scaffolder.backstage.io/v1beta3
  kind: Template
  metadata:
