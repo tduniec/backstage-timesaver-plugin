@@ -126,6 +126,7 @@ export class TsApi {
       return { status: 'FAIL', message: 'Backward processing not configured in app-config.yaml file' };
     }
     try {
+      this.logger.info(`Starting backward template savings migration`)
       const tsConfig = JSON.parse(String(tsConfigObj));
       const taskTemplateList = await new ScaffolderClient(
         this.logger, this.config
