@@ -124,7 +124,6 @@ export class TsApi {
     if (!tsConfigObj) {
       this.logger.warn(`Backward processing not configured, escaping...`);
       return { status: 'FAIL', message: 'Backward processing not configured in app-config.yaml file' };
-
     }
     try {
       const tsConfig = JSON.parse(String(tsConfigObj));

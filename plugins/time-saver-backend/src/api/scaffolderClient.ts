@@ -32,7 +32,7 @@ export class ScaffolderClient {
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + await this.generateBackendToken(this.config, 'backstage-server') },
       });
-      this.logger.info(response);
+      this.logger.debug(JSON.stringify(response));
       const data = await response.json();
       templateTaskList = data.tasks;
     } catch (error) {
@@ -48,7 +48,7 @@ export class ScaffolderClient {
   async generateBackendToken(config: Config, name?: string) {
     var key = ''
     const keyConfig: any = config.getOptional("backend.auth.keys");
-    if (keyConfig) {
+  if (keyConfig) {
       key = keyConfig[0].secret
     }
     const decodedBytes = this.decodeFromBase64(key);
