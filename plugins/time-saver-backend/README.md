@@ -54,6 +54,8 @@ apiRouter.use('/time-saver', await timeSaver(timeSaverEnv));
 
 ```
 
+3. Install [time-saver](../time-saver/README.md) part if not installed already
+
 ## Generate Statistics
 
 Configure your template definition like described below:
@@ -98,6 +100,7 @@ ts:
             "development_team": 8,
             "security": 3
           }
-        },
+        } 
       ]
+    # extend this list if needed
 ```

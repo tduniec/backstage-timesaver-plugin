@@ -62,6 +62,7 @@ ts:
             "development_team": 8,
             "security": 3
           }
-        },
+        } 
       ]
+    # extend this list if needed
 ```

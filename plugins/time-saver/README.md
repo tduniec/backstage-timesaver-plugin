@@ -26,7 +26,7 @@ https://github.com/tduniec/backstage-timesaver-plugin.git
 yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
 ```
 
-2. Now open the packages/app/src/App.tsx file
+2. Now open the `packages/app/src/App.tsx` file
 3. Then after all the import statements add the following line:
 
    ```ts
@@ -53,6 +53,7 @@ yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
    ```
 
 8. Now run `yarn dev` from the root of your project and you should see the DevTools option show up just below Settings in your sidebar and clicking on it will get you to the [Info tab](#info)
+9. Install [time-saver-backend](../time-saver-backend/README.md) part if not installed already
 
 ## Generate Statistics
 
@@ -98,6 +99,7 @@ ts:
             "development_team": 8,
             "security": 3
           }
-        },
+        } 
       ]
+    # extend this list if needed
 ```
