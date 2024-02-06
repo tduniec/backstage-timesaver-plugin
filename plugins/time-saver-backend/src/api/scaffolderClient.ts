@@ -46,9 +46,11 @@ export class ScaffolderClient {
   }
 
   async generateBackendToken(config: Config, name?: string) {
-
+    var key = ''
     const keyConfig: any = config.getOptional("backend.auth.keys");
-    const key = keyConfig[0].secret
+    if (keyConfig) {
+      key = keyConfig[0].secret
+    }
     const decodedBytes = this.decodeFromBase64(key);
     const tokenSub = name ?? 'backstage-server'
 

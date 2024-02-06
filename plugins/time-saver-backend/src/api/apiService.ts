@@ -116,13 +116,15 @@ export class TsApi {
 
   public async updateTemplatesWithSubstituteData(): Promise<{
     status: string;
+    message?: string;
     error?: Error;
   }> {
     const tsConfigObj =
       this.config.getOptionalString('ts.backward.config') || undefined;
     if (!tsConfigObj) {
       this.logger.warn(`Backward processing not configured, escaping...`);
-      return { status: 'FAIL' };
+      return { status: 'FAIL', message: 'Backward processing not configured in app-config.yaml file' };
+
     }
     try {
       const tsConfig = JSON.parse(String(tsConfigObj));
