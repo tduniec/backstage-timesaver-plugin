@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 export function getRandomColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';
@@ -22,3 +23,10 @@ export function getRandomColor() {
   }
   return color;
 }
+
+export async function fetchWithCredentials(url: string | URL, options = {}): Promise<Response> {
+  return fetch(url, {
+    ...options,
+    credentials: 'include', 
+  });
+};

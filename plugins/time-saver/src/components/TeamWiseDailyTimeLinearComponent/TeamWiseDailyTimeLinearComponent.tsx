@@ -26,7 +26,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { fetchWithCredentials, getRandomColor } from '../utils';
 import CircularProgress from '@mui/material/CircularProgress';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
@@ -51,7 +51,7 @@ export function DailyTimeSummaryLineChartTeamWise({
   const [data, setData] = useState<DailyTimeSummaryResponse | null>(null);
 
   useEffect(() => {
-    fetch(
+    fetchWithCredentials(
       `${configApi.getString(
         'backend.baseUrl',
       )}/api/time-saver/getDailyTimeSummary/team`,

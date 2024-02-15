@@ -19,6 +19,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@mui/material/CircularProgress';
+import { fetchWithCredentials } from '../utils';
 
 interface TemplateChange {
   onTemplateChange: (templateTask: string) => void;
@@ -46,7 +47,7 @@ export default function TemplateAutocomplete({
   const configApi = useApi(configApiRef);
 
   useEffect(() => {
-    fetch(`${configApi.getString('backend.baseUrl')}/api/time-saver/templates`)
+    fetchWithCredentials(`${configApi.getString('backend.baseUrl')}/api/time-saver/templates`)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
