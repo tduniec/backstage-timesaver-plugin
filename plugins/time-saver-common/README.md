@@ -26,7 +26,7 @@ or
 yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver-common
 ```
 
-2. Wire up the API implementation to your App.tsx:
+2. Wire up the API implementation to your `packages/app/src/App.tsx`:
 
 ```tsx
 import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common';
@@ -44,7 +44,7 @@ import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common
 
 ```
 
-2. Wire up in the navigation pane the in component/Root/Root.tsxs:
+2. Wire up in the navigation pane the in `packages/app/src/component/Root/Root.tsx`:
 
 ```tsx
 
@@ -63,10 +63,11 @@ import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common
           />
         </RequirePermission>
 ```
+3. Wire up in the permissions backend  in `packages/backend/src/plugins/permission.ts`:
 
 ```ts
+...
 import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common';
-
 ...
 
     if (isPermission(request.permission, timeSaverPermission)) {
