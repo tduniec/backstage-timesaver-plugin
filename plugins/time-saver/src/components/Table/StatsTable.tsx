@@ -18,6 +18,7 @@ import Paper from '@mui/material/Paper';
 import CircularProgress from '@mui/material/CircularProgress';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
+import { fetchWithCredentials } from '../utils';
 
 type Stat = {
   id: string;
@@ -54,7 +55,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
       url = `${url}?templateName=${template_name}`;
     }
 
-    fetch(url)
+    fetchWithCredentials(url)
       .then(response => response.json())
       .then((dt: AllStatsChartResponse) => {
         const statsWithIds = dt.stats.map((stat, index) => ({

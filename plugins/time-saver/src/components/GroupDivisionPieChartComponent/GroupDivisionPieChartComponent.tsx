@@ -23,7 +23,7 @@ import {
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { fetchWithCredentials, getRandomColor } from '../utils';
 import CircularProgress from '@mui/material/CircularProgress';
 
 ChartJS.register(Title, Tooltip, ArcElement);
@@ -41,7 +41,7 @@ export function GroupDivisionPieChart(): React.ReactElement {
   const [data, setData] = useState<GroupDivisionPieChartResponse | null>(null);
 
   useEffect(() => {
-    fetch(
+    fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats/group`,
     )
       .then(response => response.json())

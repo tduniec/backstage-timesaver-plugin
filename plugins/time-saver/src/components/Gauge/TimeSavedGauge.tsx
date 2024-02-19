@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@mui/material/CircularProgress';
 import Gauge from './Gauge';
+import { fetchWithCredentials } from '../utils';
 
 type TimeSavedResponse = {
   timeSaved: number;
@@ -42,7 +43,7 @@ export function TimeSavedGauge({
       url = `${url}?divider=${number}`;
     }
 
-    fetch(url)
+    fetchWithCredentials(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

@@ -25,7 +25,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { fetchWithCredentials, getRandomColor } from '../utils';
 import CircularProgress from '@mui/material/CircularProgress';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
@@ -44,7 +44,7 @@ export function AllStatsBarChart(): React.ReactElement {
   const [data, setData] = useState<AllStatsChartResponse | null>(null);
 
   useEffect(() => {
-    fetch(`${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`)
+    fetchWithCredentials(`${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

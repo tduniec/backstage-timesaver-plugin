@@ -25,7 +25,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { fetchWithCredentials, getRandomColor } from '../utils';
 import CircularProgress from '@mui/material/CircularProgress';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
@@ -49,7 +49,7 @@ export function ByTemplateBarChart({
   const [data, setData] = useState<TemplateChartResponse | null>(null);
 
   useEffect(() => {
-    fetch(
+    fetchWithCredentials(
       `${configApi.getString(
         'backend.baseUrl',
       )}/api/time-saver/getStats?templateName=${template_name} `,

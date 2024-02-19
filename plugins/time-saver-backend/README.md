@@ -50,7 +50,7 @@ const timeSaverEnv = useHotMemoize(module, () => createEnv('timesaver'));
 
 ...
 
-apiRouter.use('/time-saver', await timeSaver(timeSaverEnv));
+apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use authMiddleware if you are using it for backend 
 
 ```
 

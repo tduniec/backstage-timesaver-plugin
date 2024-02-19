@@ -17,6 +17,7 @@ import React, { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@mui/material/CircularProgress';
 import Gauge from './Gauge';
+import { fetchWithCredentials } from '../utils';
 
 type TemplateTaskCountResponse = {
   templateTasks: number;
@@ -31,7 +32,7 @@ export function TemplateCountGauge({}): React.ReactElement {
       'backend.baseUrl',
     )}/api/time-saver/getTemplateCount`;
 
-    fetch(url)
+    fetchWithCredentials(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

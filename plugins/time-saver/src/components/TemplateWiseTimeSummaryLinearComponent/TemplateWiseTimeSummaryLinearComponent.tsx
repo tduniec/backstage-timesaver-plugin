@@ -25,7 +25,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { fetchWithCredentials, getRandomColor } from '../utils';
 import CircularProgress from '@mui/material/CircularProgress';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
@@ -53,7 +53,7 @@ export function TemplateWiseTimeSummaryLinearChart({
     const url = `${configApi.getString(
       'backend.baseUrl',
     )}/api/time-saver/getTimeSummary/template`;
-    fetch(url)
+    fetchWithCredentials(url)
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(

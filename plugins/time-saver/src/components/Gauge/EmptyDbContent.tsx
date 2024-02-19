@@ -22,6 +22,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { fetchWithCredentials } from '../utils';
 
 type TemplatesResponse = {
   templates: string[];
@@ -37,7 +38,7 @@ export function EmptyTimeSaver({}): React.ReactElement {
       'backend.baseUrl',
     )}/api/time-saver/templates`;
 
-    fetch(url)
+    fetchWithCredentials(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

@@ -23,6 +23,7 @@ import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Button, Grid } from '@material-ui/core';
+import { fetchWithCredentials } from '../utils';
 
 interface TeamSelectorProps {
   onTeamChange: (team: string) => void;
@@ -54,7 +55,7 @@ export default function TeamSelector({
   const configApi = useApi(configApiRef);
 
   useEffect(() => {
-    fetch(`${configApi.getString('backend.baseUrl')}/api/time-saver/groups`)
+    fetchWithCredentials(`${configApi.getString('backend.baseUrl')}/api/time-saver/groups`)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
