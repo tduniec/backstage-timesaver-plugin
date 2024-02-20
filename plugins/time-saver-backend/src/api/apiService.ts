@@ -18,16 +18,20 @@ import { Knex } from 'knex';
 import { DatabaseOperations } from '../database/databaseOperations';
 import { ScaffolderClient } from './scaffolderClient';
 import { Config } from '@backstage/config';
+import { ScaffolderDatabaseOperations } from '../database/scaffolderDatabaseOperations';
 
 export class TsApi {
   constructor(
     private readonly logger: Logger,
     private readonly config: Config,
     knex: Knex,
+    scaffoldKx: Knex,
   ) {
     this.db = new DatabaseOperations(knex, logger);
+    this.scaffolderDb = new ScaffolderDatabaseOperations(scaffoldKx, logger);
   }
   private readonly db: DatabaseOperations;
+  private readonly scaffolderDb: ScaffolderDatabaseOperations;
   private readonly tsTableName = 'ts_template_time_savings';
 
   public async getStatsByTemplateTaskId(templateTaskId: string) {
@@ -162,12 +166,12 @@ export class TsApi {
     engData: object,
   ) {
     const queryResult = JSON.parse(
-      (await this.db.collectSpecByTemplateId(templateTaskId)).spec,
+      (await this.scaffolderDb.collectSpecByTemplateId(templateTaskId)).spec,
     );
     const metadata = queryResult.templateInfo.entity.metadata;
     metadata.substitute = engData;
 
-    await this.db.updateTemplateTaskById(
+    await this.scaffolderDb.updateTemplateTaskById(
       templateTaskId,
       JSON.stringify(queryResult),
     );
