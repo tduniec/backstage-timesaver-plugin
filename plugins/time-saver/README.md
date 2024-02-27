@@ -4,8 +4,8 @@ This plugin provides an implementation of charts and statistics related to your 
 
 ## Dependencies
 
-- [time-saver-backend](../time-saver-backend)
-- [time-saver-common](..//time-saver-common)
+- [time-saver-backend](https://github.com/tduniec/backstage-timesaver-plugin/tree/main/plugins/time-saver-backend)
+- [time-saver-common](https://github.com/tduniec/backstage-timesaver-plugin/tree/main/plugins/time-saver-common)
 
 ## Code
 https://github.com/tduniec/backstage-timesaver-plugin.git 

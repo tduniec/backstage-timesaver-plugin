@@ -23,6 +23,7 @@ import { TimeSaverHandler } from '../timeSaver/handler';
 import { TsApi } from '../api/apiService';
 import { Config } from '@backstage/config';
 import { TsScheduler } from '../timeSaver/scheduler';
+import { ScaffolderDb } from '../database/scaffolderDb';
 
 export interface RouterOptions {
   logger: Logger;
@@ -49,11 +50,12 @@ export async function createRouter(
   const { logger, config, database, scheduler } = options;
 
   const tsDatabaseInstance = TsDatabase.create(database);
+  const scaffolderDbKx = new ScaffolderDb(config).scaffolderKnex();
   const kx = await tsDatabaseInstance.get();
   await TsDatabase.runMigrations(kx);
 
   const tsHandler = new TimeSaverHandler(logger, config, kx);
-  const apiHandler = new TsApi(logger, config, kx);
+  const apiHandler = new TsApi(logger, config, kx, scaffolderDbKx);
   const tsScheduler = new TsScheduler(logger, config, kx);
 
   const taskRunner = scheduler.createScheduledTaskRunner(
@@ -142,9 +144,13 @@ export async function createRouter(
   });
 
   router.get('/getTimeSavedSum', async (request, response) => {
-    const divider = request.query.divider;
+    const divider: number = Number(request.query.divider);
+    if (divider !== undefined && divider <= 0) {
+      response.status(400).json({ error: 'Divider should be a positive number' });
+      return;
+    }
     const result = divider
-      ? await apiHandler.getTimeSavedSum(Number(divider))
+      ? await apiHandler.getTimeSavedSum(divider)
       : await apiHandler.getTimeSavedSum();
     response.json(result);
   });
