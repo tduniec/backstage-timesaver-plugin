@@ -15,6 +15,7 @@
  */
 import { Knex } from 'knex';
 import { Logger } from 'winston';
+import { roundNumericValues } from '../utils';
 
 export class DatabaseOperations {
   constructor(private readonly knex: Knex, private readonly logger: Logger) {}
@@ -101,7 +102,7 @@ export class DatabaseOperations {
       );
       const rows = result.rows[0].template_name;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -115,7 +116,7 @@ export class DatabaseOperations {
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -130,7 +131,7 @@ export class DatabaseOperations {
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -145,7 +146,7 @@ export class DatabaseOperations {
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -159,7 +160,7 @@ export class DatabaseOperations {
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -169,20 +170,22 @@ export class DatabaseOperations {
   async getGroupSavingsDivision() {
     try {
       const result = await this.knex.raw(`
-                SELECT
+            SELECT
+            CAST(
                 ROUND(
                     (SUM(time_saved)::numeric / (SELECT SUM(time_saved)::numeric FROM ts_template_time_savings WHERE ts_template_time_savings.team = team)) * 100,
                     2
-                ) AS percentage,
-                team
-                FROM
-                ts_template_time_savings
-                GROUP BY
-                team;
+                ) AS numeric
+            )::numeric AS percentage,
+            team
+        FROM
+            ts_template_time_savings
+        GROUP BY
+            team;
             `);
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+      return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -206,7 +209,7 @@ export class DatabaseOperations {
             `);
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -230,7 +233,7 @@ export class DatabaseOperations {
             `);
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -252,7 +255,7 @@ export class DatabaseOperations {
             `);
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -274,7 +277,7 @@ export class DatabaseOperations {
             `);
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -287,7 +290,7 @@ export class DatabaseOperations {
       const result = await this.knex.table(tableName).distinct(column);
       const rows = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -302,7 +305,7 @@ export class DatabaseOperations {
       );      
       const rows = result.rows;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
@@ -313,7 +316,7 @@ export class DatabaseOperations {
       const result = await this.knex.table(tableName).sum(column).as('sum');
       const rows = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
