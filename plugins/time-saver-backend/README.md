@@ -80,6 +80,15 @@ Provide an object under `metadata`. Provide quantities of saved time by each gro
 
 Scheduler is running with its default setup every **5 minutes** to generate data from executed templates with these information.
 
+## Optional configuration
+
+If your backend deployment is separate from your frontend you can use below config to override the setup
+
+```yaml
+ts:
+  backendUrl: https://my-awesome-backstage.com
+
+```
 ## Migration
 
 This plugins supports backward compatibility with migration. You can specify your Time Saver metadata for each template name. Then the migration will be performed once executing the API request to `/migrate` endpoint of the plugin.

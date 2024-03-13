@@ -22,7 +22,8 @@ export class ScaffolderClient {
   constructor(private readonly logger: Logger, private readonly config: Config) { }
 
   async fetchTemplatesFromScaffolder() {
-    const backendUrl = 'http://127.0.0.1:7007';
+    var backendUrl = this.config.getOptionalString('ts.backendUrl') ?? 'http://127.0.0.1:7007';
+    backendUrl = backendUrl.replace(/(http:\/\/)localhost(\:\d+)/g, "$1127.0.0.1$2"); // This changes relates to local setup since there is ERRCONREFUSSED using localhost
     const templatePath = '/api/scaffolder/v2/tasks';
     const callUrl = `${backendUrl}${templatePath}`;
 

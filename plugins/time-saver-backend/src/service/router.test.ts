@@ -34,7 +34,11 @@ describe('createRouter', () => {
       },
     }),
   );
-  const config = { getOptionalBoolean: () => undefined } as any;
+  const config =  new ConfigReader({
+    backend: {
+      database: { client: 'better-sqlite3', connection: ':memory:' },
+    },
+  });
   const database = manager.forPlugin('time-saver');
   class PersistingTaskRunner implements TaskRunner {
     private tasks: TaskInvocationDefinition[] = [];
