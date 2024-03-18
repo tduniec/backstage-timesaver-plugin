@@ -20,7 +20,7 @@
  * @param {import('knex').Knex} knex
  */
 exports.up = async function up(knex) {
-  let namespace;
+  let namespace = '';
   let response = {};
   const isPostgreSQL = knex.client.config.client === 'pg';
 
@@ -74,7 +74,7 @@ exports.up = async function up(knex) {
       );
 
       if (isPostgreSQL) {
-        if (namespace) {
+        if (namespace !== '') {
           table
           .uuid('id')
           .primary()
