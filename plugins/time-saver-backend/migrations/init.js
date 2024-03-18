@@ -20,13 +20,8 @@
  * @param {import('knex').Knex} knex
  */
 exports.up = async function up(knex) {
-  //  create function only for postgres
-  let namespace = '';
-  if (knex.client.config.client === 'pg') {
-    await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"').then(() => {
-      console.log('uuid-ossp extension enabled');
-    });
-    namespace = await knex
+  let namespace;
+  let response = {};
       .raw(
         `SELECT (select nspname from pg_catalog.pg_namespace where oid=extnamespace)
     FROM pg_extension where extname='uuid-ossp';`,
