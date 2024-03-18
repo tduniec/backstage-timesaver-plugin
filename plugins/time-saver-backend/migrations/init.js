@@ -24,13 +24,49 @@ exports.up = async function up(knex) {
   let response = {};
   const isPostgreSQL = knex.client.config.client === 'pg';
 
+  // create extension only for postgreSQL
+  if (isPostgreSQL) {
+    await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"').then(
+      () => {
+        response = {
+          ...response,
+          pg_extension: 'enabled',
+        };
+        console.log('uuid-ossp extension enabled');
+      },
+      (reason) => {
+        response = {
+          ...response,
+          pg_extension: `disabled: ${reason}}`,
+        };
+        console.log(`Could not create uuid-ossp extension: ${reason}`);
+      }
+    );
+
+    await knex
       .raw(
         `SELECT (select nspname from pg_catalog.pg_namespace where oid=extnamespace)
-    FROM pg_extension where extname='uuid-ossp';`,
+      FROM pg_extension where extname='uuid-ossp';`
       )
-      .then(s => s.rows[0].nspname);
-    console.log(`uuid-ossp extension created in ${namespace} schema`);
-    await knex.schema.createTable('ts_template_time_savings', table => {
+      .then(
+        (s) => {
+          namespace = s.rows[0].nspname;
+          response = {
+            ...response,
+            namespace,
+          };
+          console.log(`uuid-ossp extension created in ${namespace} schema`);
+        },
+        (reason) => {
+          response = {
+            ...response,
+            namespace: `undefined: ${reason}`,
+          };
+          console.log('uuid-ossp extension was not found.');
+        }
+      );
+  }
+
       table.comment(
         'Table contains template time savings with relation to the templateTaskId',
       );
