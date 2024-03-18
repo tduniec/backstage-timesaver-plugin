@@ -70,11 +70,24 @@ exports.up = async function up(knex) {
       table.comment(
         'Table contains template time savings with relation to the templateTaskId',
       );
-      table
-        .uuid('id')
-        .primary()
-        .defaultTo(knex.raw(`${namespace}.uuid_generate_v4()::uuid`))
-        .comment('UUID');
+
+      if (isPostgreSQL) {
+        if (namespace) {
+          table
+          .uuid('id')
+          .primary()
+          .defaultTo(knex.raw(`${namespace}.uuid_generate_v4()::uuid`))
+          .comment('UUID');
+        } else {
+          console.log("Could not create id column using postgreSQL database.")
+        }
+      } else {
+        table
+          .uuid('id')
+          .primary()
+          .comment('UUID');
+      }
+
       table
         .timestamp('created_at', { useTz: false, precision: 0 })
         .notNullable()
