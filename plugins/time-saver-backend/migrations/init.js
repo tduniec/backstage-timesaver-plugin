@@ -22,6 +22,8 @@
 exports.up = async function up(knex) {
   let namespace;
   let response = {};
+  const isPostgreSQL = knex.client.config.client === 'pg';
+
       .raw(
         `SELECT (select nspname from pg_catalog.pg_namespace where oid=extnamespace)
     FROM pg_extension where extname='uuid-ossp';`,
