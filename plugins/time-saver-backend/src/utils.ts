@@ -4,9 +4,8 @@ export function roundNumericValues<T>(obj: T): T {
 
     if (Number.isInteger(rounded)) {
       return rounded;
-    } else {
-      return parseFloat(rounded.toFixed(2));
     }
+    return parseFloat(rounded.toFixed(2));
   };
 
   const roundObject = (input: any): any => {
