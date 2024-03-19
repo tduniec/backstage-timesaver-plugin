@@ -5,9 +5,10 @@
     "node": "18 || 20"
   },
   "workspaces": {
-  "packages": [
-    "plugins/*"
-  ]},
+    "packages": [
+      "plugins/*"
+    ]
+  },
   "repository": "https://github.com/tduniec/backstage-timesaver-plugin.git",
   "author": "tduniec <tomekduniec@gmail.com>",
   "license": "Apache-2.0",
@@ -53,7 +54,6 @@
     "shx": "^0.3.2",
     "ts-node": "^10.4.0",
     "typescript": "~5.2.0"
-
   },
   "description": "This plugin provides an implementation of charts and statistics related to your time savings that are coming from usage of your templates.",
   "private": true

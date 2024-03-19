@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   LineElement,
@@ -23,11 +23,11 @@ import {
   Tooltip,
   Legend,
   ChartOptions,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { configApiRef, useApi } from "@backstage/core-plugin-api";
+import { fetchWithCredentials, getRandomColor } from "../utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -52,16 +52,16 @@ export function DailyTimeSummaryLineChartTemplateWise({
 
   useEffect(() => {
     const url = `${configApi.getString(
-      'backend.baseUrl',
+      "backend.baseUrl"
     )}/api/time-saver/getDailyTimeSummary/template`;
     fetchWithCredentials(url)
-      .then(response => response.json())
-      .then(dt => {
+      .then((response) => response.json())
+      .then((dt) => {
         dt.stats.sort(
           (
             a: { date: string | number | Date },
-            b: { date: string | number | Date },
-          ) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            b: { date: string | number | Date }
+          ) => new Date(a.date).getTime() - new Date(b.date).getTime()
         );
         setData(dt);
       })
@@ -75,64 +75,62 @@ export function DailyTimeSummaryLineChartTemplateWise({
   let filteredData: DailyTimeSummaryResponse;
   if (template_name) {
     filteredData = {
-      stats: data.stats.filter(
-        stat => stat.template_name === template_name,
-      )
-    }
+      stats: data.stats.filter((stat) => stat.template_name === template_name),
+    };
   } else {
     filteredData = data;
   }
 
   const uniqueTemplates = Array.from(
-    new Set(filteredData.stats.map(stat => stat.template_name)),
+    new Set(filteredData.stats.map((stat) => stat.template_name))
   );
 
-  const options: ChartOptions<'line'> = {
+  const options: ChartOptions<"line"> = {
     plugins: {
       title: {
         display: true,
-        text: 'Daily Time Summary by Template',
+        text: "Daily Time Summary by Template",
       },
     },
     responsive: true,
     scales: {
       x: [
         {
-          type: 'time',
+          type: "time",
           time: {
-            unit: 'day',
-            tooltipFormat: 'YYYY-MM-DD',
+            unit: "day",
+            tooltipFormat: "YYYY-MM-DD",
             displayFormats: {
-              day: 'YYYY-MM-DD',
+              day: "YYYY-MM-DD",
             },
-            bounds: 'data',
+            bounds: "data",
           },
           scaleLabel: {
             display: true,
-            labelString: 'Date',
+            labelString: "Date",
           },
         },
-      ] as unknown as ChartOptions<'line'>['scales'],
+      ] as unknown as ChartOptions<"line">["scales"],
       y: [
         {
           stacked: true,
           beginAtZero: true,
           scaleLabel: {
             display: true,
-            labelString: 'Total Time Saved',
+            labelString: "Total Time Saved",
           },
         },
-      ] as unknown as ChartOptions<'line'>['scales'],
+      ] as unknown as ChartOptions<"line">["scales"],
     },
   };
-  const uniqueDates = Array.from(new Set(data.stats.map(stat => stat.date)));
+  const uniqueDates = Array.from(new Set(data.stats.map((stat) => stat.date)));
 
   const allData = {
     labels: uniqueDates,
-    datasets: uniqueTemplates.map(tn => {
+    datasets: uniqueTemplates.map((tn) => {
       const templateData = filteredData.stats
-        .filter(stat => stat.template_name === tn)
-        .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
+        .filter((stat) => stat.template_name === tn)
+        .map((stat) => ({ x: stat.date, y: stat.total_time_saved }));
 
       return {
         label: tn,

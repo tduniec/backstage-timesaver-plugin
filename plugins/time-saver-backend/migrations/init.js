@@ -21,44 +21,44 @@
  */
 exports.up = async function up(knex) {
   //  create function only for postgres
-  let namespace = '';
-  if (knex.client.config.client === 'pg') {
+  let namespace = "";
+  if (knex.client.config.client === "pg") {
     await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"').then(() => {
-      console.log('uuid-ossp extension enabled');
+      console.log("uuid-ossp extension enabled");
     });
     namespace = await knex
       .raw(
         `SELECT (select nspname from pg_catalog.pg_namespace where oid=extnamespace)
-    FROM pg_extension where extname='uuid-ossp';`,
+    FROM pg_extension where extname='uuid-ossp';`
       )
-      .then(s => s.rows[0].nspname);
+      .then((s) => s.rows[0].nspname);
     console.log(`uuid-ossp extension created in ${namespace} schema`);
-    await knex.schema.createTable('ts_template_time_savings', table => {
+    await knex.schema.createTable("ts_template_time_savings", (table) => {
       table.comment(
-        'Table contains template time savings with relation to the templateTaskId',
+        "Table contains template time savings with relation to the templateTaskId"
       );
       table
-        .uuid('id')
+        .uuid("id")
         .primary()
         .defaultTo(knex.raw(`${namespace}.uuid_generate_v4()::uuid`))
-        .comment('UUID');
+        .comment("UUID");
       table
-        .timestamp('created_at', { useTz: false, precision: 0 })
+        .timestamp("created_at", { useTz: false, precision: 0 })
         .notNullable()
         .defaultTo(knex.fn.now())
-        .comment('The creation time of the record');
-      table.string('template_task_id').comment('Template task ID');
+        .comment("The creation time of the record");
+      table.string("template_task_id").comment("Template task ID");
       table
-        .string('template_name')
-        .comment('Template name as template entity_reference');
-      table.string('team').comment('Team name of saved time');
+        .string("template_name")
+        .comment("Template name as template entity_reference");
+      table.string("team").comment("Team name of saved time");
       table
-        .float('time_saved', 2)
-        .comment('time saved by the team within template task ID, in hours');
-      table.string('template_task_status').comment('template task status');
+        .float("time_saved", 2)
+        .comment("time saved by the team within template task ID, in hours");
+      table.string("template_task_status").comment("template task status");
       table
-        .string('created_by')
-        .comment('entity refernce to the user that has executed the template');
+        .string("created_by")
+        .comment("entity refernce to the user that has executed the template");
     });
   }
 };
@@ -67,5 +67,5 @@ exports.up = async function up(knex) {
  * @param {import('knex').Knex} knex
  */
 exports.down = async function down(knex) {
-  return knex.schema.dropTable('ts_template_time_savings');
+  return knex.schema.dropTable("ts_template_time_savings");
 };

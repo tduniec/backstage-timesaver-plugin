@@ -13,33 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DatabaseManager, getVoidLogger } from '@backstage/backend-common';
-import express from 'express';
-import request from 'supertest';
+import { DatabaseManager, getVoidLogger } from "@backstage/backend-common";
+import express from "express";
+import request from "supertest";
 
-import { createRouter } from './router';
-import { ConfigReader } from '@backstage/config';
+import { createRouter } from "./router";
+import { ConfigReader } from "@backstage/config";
 import {
   PluginTaskScheduler,
   TaskInvocationDefinition,
   TaskRunner,
-} from '@backstage/backend-tasks';
+} from "@backstage/backend-tasks";
 
-describe('createRouter', () => {
+describe("createRouter", () => {
   let app: express.Express;
   const manager = DatabaseManager.fromConfig(
     new ConfigReader({
       backend: {
-        database: { client: 'better-sqlite3', connection: ':memory:' },
+        database: { client: "better-sqlite3", connection: ":memory:" },
       },
-    }),
+    })
   );
-  const config =  new ConfigReader({
+  const config = new ConfigReader({
     backend: {
-      database: { client: 'better-sqlite3', connection: ':memory:' },
+      database: { client: "better-sqlite3", connection: ":memory:" },
     },
   });
-  const database = manager.forPlugin('time-saver');
+  const database = manager.forPlugin("time-saver");
   class PersistingTaskRunner implements TaskRunner {
     private tasks: TaskInvocationDefinition[] = [];
 
@@ -72,12 +72,12 @@ describe('createRouter', () => {
     jest.resetAllMocks();
   });
 
-  describe('GET /health', () => {
-    it('returns ok', async () => {
-      const response = await request(app).get('/health');
+  describe("GET /health", () => {
+    it("returns ok", async () => {
+      const response = await request(app).get("/health");
 
       expect(response.status).toEqual(200);
-      expect(response.body).toEqual({ status: 'ok' });
+      expect(response.body).toEqual({ status: "ok" });
     });
   });
 });

@@ -13,4 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export { TimeSaverPlugin, TimeSaverPage } from './plugin';
+export { TimeSaverPlugin, TimeSaverPage } from "./plugin";

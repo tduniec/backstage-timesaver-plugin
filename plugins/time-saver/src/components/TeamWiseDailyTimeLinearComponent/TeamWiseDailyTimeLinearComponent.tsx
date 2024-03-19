@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   LineElement,
@@ -23,11 +23,11 @@ import {
   Tooltip,
   Legend,
   ChartOptions,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+import { configApiRef, useApi } from "@backstage/core-plugin-api";
+import { fetchWithCredentials, getRandomColor } from "../utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -53,16 +53,16 @@ export function DailyTimeSummaryLineChartTeamWise({
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getDailyTimeSummary/team`,
+        "backend.baseUrl"
+      )}/api/time-saver/getDailyTimeSummary/team`
     )
-      .then(response => response.json())
-      .then(dt => {
+      .then((response) => response.json())
+      .then((dt) => {
         dt.stats.sort(
           (
             a: { date: string | number | Date },
-            b: { date: string | number | Date },
-          ) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            b: { date: string | number | Date }
+          ) => new Date(a.date).getTime() - new Date(b.date).getTime()
         );
         setData(dt);
       })
@@ -72,61 +72,61 @@ export function DailyTimeSummaryLineChartTeamWise({
   if (!data) {
     return <CircularProgress />;
   }
-  let filteredData:DailyTimeSummaryResponse 
+  let filteredData: DailyTimeSummaryResponse;
   if (team) {
     filteredData = {
-      stats: data.stats.filter(stat => stat.team === team)
-    }
+      stats: data.stats.filter((stat) => stat.team === team),
+    };
   } else {
     filteredData = data;
   }
   const uniqueTeams = Array.from(
-    new Set(filteredData.stats.map(stat => stat.team)),
+    new Set(filteredData.stats.map((stat) => stat.team))
   );
 
-  const options: ChartOptions<'line'> = {
+  const options: ChartOptions<"line"> = {
     plugins: {
       title: {
         display: true,
-        text: 'Daily Time Summary by Team',
+        text: "Daily Time Summary by Team",
       },
     },
     responsive: true,
     scales: {
       x: [
         {
-          type: 'time',
+          type: "time",
           time: {
-            unit: 'day',
-            tooltipFormat: 'YYYY-MM-DD',
+            unit: "day",
+            tooltipFormat: "YYYY-MM-DD",
             displayFormats: {
-              day: 'YYYY-MM-DD',
+              day: "YYYY-MM-DD",
             },
           },
           scaleLabel: {
             display: true,
-            labelString: 'Date',
+            labelString: "Date",
           },
         },
-      ] as unknown as ChartOptions<'line'>['scales'],
+      ] as unknown as ChartOptions<"line">["scales"],
       y: [
         {
           stacked: true,
           beginAtZero: true,
           scaleLabel: {
             display: true,
-            labelString: 'Total Time Saved',
+            labelString: "Total Time Saved",
           },
         },
-      ] as unknown as ChartOptions<'line'>['scales'],
+      ] as unknown as ChartOptions<"line">["scales"],
     },
   };
 
-  const uniqueDates = Array.from(new Set(data.stats.map(stat => stat.date)));
+  const uniqueDates = Array.from(new Set(data.stats.map((stat) => stat.date)));
 
   const allData = {
     labels: uniqueDates,
-    datasets: uniqueTeams.map(tm => {
+    datasets: uniqueTeams.map((tm) => {
       const templateData = filteredData.stats
         .filter((stat: { team: string | undefined }) => stat.team === tm)
         .map((stat: { date: any; total_time_saved: any }) => ({

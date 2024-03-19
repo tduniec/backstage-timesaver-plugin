@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState } from 'react';
-import { Typography, Grid, Tabs, Tab, Divider, Paper } from '@material-ui/core';
+import React, { useState } from "react";
+import { Typography, Grid, Tabs, Tab, Divider, Paper } from "@material-ui/core";
 import {
   InfoCard,
   Header,
@@ -23,32 +23,32 @@ import {
   ContentHeader,
   HeaderLabel,
   SupportButton,
-} from '@backstage/core-components';
-import { AllStatsBarChart } from '../AllStatsBarChartComponent/AllStatsBarChartComponent';
-import { ByTeamBarChart } from '../ByTeamBarCharComponent/ByTeamBarChartComponent';
-import { GroupDivisionPieChart } from '../GroupDivisionPieChartComponent/GroupDivisionPieChartComponent';
-import { DailyTimeSummaryLineChartTeamWise } from '../TeamWiseDailyTimeLinearComponent/TeamWiseDailyTimeLinearComponent';
-import { TeamWiseTimeSummaryLinearChart } from '../TeamWiseTimeSummaryLinearComponent/TeamWiseTimeSummaryLinearComponent';
-import TeamSelector from '../TeamSelectorComponent/TeamSelectorComponent';
-import { DailyTimeSummaryLineChartTemplateWise } from '../TemplateWiseDailyTimeLinearComponent/TemplateWiseWiseDailyTimeLinearComponent';
-import { TemplateWiseTimeSummaryLinearChart } from '../TemplateWiseTimeSummaryLinearComponent/TemplateWiseTimeSummaryLinearComponent';
-import TemplateAutocomplete from '../TemplateAutocompleteComponent/TemplateAutocompleteComponent';
-import { ByTemplateBarChart } from '../ByTemplateBarCharComponent/ByTemplateBarChartComponent';
-import StatsTable from '../Table/StatsTable';
-import { TemplateCountGauge } from '../Gauge/TemplatesTaskCountGauge';
-import { TimeSavedGauge } from '../Gauge/TimeSavedGauge';
-import { TeamsGauge } from '../Gauge/TeamsGauge';
-import { TemplatesGauge } from '../Gauge/TemplatesGauge';
-import { EmptyTimeSaver } from '../Gauge/EmptyDbContent';
+} from "@backstage/core-components";
+import { AllStatsBarChart } from "../AllStatsBarChartComponent/AllStatsBarChartComponent";
+import { ByTeamBarChart } from "../ByTeamBarCharComponent/ByTeamBarChartComponent";
+import { GroupDivisionPieChart } from "../GroupDivisionPieChartComponent/GroupDivisionPieChartComponent";
+import { DailyTimeSummaryLineChartTeamWise } from "../TeamWiseDailyTimeLinearComponent/TeamWiseDailyTimeLinearComponent";
+import { TeamWiseTimeSummaryLinearChart } from "../TeamWiseTimeSummaryLinearComponent/TeamWiseTimeSummaryLinearComponent";
+import TeamSelector from "../TeamSelectorComponent/TeamSelectorComponent";
+import { DailyTimeSummaryLineChartTemplateWise } from "../TemplateWiseDailyTimeLinearComponent/TemplateWiseWiseDailyTimeLinearComponent";
+import { TemplateWiseTimeSummaryLinearChart } from "../TemplateWiseTimeSummaryLinearComponent/TemplateWiseTimeSummaryLinearComponent";
+import TemplateAutocomplete from "../TemplateAutocompleteComponent/TemplateAutocompleteComponent";
+import { ByTemplateBarChart } from "../ByTemplateBarCharComponent/ByTemplateBarChartComponent";
+import StatsTable from "../Table/StatsTable";
+import { TemplateCountGauge } from "../Gauge/TemplatesTaskCountGauge";
+import { TimeSavedGauge } from "../Gauge/TimeSavedGauge";
+import { TeamsGauge } from "../Gauge/TeamsGauge";
+import { TemplatesGauge } from "../Gauge/TemplatesGauge";
+import { EmptyTimeSaver } from "../Gauge/EmptyDbContent";
 
 export const TimeSaverPageComponent = () => {
   const [selectedTab, setSelectedTab] = useState(0);
-  const [selectedTeam, setSelectedTeam] = useState('');
-  const [template, setTemplate] = useState('');
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [template, setTemplate] = useState("");
 
   const handleChange = (
     _event: any,
-    _newValue: React.SetStateAction<number>,
+    _newValue: React.SetStateAction<number>
   ) => {
     setSelectedTab(_newValue);
   };
@@ -62,7 +62,7 @@ export const TimeSaverPageComponent = () => {
   };
 
   const handleClearTeam = () => {
-    setSelectedTeam('');
+    setSelectedTeam("");
   };
 
   const GaugesContainer = (
@@ -164,7 +164,7 @@ export const TimeSaverPageComponent = () => {
                         </Grid>
                         <Grid xs={6}>
                           <ByTeamBarChart team={selectedTeam} />
-                        </Grid>{' '}
+                        </Grid>{" "}
                         <Grid xs={6}>
                           <StatsTable team={selectedTeam} />
                         </Grid>

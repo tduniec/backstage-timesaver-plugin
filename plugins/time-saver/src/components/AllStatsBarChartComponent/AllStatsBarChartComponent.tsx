@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,11 +22,11 @@ import {
   Title,
   Tooltip,
   ChartOptions,
-} from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import { configApiRef, useApi } from "@backstage/core-plugin-api";
+import { fetchWithCredentials, getRandomColor } from "../utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -44,9 +44,11 @@ export function AllStatsBarChart(): React.ReactElement {
   const [data, setData] = useState<AllStatsChartResponse | null>(null);
 
   useEffect(() => {
-    fetchWithCredentials(`${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`)
-      .then(response => response.json())
-      .then(dt => setData(dt))
+    fetchWithCredentials(
+      `${configApi.getString("backend.baseUrl")}/api/time-saver/getStats`
+    )
+      .then((response) => response.json())
+      .then((dt) => setData(dt))
       .catch();
   }, [configApi]);
 
@@ -54,16 +56,16 @@ export function AllStatsBarChart(): React.ReactElement {
     return <CircularProgress />;
   }
 
-  const options: ChartOptions<'bar'> = {
+  const options: ChartOptions<"bar"> = {
     plugins: {
       title: {
         display: true,
-        text: 'All Statistics',
+        text: "All Statistics",
       },
     },
     responsive: true,
     interaction: {
-      mode: 'index',
+      mode: "index",
       intersect: false,
     },
     scales: {
@@ -76,9 +78,9 @@ export function AllStatsBarChart(): React.ReactElement {
     },
   };
 
-  const labels = Array.from(new Set(data.stats.map(stat => stat.team)));
+  const labels = Array.from(new Set(data.stats.map((stat) => stat.team)));
   const datasets = Array.from(
-    new Set(data.stats.map(stat => stat.template_name)),
+    new Set(data.stats.map((stat) => stat.template_name))
   );
 
   const backgroundColors = datasets.map(() => getRandomColor());
@@ -87,12 +89,12 @@ export function AllStatsBarChart(): React.ReactElement {
     labels,
     datasets: datasets.map((templateName, index) => ({
       label: `Time Saved - ${templateName}`,
-      data: labels.map(team =>
+      data: labels.map((team) =>
         data.stats
           .filter(
-            stat => stat.team === team && stat.template_name === templateName,
+            (stat) => stat.team === team && stat.template_name === templateName
           )
-          .reduce((sum, stat) => sum + stat.sum, 0),
+          .reduce((sum, stat) => sum + stat.sum, 0)
       ),
       backgroundColor: backgroundColors[index],
     })),

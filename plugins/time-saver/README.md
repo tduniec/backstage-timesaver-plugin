@@ -8,7 +8,8 @@ This plugin provides an implementation of charts and statistics related to your 
 - [time-saver-common](https://github.com/tduniec/backstage-timesaver-plugin/tree/main/plugins/time-saver-common)
 
 ## Code
-https://github.com/tduniec/backstage-timesaver-plugin.git 
+
+https://github.com/tduniec/backstage-timesaver-plugin.git
 
 ## Screens
 
@@ -30,7 +31,7 @@ yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
 3. Then after all the import statements add the following line:
 
    ```ts
-   import { TimeSaverPage } from '@tduniec/backstage-plugin-time-saver';
+   import { TimeSaverPage } from "@tduniec/backstage-plugin-time-saver";
    ```
 
 4. In this same file just before the closing `</ FlatRoutes>`, this will be near the bottom of the file, add this line:
@@ -43,7 +44,7 @@ yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
 6. We want to add this icon import after all the existing import statements:
 
    ```ts
-   import Timelapse from '@material-ui/icons/Timelapse';
+   import Timelapse from "@material-ui/icons/Timelapse";
    ```
 
 7. Then add this line just after the `<SidebarSettings />` line:

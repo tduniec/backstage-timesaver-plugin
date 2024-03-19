@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   Title,
   Tooltip,
   ChartOptions,
   ArcElement,
-} from 'chart.js';
-import { Pie } from 'react-chartjs-2';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+} from "chart.js";
+import { Pie } from "react-chartjs-2";
+import { configApiRef, useApi } from "@backstage/core-plugin-api";
+import { fetchWithCredentials, getRandomColor } from "../utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 ChartJS.register(Title, Tooltip, ArcElement);
 
@@ -42,10 +42,10 @@ export function GroupDivisionPieChart(): React.ReactElement {
 
   useEffect(() => {
     fetchWithCredentials(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats/group`,
+      `${configApi.getString("backend.baseUrl")}/api/time-saver/getStats/group`
     )
-      .then(response => response.json())
-      .then(dt => setData(dt))
+      .then((response) => response.json())
+      .then((dt) => setData(dt))
       .catch();
   }, [configApi]);
 
@@ -53,21 +53,21 @@ export function GroupDivisionPieChart(): React.ReactElement {
     return <CircularProgress />;
   }
 
-  const options: ChartOptions<'pie'> = {
+  const options: ChartOptions<"pie"> = {
     plugins: {
       title: {
         display: true,
-        text: 'Team Percentage Distribution',
+        text: "Team Percentage Distribution",
       },
     },
     responsive: true,
   };
 
-  const labels = data.stats.map(stat => stat.team);
-  const percentages = data.stats.map(stat => parseFloat(stat.percentage));
+  const labels = data.stats.map((stat) => stat.team);
+  const percentages = data.stats.map((stat) => parseFloat(stat.percentage));
 
   const backgroundColors = Array.from({ length: labels.length }, () =>
-    getRandomColor(),
+    getRandomColor()
   );
 
   const dataAll = {

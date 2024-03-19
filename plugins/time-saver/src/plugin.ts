@@ -16,12 +16,12 @@
 import {
   createPlugin,
   createRoutableExtension,
-} from '@backstage/core-plugin-api';
+} from "@backstage/core-plugin-api";
 
-import { rootRouteRef } from './routes';
+import { rootRouteRef } from "./routes";
 
 export const TimeSaverPlugin = createPlugin({
-  id: 'time-saver',
+  id: "time-saver",
   routes: {
     root: rootRouteRef,
   },
@@ -29,11 +29,11 @@ export const TimeSaverPlugin = createPlugin({
 
 export const TimeSaverPage = TimeSaverPlugin.provide(
   createRoutableExtension({
-    name: 'TimeSaverPage',
+    name: "TimeSaverPage",
     component: () =>
-      import('./components/TimeSaverPageComponent').then(
-        m => m.TimeSaverPageComponent,
+      import("./components/TimeSaverPageComponent").then(
+        (m) => m.TimeSaverPageComponent
       ),
     mountPoint: rootRouteRef,
-  }),
+  })
 );

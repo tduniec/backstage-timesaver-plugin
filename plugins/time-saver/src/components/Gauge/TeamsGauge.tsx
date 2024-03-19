@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import CircularProgress from '@mui/material/CircularProgress';
-import Gauge from './Gauge';
-import { fetchWithCredentials } from '../utils';
+import React, { useEffect, useState } from "react";
+import { configApiRef, useApi } from "@backstage/core-plugin-api";
+import CircularProgress from "@mui/material/CircularProgress";
+import Gauge from "./Gauge";
+import { fetchWithCredentials } from "../utils";
 
 type GroupsResponse = {
   groups: string[];
@@ -30,12 +30,12 @@ export function TeamsGauge({}): React.ReactElement {
 
   useEffect(() => {
     const url = `${configApi.getString(
-      'backend.baseUrl',
+      "backend.baseUrl"
     )}/api/time-saver/groups`;
 
     fetchWithCredentials(url)
-      .then(response => response.json())
-      .then(dt => setData(dt))
+      .then((response) => response.json())
+      .then((dt) => setData(dt))
       .catch();
   }, [configApi]);
 

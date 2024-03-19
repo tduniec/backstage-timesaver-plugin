@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-import Avatar from '@mui/material/Avatar';
-import { getRandomColor } from '../utils';
+import React from "react";
+import Avatar from "@mui/material/Avatar";
+import { getRandomColor } from "../utils";
 
 interface GaugeProps {
   number: number;
@@ -26,10 +26,10 @@ const Gauge: React.FC<GaugeProps> = ({ number, heading }) => {
   return (
     <div
       style={{
-        textAlign: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
+        textAlign: "center",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       <Avatar
@@ -38,19 +38,19 @@ const Gauge: React.FC<GaugeProps> = ({ number, heading }) => {
           height: 120,
           fontSize: 36,
           backgroundColor: getRandomColor(),
-          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-          color: '#fff',
-          marginBottom: '8px',
-          border: '3px solid #005052',
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+          color: "#fff",
+          marginBottom: "8px",
+          border: "3px solid #005052",
         }}
       >
         {number}
       </Avatar>
       <div
         style={{
-          fontSize: '16px',
-          fontWeight: 'bold',
-          color: '#333',
+          fontSize: "16px",
+          fontWeight: "bold",
+          color: "#333",
         }}
       >
         {heading}

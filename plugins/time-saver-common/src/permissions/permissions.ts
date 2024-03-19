@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { createPermission } from '@backstage/plugin-permission-common';
+import { createPermission } from "@backstage/plugin-permission-common";
 
 export const timeSaverPermission = createPermission({
-  name: 'timeSaver',
-  attributes: { action: 'read' },
+  name: "timeSaver",
+  attributes: { action: "read" },
 });
 
 export const timeSaverPermissions = [timeSaverPermission];
