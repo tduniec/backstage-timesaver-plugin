@@ -31,5 +31,6 @@ export class ScaffolderDb {
       });
       return knex;
     }
+    return null
   }
 }
