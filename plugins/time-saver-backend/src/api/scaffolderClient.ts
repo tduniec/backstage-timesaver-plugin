@@ -25,7 +25,7 @@ export class ScaffolderClient {
   ) {}
 
   async fetchTemplatesFromScaffolder() {
-    var backendUrl =
+    let backendUrl =
       this.config.getOptionalString("ts.backendUrl") ?? "http://127.0.0.1:7007";
     backendUrl = backendUrl.replace(
       /(http:\/\/)localhost(\:\d+)/g,
@@ -40,8 +40,8 @@ export class ScaffolderClient {
         method: "GET",
         headers: {
           Authorization:
-            "Bearer " +
-            (await this.generateBackendToken(this.config, "backstage-server")),
+            `Bearer ${ 
+            await this.generateBackendToken(this.config, "backstage-server")}`,
         },
       });
       this.logger.debug(JSON.stringify(response));
@@ -58,7 +58,7 @@ export class ScaffolderClient {
   }
 
   async generateBackendToken(config: Config, name?: string) {
-    var key = "";
+    let key = "";
     const keyConfig: any = config.getOptional("backend.auth.keys");
     if (keyConfig) {
       key = keyConfig[0].secret;
@@ -71,8 +71,7 @@ export class ScaffolderClient {
       exp: Math.floor(Date.now() / 1000) + 3600, // Current timestamp + 1 hours in seconds
     };
 
-    const encodedJwt = jwt.sign(payload, decodedBytes, { algorithm: "HS256" });
-    return encodedJwt;
+    return jwt.sign(payload, decodedBytes, { algorithm: "HS256" });
   }
 
   decodeFromBase64(input: string): Buffer {
