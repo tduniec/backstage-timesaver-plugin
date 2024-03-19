@@ -229,7 +229,7 @@ export class TsApi {
     const queryResult = (await this.db.getTemplateCount())[0];
 
     const outputBody = {
-      templateTasks: parseInt(queryResult.count),
+      templateTasks: parseInt(queryResult.count, 10),
     };
     this.logger.info(JSON.stringify(outputBody));
     return outputBody;
