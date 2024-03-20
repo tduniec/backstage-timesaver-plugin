@@ -49,7 +49,7 @@ export class ScaffolderClient {
       templateTaskList = data.tasks;
     } catch (error) {
       this.logger.error(
-        `Problem retriving response from url: ${callUrl}`,
+        `Problem retrieving response from url: ${callUrl}`,
         error
       );
       return [];
