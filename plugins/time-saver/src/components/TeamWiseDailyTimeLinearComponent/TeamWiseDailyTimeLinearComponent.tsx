@@ -27,7 +27,8 @@ import {
 import { Line } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useTheme } from '@material-ui/core';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -49,7 +50,7 @@ export function DailyTimeSummaryLineChartTeamWise({
   const configApi = useApi(configApiRef);
 
   const [data, setData] = useState<DailyTimeSummaryResponse | null>(null);
-
+  const theme = useTheme();
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
@@ -72,11 +73,11 @@ export function DailyTimeSummaryLineChartTeamWise({
   if (!data) {
     return <CircularProgress />;
   }
-  let filteredData:DailyTimeSummaryResponse 
+  let filteredData: DailyTimeSummaryResponse;
   if (team) {
     filteredData = {
-      stats: data.stats.filter(stat => stat.team === team)
-    }
+      stats: data.stats.filter(stat => stat.team === team),
+    };
   } else {
     filteredData = data;
   }
@@ -89,6 +90,7 @@ export function DailyTimeSummaryLineChartTeamWise({
       title: {
         display: true,
         text: 'Daily Time Summary by Team',
+        color: theme.palette.text.primary,
       },
     },
     responsive: true,

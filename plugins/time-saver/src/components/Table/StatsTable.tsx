@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 import React, { useState, useEffect } from 'react';
-import Paper from '@mui/material/Paper';
-import CircularProgress from '@mui/material/CircularProgress';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
 import { fetchWithCredentials } from '../utils';
+import { useTheme, Paper } from '@material-ui/core';
 
 type Stat = {
   id: string;
@@ -44,6 +45,8 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
   ]);
 
   const configApi = useApi(configApiRef);
+
+  const theme = useTheme();
 
   useEffect(() => {
     let url = `${configApi.getString(
@@ -85,13 +88,33 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
 
   return (
     <Paper
-      style={{ height: 400, width: '100%', margin: '16px', padding: '16px' }}
+      style={{
+        height: 400,
+        width: '100%',
+        margin: '16px',
+        padding: '16px',
+        backgroundColor: theme.palette.background.paper,
+      }}
     >
       <DataGrid
         rows={data}
         columns={columns}
         sortModel={sortModel}
         onSortModelChange={model => setSortModel(model)}
+        className="test"
+        sx={{
+          color: theme.palette.text.primary,
+          '& .MuiDataGrid-cell:hover': { color: theme.palette.text.secondary },
+          '& .MuiDataGrid-footerContainer': {
+            color: theme.palette.text.primary,
+          },
+          '& .v5-MuiToolbar-root': {
+            color: theme.palette.text.primary,
+          },
+          '& .v5-MuiTablePagination-actions button': {
+            color: theme.palette.text.primary,
+          },
+        }}
       />
     </Paper>
   );
