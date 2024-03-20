@@ -15,13 +15,15 @@
  */
 import React, { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import CircularProgress from '@mui/material/CircularProgress';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+  Table,
+  Paper,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from '@material-ui/core';
 import { fetchWithCredentials } from '../utils';
 
 type TemplatesResponse = {

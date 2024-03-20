@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 import React from 'react';
-import Avatar from '@mui/material/Avatar';
+import Avatar from '@material-ui/core/Avatar';
 import { getRandomColor } from '../utils';
+import { useTheme } from '@material-ui/core';
 
 interface GaugeProps {
   number: number;
@@ -23,6 +24,8 @@ interface GaugeProps {
 }
 
 const Gauge: React.FC<GaugeProps> = ({ number, heading }) => {
+  const theme = useTheme();
+
   return (
     <div
       style={{
@@ -33,7 +36,7 @@ const Gauge: React.FC<GaugeProps> = ({ number, heading }) => {
       }}
     >
       <Avatar
-        sx={{
+        style={{
           width: 120,
           height: 120,
           fontSize: 36,
@@ -50,7 +53,7 @@ const Gauge: React.FC<GaugeProps> = ({ number, heading }) => {
         style={{
           fontSize: '16px',
           fontWeight: 'bold',
-          color: '#333',
+          color: theme.palette.text.primary,
         }}
       >
         {heading}

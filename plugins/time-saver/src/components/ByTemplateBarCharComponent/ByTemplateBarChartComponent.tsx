@@ -26,7 +26,8 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useTheme } from '@material-ui/core';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -47,6 +48,7 @@ export function ByTemplateBarChart({
 }: ByTemplateBarChartProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const [data, setData] = useState<TemplateChartResponse | null>(null);
+  const theme = useTheme();
 
   useEffect(() => {
     fetchWithCredentials(
@@ -68,6 +70,13 @@ export function ByTemplateBarChart({
       title: {
         display: true,
         text: data.template_name || '',
+        color: theme.palette.text.primary,
+      },
+      legend: {
+        display: true,
+        labels: {
+          color: theme.palette.text.primary,
+        },
       },
     },
     responsive: true,
@@ -78,9 +87,21 @@ export function ByTemplateBarChart({
     scales: {
       x: {
         stacked: true,
+        grid: {
+          display: true,
+        },
+        ticks: {
+          color: theme.palette.text.primary,
+        },
       },
       y: {
         stacked: true,
+        grid: {
+          display: true,
+        },
+        ticks: {
+          color: theme.palette.text.primary,
+        },
       },
     },
   };
