@@ -39,9 +39,10 @@ export class ScaffolderClient {
       const response = await fetch(callUrl, {
         method: "GET",
         headers: {
-          Authorization:
-            `Bearer ${ 
-            await this.generateBackendToken(this.config, "backstage-server")}`,
+          Authorization: `Bearer ${await this.generateBackendToken(
+            this.config,
+            "backstage-server"
+          )}`,
         },
       });
       this.logger.debug(JSON.stringify(response));
