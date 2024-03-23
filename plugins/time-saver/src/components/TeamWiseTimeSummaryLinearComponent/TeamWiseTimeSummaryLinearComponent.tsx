@@ -58,8 +58,8 @@ export function TeamWiseTimeSummaryLinearChart({
         'backend.baseUrl'
       )}/api/time-saver/getTimeSummary/team`
     )
-      .then((response) => response.json())
-      .then((dt) => {
+      .then(response => response.json())
+      .then(dt => {
         dt.stats.sort(
           (
             a: { date: string | number | Date },
@@ -78,14 +78,14 @@ export function TeamWiseTimeSummaryLinearChart({
   let filteredData: TeamWiseTimeSummaryLinearResponse;
   if (team) {
     filteredData = {
-      stats: data.stats.filter((stat) => stat.team === team),
+      stats: data.stats.filter(stat => stat.team === team),
     };
   } else {
     filteredData = data;
   }
 
   const uniqueTeams = Array.from(
-    new Set(filteredData.stats.map((stat) => stat.team))
+    new Set(filteredData.stats.map(stat => stat.team))
   );
 
   const options: ChartOptions<'line'> = {
@@ -127,14 +127,14 @@ export function TeamWiseTimeSummaryLinearChart({
     },
   };
 
-  const uniqueDates = Array.from(new Set(data.stats.map((stat) => stat.date)));
+  const uniqueDates = Array.from(new Set(data.stats.map(stat => stat.date)));
 
   const allData = {
     labels: uniqueDates,
-    datasets: uniqueTeams.map((tm) => {
+    datasets: uniqueTeams.map(tm => {
       const templateData = filteredData.stats
-        .filter((stat) => stat.team === tm)
-        .map((stat) => ({ x: stat.date, y: stat.total_time_saved }));
+        .filter(stat => stat.team === tm)
+        .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
 
       return {
         label: tm,

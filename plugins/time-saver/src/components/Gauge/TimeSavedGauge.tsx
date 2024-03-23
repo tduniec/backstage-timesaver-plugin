@@ -44,8 +44,8 @@ export function TimeSavedGauge({
     }
 
     fetchWithCredentials(url)
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi, number]);
 

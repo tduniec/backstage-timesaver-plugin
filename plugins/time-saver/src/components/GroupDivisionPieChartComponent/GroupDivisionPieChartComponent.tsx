@@ -44,8 +44,8 @@ export function GroupDivisionPieChart(): React.ReactElement {
     fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats/group`
     )
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi]);
 
@@ -63,8 +63,8 @@ export function GroupDivisionPieChart(): React.ReactElement {
     responsive: true,
   };
 
-  const labels = data.stats.map((stat) => stat.team);
-  const percentages = data.stats.map((stat) => parseFloat(stat.percentage));
+  const labels = data.stats.map(stat => stat.team);
+  const percentages = data.stats.map(stat => parseFloat(stat.percentage));
 
   const backgroundColors = Array.from({ length: labels.length }, () =>
     getRandomColor()

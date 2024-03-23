@@ -47,8 +47,8 @@ export function AllStatsBarChart(): React.ReactElement {
     fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`
     )
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi]);
 
@@ -78,9 +78,9 @@ export function AllStatsBarChart(): React.ReactElement {
     },
   };
 
-  const labels = Array.from(new Set(data.stats.map((stat) => stat.team)));
+  const labels = Array.from(new Set(data.stats.map(stat => stat.team)));
   const datasets = Array.from(
-    new Set(data.stats.map((stat) => stat.template_name))
+    new Set(data.stats.map(stat => stat.template_name))
   );
 
   const backgroundColors = datasets.map(() => getRandomColor());
@@ -89,10 +89,10 @@ export function AllStatsBarChart(): React.ReactElement {
     labels,
     datasets: datasets.map((templateName, index) => ({
       label: `Time Saved - ${templateName}`,
-      data: labels.map((team) =>
+      data: labels.map(team =>
         data.stats
           .filter(
-            (stat) => stat.team === team && stat.template_name === templateName
+            stat => stat.team === team && stat.template_name === templateName
           )
           .reduce((sum, stat) => sum + stat.sum, 0)
       ),

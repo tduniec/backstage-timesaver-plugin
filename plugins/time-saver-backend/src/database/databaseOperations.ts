@@ -53,7 +53,7 @@ export class DatabaseOperations {
       .then(() => {
         this.logger.info('Data inserted successfully');
       })
-      .catch((error) => {
+      .catch(error => {
         this.logger.error('Error inserting data:', error);
       });
   }
@@ -65,7 +65,7 @@ export class DatabaseOperations {
       .then(() => {
         this.logger.info('Data updated successfully');
       })
-      .catch((error) => {
+      .catch(error => {
         this.logger.error('Error updating data:', error);
       });
   }
@@ -75,13 +75,13 @@ export class DatabaseOperations {
       .returning('*')
       .where(key)
       .del()
-      .then((deletedRow) => {
+      .then(deletedRow => {
         this.logger.info(
           `row deleted successfully: ${JSON.stringify(deletedRow)}`
         );
         return deletedRow;
       })
-      .catch((error) => {
+      .catch(error => {
         this.logger.error('Error deleting data:', error);
       });
   }
@@ -89,7 +89,7 @@ export class DatabaseOperations {
   async truncate(tableName: string) {
     await this.knex(tableName)
       .truncate()
-      .catch((error) => {
+      .catch(error => {
         this.logger.error(`Error truncating table ${tableName}`, error);
       });
   }

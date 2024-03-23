@@ -56,7 +56,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
     }
 
     fetchWithCredentials(url)
-      .then((response) => response.json())
+      .then(response => response.json())
       .then((dt: AllStatsChartResponse) => {
         const statsWithIds = dt.stats.map((stat, index) => ({
           ...stat,
@@ -81,7 +81,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
       sortable: true,
     },
     { field: 'sum', headerName: 'Sum', flex: 1, sortable: true },
-  ].filter((col) => data.some((row) => !!row[col.field]));
+  ].filter(col => data.some(row => !!row[col.field]));
 
   return (
     <Paper
@@ -91,7 +91,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
         rows={data}
         columns={columns}
         sortModel={sortModel}
-        onSortModelChange={(model) => setSortModel(model)}
+        onSortModelChange={model => setSortModel(model)}
       />
     </Paper>
   );

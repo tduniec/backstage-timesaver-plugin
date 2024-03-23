@@ -50,8 +50,8 @@ export default function TemplateTaskAutocomplete({
     fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/templateTasks`
     )
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi]);
 
@@ -68,7 +68,7 @@ export default function TemplateTaskAutocomplete({
       options={templates}
       sx={{ width: 500 }}
       onChange={handleChange}
-      renderInput={(params) => <TextField {...params} label="TemplateTaskId" />}
+      renderInput={params => <TextField {...params} label="TemplateTaskId" />}
     />
   );
 }

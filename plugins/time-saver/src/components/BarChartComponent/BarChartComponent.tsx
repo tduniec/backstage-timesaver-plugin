@@ -56,8 +56,8 @@ export function BarChart({
         'backend.baseUrl'
       )}/api/time-saver/getStats?templateTaskId=${templateTaskId} `
     )
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi, templateTaskId]);
 
@@ -87,8 +87,8 @@ export function BarChart({
     },
   };
 
-  const labels = Array.from(new Set(data.stats.map((stat) => stat.team)));
-  const datasets = data.stats.map((stat) => stat.sum);
+  const labels = Array.from(new Set(data.stats.map(stat => stat.team)));
+  const datasets = data.stats.map(stat => stat.sum);
 
   const backgroundColors = Array.from({ length: datasets.length }, () =>
     getRandomColor()

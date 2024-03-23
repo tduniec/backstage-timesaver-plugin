@@ -55,8 +55,8 @@ export function DailyTimeSummaryLineChartTemplateWise({
       'backend.baseUrl'
     )}/api/time-saver/getDailyTimeSummary/template`;
     fetchWithCredentials(url)
-      .then((response) => response.json())
-      .then((dt) => {
+      .then(response => response.json())
+      .then(dt => {
         dt.stats.sort(
           (
             a: { date: string | number | Date },
@@ -75,14 +75,14 @@ export function DailyTimeSummaryLineChartTemplateWise({
   let filteredData: DailyTimeSummaryResponse;
   if (template_name) {
     filteredData = {
-      stats: data.stats.filter((stat) => stat.template_name === template_name),
+      stats: data.stats.filter(stat => stat.template_name === template_name),
     };
   } else {
     filteredData = data;
   }
 
   const uniqueTemplates = Array.from(
-    new Set(filteredData.stats.map((stat) => stat.template_name))
+    new Set(filteredData.stats.map(stat => stat.template_name))
   );
 
   const options: ChartOptions<'line'> = {
@@ -123,14 +123,14 @@ export function DailyTimeSummaryLineChartTemplateWise({
       ] as unknown as ChartOptions<'line'>['scales'],
     },
   };
-  const uniqueDates = Array.from(new Set(data.stats.map((stat) => stat.date)));
+  const uniqueDates = Array.from(new Set(data.stats.map(stat => stat.date)));
 
   const allData = {
     labels: uniqueDates,
-    datasets: uniqueTemplates.map((tn) => {
+    datasets: uniqueTemplates.map(tn => {
       const templateData = filteredData.stats
-        .filter((stat) => stat.template_name === tn)
-        .map((stat) => ({ x: stat.date, y: stat.total_time_saved }));
+        .filter(stat => stat.template_name === tn)
+        .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
 
       return {
         label: tn,

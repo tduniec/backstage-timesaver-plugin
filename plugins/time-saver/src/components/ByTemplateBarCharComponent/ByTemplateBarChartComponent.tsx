@@ -54,8 +54,8 @@ export function ByTemplateBarChart({
         'backend.baseUrl'
       )}/api/time-saver/getStats?templateName=${template_name} `
     )
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi, template_name]);
 
@@ -85,8 +85,8 @@ export function ByTemplateBarChart({
     },
   };
 
-  const labels = Array.from(new Set(data.stats.map((stat) => stat.team)));
-  const datasets = data.stats.map((stat) => stat.sum);
+  const labels = Array.from(new Set(data.stats.map(stat => stat.team)));
+  const datasets = data.stats.map(stat => stat.sum);
 
   const backgroundColors = Array.from({ length: datasets.length }, () =>
     getRandomColor()

@@ -32,7 +32,7 @@ export const TimeSaverPage = TimeSaverPlugin.provide(
     name: 'TimeSaverPage',
     component: () =>
       import('./components/TimeSaverPageComponent').then(
-        (m) => m.TimeSaverPageComponent
+        m => m.TimeSaverPageComponent
       ),
     mountPoint: rootRouteRef,
   })

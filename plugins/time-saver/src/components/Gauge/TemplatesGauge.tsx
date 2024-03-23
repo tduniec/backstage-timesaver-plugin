@@ -33,8 +33,8 @@ export function TemplatesGauge({}): React.ReactElement {
     )}/api/time-saver/templates`;
 
     fetchWithCredentials(url)
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi]);
 

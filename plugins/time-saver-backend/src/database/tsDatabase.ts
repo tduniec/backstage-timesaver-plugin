@@ -64,7 +64,7 @@ export class TsDatabase {
   }
 
   get(): Promise<Knex> {
-    this.#promise ??= this.#database.getClient().then(async (client) => {
+    this.#promise ??= this.#database.getClient().then(async client => {
       if (!this.#database.migrations?.skip) {
         await TsDatabase.runMigrations(client);
       }

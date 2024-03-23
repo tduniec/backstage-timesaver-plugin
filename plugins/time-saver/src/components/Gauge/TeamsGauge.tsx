@@ -34,8 +34,8 @@ export function TeamsGauge({}): React.ReactElement {
     )}/api/time-saver/groups`;
 
     fetchWithCredentials(url)
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi]);
 

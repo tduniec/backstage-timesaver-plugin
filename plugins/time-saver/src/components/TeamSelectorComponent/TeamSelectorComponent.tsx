@@ -58,8 +58,8 @@ export default function TeamSelector({
     fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/groups`
     )
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi, onTeamChange]);
 
@@ -79,7 +79,7 @@ export default function TeamSelector({
           label="Team"
           onChange={handleChange}
         >
-          {groups.map((group) => (
+          {groups.map(group => (
             <MenuItem key={group} value={group}>
               {group}
             </MenuItem>

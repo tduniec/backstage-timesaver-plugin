@@ -50,8 +50,8 @@ export default function TemplateAutocomplete({
     fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/templates`
     )
-      .then((response) => response.json())
-      .then((dt) => setData(dt))
+      .then(response => response.json())
+      .then(dt => setData(dt))
       .catch();
   }, [configApi]);
 
@@ -68,7 +68,7 @@ export default function TemplateAutocomplete({
       options={templates}
       sx={{ width: 500 }}
       onChange={handleChange}
-      renderInput={(params) => <TextField {...params} label="Template Name" />}
+      renderInput={params => <TextField {...params} label="Template Name" />}
     />
   );
 }

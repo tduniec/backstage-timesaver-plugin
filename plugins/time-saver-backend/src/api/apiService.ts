@@ -191,7 +191,7 @@ export class TsApi {
       this.tsTableName,
       'team'
     );
-    const groupList: string[] = queryResult.map((row) => row.team);
+    const groupList: string[] = queryResult.map(row => row.team);
     const outputBody = {
       groups: groupList,
     };
@@ -204,7 +204,7 @@ export class TsApi {
       this.tsTableName,
       'template_name'
     );
-    const groupList: string[] = queryResult.map((row) => row.template_name);
+    const groupList: string[] = queryResult.map(row => row.template_name);
     const outputBody = {
       templates: groupList,
     };
@@ -217,7 +217,7 @@ export class TsApi {
       this.tsTableName,
       'template_task_id'
     );
-    const groupList: string[] = queryResult.map((row) => row.template_task_id);
+    const groupList: string[] = queryResult.map(row => row.template_task_id);
     const outputBody = {
       templateTasks: groupList,
     };

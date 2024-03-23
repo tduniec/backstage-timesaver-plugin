@@ -54,8 +54,8 @@ export function TemplateWiseTimeSummaryLinearChart({
       'backend.baseUrl'
     )}/api/time-saver/getTimeSummary/template`;
     fetchWithCredentials(url)
-      .then((response) => response.json())
-      .then((dt) => {
+      .then(response => response.json())
+      .then(dt => {
         dt.stats.sort(
           (a: { date: string }, b: { date: string }) =>
             new Date(a.date).getTime() - new Date(b.date).getTime()
@@ -128,11 +128,11 @@ export function TemplateWiseTimeSummaryLinearChart({
     },
   };
 
-  const uniqueDates = Array.from(new Set(data.stats.map((stat) => stat.date)));
+  const uniqueDates = Array.from(new Set(data.stats.map(stat => stat.date)));
 
   const allData = {
     labels: uniqueDates,
-    datasets: uniqueTemplates.map((tn) => {
+    datasets: uniqueTemplates.map(tn => {
       const templateData = filteredData.stats
         .filter((stat: { template_name: string }) => stat.template_name === tn)
         .map((stat: { date: any; total_time_saved: any }) => ({
