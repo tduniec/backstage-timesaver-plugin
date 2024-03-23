@@ -29,7 +29,8 @@ import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { fetchWithCredentials, getRandomColor } from '../utils';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useTheme } from '@material-ui/core';
 
 type TeamWiseTimeSummaryLinearResponse = {
   stats: {
@@ -51,7 +52,7 @@ export function TeamWiseTimeSummaryLinearChart({
   const [data, setData] = useState<TeamWiseTimeSummaryLinearResponse | null>(
     null
   );
-
+  const theme = useTheme();
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
@@ -93,6 +94,7 @@ export function TeamWiseTimeSummaryLinearChart({
       title: {
         display: true,
         text: 'Time Summary by Team',
+        color: theme.palette.text.primary,
       },
     },
     responsive: true,

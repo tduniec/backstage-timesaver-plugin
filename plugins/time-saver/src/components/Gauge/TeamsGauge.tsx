@@ -15,7 +15,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Gauge from './Gauge';
 import { fetchWithCredentials } from '../utils';
 
@@ -25,7 +25,6 @@ type GroupsResponse = {
 
 export function TeamsGauge({}): React.ReactElement {
   const configApi = useApi(configApiRef);
-
   const [data, setData] = useState<GroupsResponse | null>(null);
 
   useEffect(() => {

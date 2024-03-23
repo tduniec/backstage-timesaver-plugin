@@ -1,3 +1,4 @@
+//@ts-nocheck
 /*
  * Copyright 2024 The Backstage Authors
  *
@@ -14,15 +15,17 @@
  * limitations under the License.
  */
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import CircularProgress from '@mui/material/CircularProgress';
-import { Button, Grid } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {
+  Button,
+  Select,
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+} from '@material-ui/core';
 import { fetchWithCredentials } from '../utils';
 
 interface TeamSelectorProps {
@@ -40,7 +43,12 @@ export default function TeamSelector({
 }: TeamSelectorProps) {
   const [team, setTeam] = React.useState('');
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChange = (
+    event: React.ChangeEvent<{
+      name?: string | undefined;
+      value: unknown;
+    }>,
+  ) => {
     const selectedTeam = event.target.value as string;
     setTeam(selectedTeam);
     onTeamChange(selectedTeam);
@@ -69,34 +77,22 @@ export default function TeamSelector({
 
   const groups = data.groups;
   return (
-    <Box sx={{ minWidth: 360 }}>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Team</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={team}
-          label="Team"
-          onChange={handleChange}
-        >
+    <Box style={{ minWidth: 360, display: 'flex', flexWrap: 'nowrap', gap: 6 }}>
+      <FormControl fullWidth variant="outlined">
+        <InputLabel>Team</InputLabel>
+        <Select value={team} label="Team" onChange={handleChange}>
           {groups.map(group => (
             <MenuItem key={group} value={group}>
               {group}
             </MenuItem>
           ))}
         </Select>
-        {onClearButtonClick && (
-          <Grid xs={2}>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={handleClearClick}
-            >
-              Clear
-            </Button>
-          </Grid>
-        )}
       </FormControl>
+      {onClearButtonClick && (
+        <Button variant="outlined" color="secondary" onClick={handleClearClick}>
+          Clear
+        </Button>
+      )}
     </Box>
   );
 }

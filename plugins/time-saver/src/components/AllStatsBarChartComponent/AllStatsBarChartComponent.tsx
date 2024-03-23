@@ -26,7 +26,8 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useTheme } from '@material-ui/core';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -42,10 +43,11 @@ export function AllStatsBarChart(): React.ReactElement {
   const configApi = useApi(configApiRef);
 
   const [data, setData] = useState<AllStatsChartResponse | null>(null);
+  const theme = useTheme();
 
   useEffect(() => {
     fetchWithCredentials(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`
+      `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`,
     )
       .then(response => response.json())
       .then(dt => setData(dt))
@@ -61,6 +63,13 @@ export function AllStatsBarChart(): React.ReactElement {
       title: {
         display: true,
         text: 'All Statistics',
+        color: theme.palette.text.primary,
+      },
+      legend: {
+        display: true,
+        labels: {
+          color: theme.palette.text.primary,
+        },
       },
     },
     responsive: true,
@@ -71,9 +80,21 @@ export function AllStatsBarChart(): React.ReactElement {
     scales: {
       x: {
         stacked: true,
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: theme.palette.text.primary,
+        },
       },
       y: {
         stacked: true,
+        grid: {
+          display: true,
+        },
+        ticks: {
+          color: theme.palette.text.primary,
+        },
       },
     },
   };

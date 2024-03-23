@@ -27,7 +27,8 @@ import {
 import { Line } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useTheme } from '@material-ui/core';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -49,7 +50,7 @@ export function DailyTimeSummaryLineChartTemplateWise({
   const configApi = useApi(configApiRef);
 
   const [data, setData] = useState<DailyTimeSummaryResponse | null>(null);
-
+  const theme = useTheme();
   useEffect(() => {
     const url = `${configApi.getString(
       'backend.baseUrl'
@@ -90,12 +91,14 @@ export function DailyTimeSummaryLineChartTemplateWise({
       title: {
         display: true,
         text: 'Daily Time Summary by Template',
+        color: theme.palette.text.primary,
       },
     },
     responsive: true,
     scales: {
       x: [
         {
+          color: theme.palette.text.primary,
           type: 'time',
           time: {
             unit: 'day',
@@ -115,6 +118,8 @@ export function DailyTimeSummaryLineChartTemplateWise({
         {
           stacked: true,
           beginAtZero: true,
+          color: theme.palette.text.primary,
+
           scaleLabel: {
             display: true,
             labelString: 'Total Time Saved',

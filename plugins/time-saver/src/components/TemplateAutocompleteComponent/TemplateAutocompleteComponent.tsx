@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 import * as React from 'react';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import { Autocomplete } from '@material-ui/lab';
 import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchWithCredentials } from '../utils';
+import { useTheme, TextField } from '@material-ui/core';
 
 interface TemplateChange {
   onTemplateChange: (templateTask: string) => void;
@@ -45,7 +45,7 @@ export default function TemplateAutocomplete({
 
   const [data, setData] = useState<TemplateResponse | null>(null);
   const configApi = useApi(configApiRef);
-
+  const theme = useTheme();
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/templates`
@@ -66,9 +66,10 @@ export default function TemplateAutocomplete({
       disablePortal
       id="combo-box-demo"
       options={templates}
-      sx={{ width: 500 }}
       onChange={handleChange}
-      renderInput={params => <TextField {...params} label="Template Name" />}
+      renderInput={params => (
+        <TextField {...params} variant="outlined" label="Template Name" />
+      )}
     />
   );
 }

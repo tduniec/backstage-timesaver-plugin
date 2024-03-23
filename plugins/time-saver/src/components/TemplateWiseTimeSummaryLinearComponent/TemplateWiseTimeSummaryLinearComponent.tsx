@@ -26,7 +26,8 @@ import {
 import { Line } from 'react-chartjs-2';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { fetchWithCredentials, getRandomColor } from '../utils';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useTheme } from '@material-ui/core';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -48,7 +49,7 @@ export function TemplateWiseTimeSummaryLinearChart({
   const configApi = useApi(configApiRef);
   const [data, setData] =
     useState<TemplateWiseTimeSummaryLinearResponse | null>(null);
-
+  const theme = useTheme();
   useEffect(() => {
     const url = `${configApi.getString(
       'backend.baseUrl'
@@ -94,6 +95,7 @@ export function TemplateWiseTimeSummaryLinearChart({
       title: {
         display: true,
         text: 'Time Summary by Template',
+        color: theme.palette.text.primary,
       },
     },
     responsive: true,

@@ -15,7 +15,7 @@
  */
 import React, { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Gauge from './Gauge';
 import { fetchWithCredentials } from '../utils';
 
