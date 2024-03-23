@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Config } from "@backstage/config";
-import { Logger } from "winston";
-import jwt from "jsonwebtoken";
-import * as base64 from "base64-js";
+import { Config } from '@backstage/config';
+import { Logger } from 'winston';
+import jwt from 'jsonwebtoken';
+import * as base64 from 'base64-js';
 
 export class ScaffolderClient {
   constructor(
@@ -26,22 +26,22 @@ export class ScaffolderClient {
 
   async fetchTemplatesFromScaffolder() {
     let backendUrl =
-      this.config.getOptionalString("ts.backendUrl") ?? "http://127.0.0.1:7007";
+      this.config.getOptionalString('ts.backendUrl') ?? 'http://127.0.0.1:7007';
     backendUrl = backendUrl.replace(
       /(http:\/\/)localhost(\:\d+)/g,
-      "$1127.0.0.1$2"
+      '$1127.0.0.1$2'
     ); // This changes relates to local setup since there is ERRCONREFUSSED using localhost
-    const templatePath = "/api/scaffolder/v2/tasks";
+    const templatePath = '/api/scaffolder/v2/tasks';
     const callUrl = `${backendUrl}${templatePath}`;
 
     let templateTaskList = [];
     try {
       const response = await fetch(callUrl, {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${await this.generateBackendToken(
             this.config,
-            "backstage-server"
+            'backstage-server'
           )}`,
         },
       });
@@ -59,20 +59,20 @@ export class ScaffolderClient {
   }
 
   async generateBackendToken(config: Config, name?: string) {
-    let key = "";
-    const keyConfig: any = config.getOptional("backend.auth.keys");
+    let key = '';
+    const keyConfig: any = config.getOptional('backend.auth.keys');
     if (keyConfig) {
       key = keyConfig[0].secret;
     }
     const decodedBytes = this.decodeFromBase64(key);
-    const tokenSub = name ?? "backstage-server";
+    const tokenSub = name ?? 'backstage-server';
 
     const payload = {
       sub: tokenSub,
       exp: Math.floor(Date.now() / 1000) + 3600, // Current timestamp + 1 hours in seconds
     };
 
-    return jwt.sign(payload, decodedBytes, { algorithm: "HS256" });
+    return jwt.sign(payload, decodedBytes, { algorithm: 'HS256' });
   }
 
   decodeFromBase64(input: string): Buffer {

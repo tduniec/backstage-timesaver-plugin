@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from "react";
-import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { useEffect, useState } from "react";
-import { configApiRef, useApi } from "@backstage/core-plugin-api";
-import CircularProgress from "@mui/material/CircularProgress";
-import { Button, Grid } from "@material-ui/core";
-import { fetchWithCredentials } from "../utils";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useEffect, useState } from 'react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Button, Grid } from '@material-ui/core';
+import { fetchWithCredentials } from '../utils';
 
 interface TeamSelectorProps {
   onTeamChange: (team: string) => void;
@@ -38,7 +38,7 @@ export default function TeamSelector({
   onTeamChange,
   onClearButtonClick,
 }: TeamSelectorProps) {
-  const [team, setTeam] = React.useState("");
+  const [team, setTeam] = React.useState('');
 
   const handleChange = (event: SelectChangeEvent) => {
     const selectedTeam = event.target.value as string;
@@ -47,7 +47,7 @@ export default function TeamSelector({
   };
 
   const handleClearClick = () => {
-    setTeam("");
+    setTeam('');
     onClearButtonClick?.();
   };
 
@@ -56,7 +56,7 @@ export default function TeamSelector({
 
   useEffect(() => {
     fetchWithCredentials(
-      `${configApi.getString("backend.baseUrl")}/api/time-saver/groups`
+      `${configApi.getString('backend.baseUrl')}/api/time-saver/groups`
     )
       .then((response) => response.json())
       .then((dt) => setData(dt))

@@ -17,13 +17,13 @@ import {
   DatabaseManager,
   PluginDatabaseManager,
   resolvePackagePath,
-} from "@backstage/backend-common";
-import { ConfigReader } from "@backstage/config";
-import { Knex } from "knex";
+} from '@backstage/backend-common';
+import { ConfigReader } from '@backstage/config';
+import { Knex } from 'knex';
 
 const migrationsDir = resolvePackagePath(
-  "@tduniec/backstage-plugin-time-saver-backend",
-  "migrations"
+  '@tduniec/backstage-plugin-time-saver-backend',
+  'migrations'
 );
 
 /**
@@ -43,13 +43,13 @@ export class TsDatabase {
     const config = new ConfigReader({
       backend: {
         database: {
-          client: "better-sqlite3",
-          connection: ":memory:",
+          client: 'better-sqlite3',
+          connection: ':memory:',
           useNullAsDefault: true,
         },
       },
     });
-    const database = DatabaseManager.fromConfig(config).forPlugin("time-saver");
+    const database = DatabaseManager.fromConfig(config).forPlugin('time-saver');
     return new TsDatabase(database);
   }
 

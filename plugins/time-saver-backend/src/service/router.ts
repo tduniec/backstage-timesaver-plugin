@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PluginDatabaseManager, errorHandler } from "@backstage/backend-common";
-import { PluginTaskScheduler } from "@backstage/backend-tasks";
-import express from "express";
-import Router from "express-promise-router";
-import { Logger } from "winston";
-import { TsDatabase } from "../database/tsDatabase";
-import { TimeSaverHandler } from "../timeSaver/handler";
-import { TsApi } from "../api/apiService";
-import { Config } from "@backstage/config";
-import { TsScheduler } from "../timeSaver/scheduler";
-import { ScaffolderDb } from "../database/scaffolderDb";
+import { PluginDatabaseManager, errorHandler } from '@backstage/backend-common';
+import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import express from 'express';
+import Router from 'express-promise-router';
+import { Logger } from 'winston';
+import { TsDatabase } from '../database/tsDatabase';
+import { TimeSaverHandler } from '../timeSaver/handler';
+import { TsApi } from '../api/apiService';
+import { Config } from '@backstage/config';
+import { TsScheduler } from '../timeSaver/scheduler';
+import { ScaffolderDb } from '../database/scaffolderDb';
 
 export interface RouterOptions {
   logger: Logger;
@@ -66,17 +66,17 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
-  router.get("/health", (_, response) => {
-    logger.info("PONG!");
-    response.json({ status: "ok" });
+  router.get('/health', (_, response) => {
+    logger.info('PONG!');
+    response.json({ status: 'ok' });
   });
 
-  router.get("/generateSavings", async (_, response) => {
+  router.get('/generateSavings', async (_, response) => {
     const status = await tsHandler.fetchTemplates();
     response.json({ status: status });
   });
 
-  router.get("/getStats/", async (request, response) => {
+  router.get('/getStats/', async (request, response) => {
     const templateId = request.query.templateTaskId;
     const team = request.query.team;
     const templateName = request.query.templateName;
@@ -93,62 +93,62 @@ export async function createRouter(
     response.json(result);
   });
 
-  router.get("/getStats/group", async (_request, response) => {
+  router.get('/getStats/group', async (_request, response) => {
     const result = await apiHandler.getGroupDivisionStats();
     response.json(result);
   });
 
-  router.get("/getDailyTimeSummary/team", async (_request, response) => {
+  router.get('/getDailyTimeSummary/team', async (_request, response) => {
     const result = await apiHandler.getDailyTimeSummariesTeamWise();
     response.json(result);
   });
 
-  router.get("/getDailyTimeSummary/template", async (_request, response) => {
+  router.get('/getDailyTimeSummary/template', async (_request, response) => {
     const result = await apiHandler.getDailyTimeSummariesTemplateWise();
     response.json(result);
   });
 
-  router.get("/getTimeSummary/team", async (_request, response) => {
+  router.get('/getTimeSummary/team', async (_request, response) => {
     const result = await apiHandler.getTimeSummarySavedTeamWise();
     response.json(result);
   });
 
-  router.get("/getTimeSummary/template", async (_request, response) => {
+  router.get('/getTimeSummary/template', async (_request, response) => {
     const result = await apiHandler.getTimeSummarySavedTemplateWise();
     response.json(result);
   });
 
-  router.get("/migrate", async (_request, response) => {
+  router.get('/migrate', async (_request, response) => {
     const result = await apiHandler.updateTemplatesWithSubstituteData();
     response.json(result);
   });
 
-  router.get("/groups", async (_request, response) => {
+  router.get('/groups', async (_request, response) => {
     const result = await apiHandler.getAllGroups();
     response.json(result);
   });
 
-  router.get("/templates", async (_request, response) => {
+  router.get('/templates', async (_request, response) => {
     const result = await apiHandler.getAllTemplateNames();
     response.json(result);
   });
 
-  router.get("/templateTasks", async (_request, response) => {
+  router.get('/templateTasks', async (_request, response) => {
     const result = await apiHandler.getAllTemplateTasks();
     response.json(result);
   });
 
-  router.get("/getTemplateCount", async (_request, response) => {
+  router.get('/getTemplateCount', async (_request, response) => {
     const result = await apiHandler.getTemplateCount();
     response.json(result);
   });
 
-  router.get("/getTimeSavedSum", async (request, response) => {
+  router.get('/getTimeSavedSum', async (request, response) => {
     const divider: number = Number(request.query.divider);
     if (divider !== undefined && divider <= 0) {
       response
         .status(400)
-        .json({ error: "Divider should be a positive number" });
+        .json({ error: 'Divider should be a positive number' });
       return;
     }
     const result = divider

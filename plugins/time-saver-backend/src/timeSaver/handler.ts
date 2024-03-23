@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from "winston";
-import { Knex } from "knex";
-import { DatabaseOperations } from "../database/databaseOperations";
-import { ScaffolderClient } from "../api/scaffolderClient";
-import { Config } from "@backstage/config";
+import { Logger } from 'winston';
+import { Knex } from 'knex';
+import { DatabaseOperations } from '../database/databaseOperations';
+import { ScaffolderClient } from '../api/scaffolderClient';
+import { Config } from '@backstage/config';
 
 export class TimeSaverHandler {
   constructor(
@@ -28,7 +28,7 @@ export class TimeSaverHandler {
     this.db = new DatabaseOperations(knex, logger);
   }
   private readonly db: DatabaseOperations;
-  private readonly tsTableName = "ts_template_time_savings";
+  private readonly tsTableName = 'ts_template_time_savings';
 
   async fetchTemplates() {
     const scaffolderClient = new ScaffolderClient(this.logger, this.config);
@@ -38,19 +38,19 @@ export class TimeSaverHandler {
     try {
       templateTaskList = await scaffolderClient.fetchTemplatesFromScaffolder();
     } catch (error) {
-      return "FAIL";
+      return 'FAIL';
     }
 
     await this.db.truncate(this.tsTableName); // cleaning table
     templateTaskList = templateTaskList.filter(
-      (single: { status: string }) => single.status === "completed"
+      (single: { status: string }) => single.status === 'completed'
     ); // filtering only completed
     for (let i = 0; i < templateTaskList.length; i++) {
       const singleTemplate = templateTaskList[i];
       const createdAtForPostgres = new Date(singleTemplate.createdAt)
         .toISOString()
-        .replace("T", " ")
-        .replace("Z", " UTC");
+        .replace('T', ' ')
+        .replace('Z', ' UTC');
       this.logger.debug(`Parsing template task ${singleTemplate.id}`);
       const templateSubstituteData =
         singleTemplate.spec.templateInfo.entity.metadata.substitute ||
@@ -77,6 +77,6 @@ export class TimeSaverHandler {
       }
     }
     this.logger.info(`STOP - Collecting Time Savings data from templates...}`);
-    return "SUCCESS";
+    return 'SUCCESS';
   }
 }

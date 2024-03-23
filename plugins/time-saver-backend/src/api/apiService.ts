@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from "winston";
-import { Knex } from "knex";
-import { DatabaseOperations } from "../database/databaseOperations";
-import { ScaffolderClient } from "./scaffolderClient";
-import { Config } from "@backstage/config";
-import { ScaffolderDatabaseOperations } from "../database/scaffolderDatabaseOperations";
+import { Logger } from 'winston';
+import { Knex } from 'knex';
+import { DatabaseOperations } from '../database/databaseOperations';
+import { ScaffolderClient } from './scaffolderClient';
+import { Config } from '@backstage/config';
+import { ScaffolderDatabaseOperations } from '../database/scaffolderDatabaseOperations';
 
 export class TsApi {
   constructor(
@@ -32,7 +32,7 @@ export class TsApi {
   }
   private readonly db: DatabaseOperations;
   private readonly scaffolderDb: ScaffolderDatabaseOperations;
-  private readonly tsTableName = "ts_template_time_savings";
+  private readonly tsTableName = 'ts_template_time_savings';
 
   public async getStatsByTemplateTaskId(templateTaskId: string) {
     const templateName = await this.db.getTemplateNameByTsId(templateTaskId);
@@ -124,12 +124,12 @@ export class TsApi {
     error?: Error;
   }> {
     const tsConfigObj =
-      this.config.getOptionalString("ts.backward.config") || undefined;
+      this.config.getOptionalString('ts.backward.config') || undefined;
     if (!tsConfigObj) {
       this.logger.warn(`Backward processing not configured, escaping...`);
       return {
-        status: "FAIL",
-        message: "Backward processing not configured in app-config.yaml file",
+        status: 'FAIL',
+        message: 'Backward processing not configured in app-config.yaml file',
       };
     }
     try {
@@ -156,12 +156,12 @@ export class TsApi {
     } catch (error) {
       this.logger.error(`problem with template backward migration`, error);
       return {
-        status: "error",
+        status: 'error',
         error: error as Error,
       };
     }
     return {
-      status: "SUCCESS",
+      status: 'SUCCESS',
     };
   }
 
@@ -189,7 +189,7 @@ export class TsApi {
   public async getAllGroups() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      "team"
+      'team'
     );
     const groupList: string[] = queryResult.map((row) => row.team);
     const outputBody = {
@@ -202,7 +202,7 @@ export class TsApi {
   public async getAllTemplateNames() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      "template_name"
+      'template_name'
     );
     const groupList: string[] = queryResult.map((row) => row.template_name);
     const outputBody = {
@@ -215,7 +215,7 @@ export class TsApi {
   public async getAllTemplateTasks() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      "template_task_id"
+      'template_task_id'
     );
     const groupList: string[] = queryResult.map((row) => row.template_task_id);
     const outputBody = {
@@ -238,7 +238,7 @@ export class TsApi {
   public async getTimeSavedSum(divider?: number) {
     const dividerInt = divider ?? 1;
     const queryResult = (
-      await this.db.getTimeSavedSum(this.tsTableName, "time_saved")
+      await this.db.getTimeSavedSum(this.tsTableName, 'time_saved')
     )[0];
     const outputBody = {
       timeSaved: queryResult.sum / dividerInt,

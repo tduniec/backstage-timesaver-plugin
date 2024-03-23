@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,11 +22,11 @@ import {
   Title,
   Tooltip,
   ChartOptions,
-} from "chart.js";
-import { Bar } from "react-chartjs-2";
-import { configApiRef, useApi } from "@backstage/core-plugin-api";
-import { fetchWithCredentials, getRandomColor } from "../utils";
-import CircularProgress from "@mui/material/CircularProgress";
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { fetchWithCredentials, getRandomColor } from '../utils';
+import CircularProgress from '@mui/material/CircularProgress';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -52,7 +52,7 @@ export function ByTeamBarChart({
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
-        "backend.baseUrl"
+        'backend.baseUrl'
       )}/api/time-saver/getStats?team=${team} `
     )
       .then((response) => response.json())
@@ -64,16 +64,16 @@ export function ByTeamBarChart({
     return <CircularProgress />;
   }
 
-  const options: ChartOptions<"bar"> = {
+  const options: ChartOptions<'bar'> = {
     plugins: {
       title: {
         display: true,
-        text: data.team || "",
+        text: data.team || '',
       },
     },
     responsive: true,
     interaction: {
-      mode: "index",
+      mode: 'index',
       intersect: false,
     },
     scales: {
@@ -98,7 +98,7 @@ export function ByTeamBarChart({
     labels,
     datasets: [
       {
-        label: "Time Saved",
+        label: 'Time Saved',
         data: datasets,
         backgroundColor: backgroundColors,
       },

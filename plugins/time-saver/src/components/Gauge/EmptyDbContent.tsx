@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from "react";
-import { configApiRef, useApi } from "@backstage/core-plugin-api";
-import CircularProgress from "@mui/material/CircularProgress";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { fetchWithCredentials } from "../utils";
+import React, { useEffect, useState } from 'react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import CircularProgress from '@mui/material/CircularProgress';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { fetchWithCredentials } from '../utils';
 
 type TemplatesResponse = {
   templates: string[];
@@ -35,7 +35,7 @@ export function EmptyTimeSaver({}): React.ReactElement {
 
   useEffect(() => {
     const url = `${configApi.getString(
-      "backend.baseUrl"
+      'backend.baseUrl'
     )}/api/time-saver/templates`;
 
     fetchWithCredentials(url)
@@ -48,9 +48,9 @@ export function EmptyTimeSaver({}): React.ReactElement {
     return <CircularProgress />;
   }
   const cellStyle: React.CSSProperties = {
-    color: "red",
-    fontWeight: "bold",
-    fontSize: "20px",
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: '20px',
   };
 
   return data && data.templates.length === 0 ? (

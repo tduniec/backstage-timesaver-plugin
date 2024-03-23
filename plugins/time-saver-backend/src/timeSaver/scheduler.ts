@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { TaskRunner } from "@backstage/backend-tasks";
-import { Logger } from "winston";
-import * as uuid from "uuid";
-import { TimeSaverHandler } from "./handler";
-import { Knex } from "knex";
-import { Config } from "@backstage/config";
+import { TaskRunner } from '@backstage/backend-tasks';
+import { Logger } from 'winston';
+import * as uuid from 'uuid';
+import { TimeSaverHandler } from './handler';
+import { Knex } from 'knex';
+import { Config } from '@backstage/config';
 
 export class TsScheduler {
   constructor(
@@ -33,11 +33,11 @@ export class TsScheduler {
       id: uuid.v4(),
       fn: async () => {
         this.logger.info(
-          "START - Scheduler executed - fetching templates for TS plugin"
+          'START - Scheduler executed - fetching templates for TS plugin'
         );
         await tsHandler.fetchTemplates();
         this.logger.info(
-          "STOP - Scheduler executed - fetching templates for TS plugin"
+          'STOP - Scheduler executed - fetching templates for TS plugin'
         );
       },
     });

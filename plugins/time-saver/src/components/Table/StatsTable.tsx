@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useState, useEffect } from "react";
-import Paper from "@mui/material/Paper";
-import CircularProgress from "@mui/material/CircularProgress";
-import { configApiRef, useApi } from "@backstage/core-plugin-api";
-import { DataGrid, GridColDef, GridSortModel } from "@mui/x-data-grid";
-import { fetchWithCredentials } from "../utils";
+import React, { useState, useEffect } from 'react';
+import Paper from '@mui/material/Paper';
+import CircularProgress from '@mui/material/CircularProgress';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
+import { fetchWithCredentials } from '../utils';
 
 type Stat = {
   id: string;
@@ -40,14 +40,14 @@ interface StatsTableProps {
 const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
   const [data, setData] = useState<Stat[] | null>(null);
   const [sortModel, setSortModel] = useState<GridSortModel>([
-    { field: "sum", sort: "asc" },
+    { field: 'sum', sort: 'asc' },
   ]);
 
   const configApi = useApi(configApiRef);
 
   useEffect(() => {
     let url = `${configApi.getString(
-      "backend.baseUrl"
+      'backend.baseUrl'
     )}/api/time-saver/getStats`;
     if (team) {
       url = `${url}?team=${team}`;
@@ -63,7 +63,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
           id: index.toString(),
         }));
         setData(statsWithIds);
-        setSortModel([{ field: "sum", sort: "desc" }]);
+        setSortModel([{ field: 'sum', sort: 'desc' }]);
       })
       .catch();
   }, [configApi, team, template_name]);
@@ -73,19 +73,19 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
   }
 
   const columns: GridColDef[] = [
-    { field: "team", headerName: "Team", flex: 1, sortable: true },
+    { field: 'team', headerName: 'Team', flex: 1, sortable: true },
     {
-      field: "template_name",
-      headerName: "Template Name",
+      field: 'template_name',
+      headerName: 'Template Name',
       flex: 1,
       sortable: true,
     },
-    { field: "sum", headerName: "Sum", flex: 1, sortable: true },
+    { field: 'sum', headerName: 'Sum', flex: 1, sortable: true },
   ].filter((col) => data.some((row) => !!row[col.field]));
 
   return (
     <Paper
-      style={{ height: 400, width: "100%", margin: "16px", padding: "16px" }}
+      style={{ height: 400, width: '100%', margin: '16px', padding: '16px' }}
     >
       <DataGrid
         rows={data}

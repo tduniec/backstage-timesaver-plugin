@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from "react";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import { useEffect, useState } from "react";
-import { configApiRef, useApi } from "@backstage/core-plugin-api";
-import CircularProgress from "@mui/material/CircularProgress";
-import { fetchWithCredentials } from "../utils";
+import * as React from 'react';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import { useEffect, useState } from 'react';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import CircularProgress from '@mui/material/CircularProgress';
+import { fetchWithCredentials } from '../utils';
 
 interface TemplateTaskChange {
   onTemplateTaskChange: (templateTask: string) => void;
@@ -32,13 +32,13 @@ type TemplateTasksResponse = {
 export default function TemplateTaskAutocomplete({
   onTemplateTaskChange,
 }: TemplateTaskChange) {
-  const [_task, setTask] = React.useState("");
+  const [_task, setTask] = React.useState('');
 
   const handleChange = (
     _event: React.ChangeEvent<{}>,
     value: string | null
   ) => {
-    const selectedTemplateTaskId = value || "";
+    const selectedTemplateTaskId = value || '';
     setTask(selectedTemplateTaskId);
     onTemplateTaskChange(selectedTemplateTaskId);
   };
@@ -48,7 +48,7 @@ export default function TemplateTaskAutocomplete({
 
   useEffect(() => {
     fetchWithCredentials(
-      `${configApi.getString("backend.baseUrl")}/api/time-saver/templateTasks`
+      `${configApi.getString('backend.baseUrl')}/api/time-saver/templateTasks`
     )
       .then((response) => response.json())
       .then((dt) => setData(dt))

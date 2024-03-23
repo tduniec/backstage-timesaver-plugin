@@ -8,7 +8,7 @@ backend:
     port: 7007
   database:
     client: better-sqlite3
-    connection: ":memory:"
+    connection: ':memory:'
   cache:
     store: memory
   cors:
@@ -16,7 +16,7 @@ backend:
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   csp:
-    connect-src: ["'self'", "http:", "https:"]
+    connect-src: ["'self'", 'http:', 'https:']
     # Content-Security-Policy directives follow the Helmet format: https://helmetjs.github.io/#reference
     # Default Helmet Content-Security-Policy values can be removed by setting the key to false
   reading:

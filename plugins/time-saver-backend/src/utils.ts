@@ -9,11 +9,11 @@ export function roundNumericValues<T>(obj: T): T {
   };
 
   const roundObject = (input: any): any => {
-    if (typeof input === "object" && input !== null) {
+    if (typeof input === 'object' && input !== null) {
       for (const key in input) {
-        if (typeof input[key] === "number") {
+        if (typeof input[key] === 'number') {
           input[key] = roundValue(input[key]);
-        } else if (typeof input[key] === "object") {
+        } else if (typeof input[key] === 'object') {
           input[key] = roundObject(input[key]);
         }
       }

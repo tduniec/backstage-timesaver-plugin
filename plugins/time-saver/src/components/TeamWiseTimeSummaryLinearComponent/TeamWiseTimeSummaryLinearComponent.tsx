@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   LineElement,
@@ -23,13 +23,13 @@ import {
   Tooltip,
   Legend,
   ChartOptions,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-import { configApiRef, useApi } from "@backstage/core-plugin-api";
-import { fetchWithCredentials, getRandomColor } from "../utils";
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { fetchWithCredentials, getRandomColor } from '../utils';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
-import CircularProgress from "@mui/material/CircularProgress";
+import CircularProgress from '@mui/material/CircularProgress';
 
 type TeamWiseTimeSummaryLinearResponse = {
   stats: {
@@ -55,7 +55,7 @@ export function TeamWiseTimeSummaryLinearChart({
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
-        "backend.baseUrl"
+        'backend.baseUrl'
       )}/api/time-saver/getTimeSummary/team`
     )
       .then((response) => response.json())
@@ -88,42 +88,42 @@ export function TeamWiseTimeSummaryLinearChart({
     new Set(filteredData.stats.map((stat) => stat.team))
   );
 
-  const options: ChartOptions<"line"> = {
+  const options: ChartOptions<'line'> = {
     plugins: {
       title: {
         display: true,
-        text: "Time Summary by Team",
+        text: 'Time Summary by Team',
       },
     },
     responsive: true,
     scales: {
       x: [
         {
-          type: "time",
+          type: 'time',
           time: {
-            unit: "day",
-            tooltipFormat: "YYYY-MM-DD",
+            unit: 'day',
+            tooltipFormat: 'YYYY-MM-DD',
             displayFormats: {
-              day: "YYYY-MM-DD",
+              day: 'YYYY-MM-DD',
             },
-            bounds: "data",
+            bounds: 'data',
           },
           scaleLabel: {
             display: true,
-            labelString: "Date",
+            labelString: 'Date',
           },
         },
-      ] as unknown as ChartOptions<"line">["scales"],
+      ] as unknown as ChartOptions<'line'>['scales'],
       y: [
         {
           stacked: true,
           beginAtZero: true,
           scaleLabel: {
             display: true,
-            labelString: "Total Time Saved",
+            labelString: 'Total Time Saved',
           },
         },
-      ] as unknown as ChartOptions<"line">["scales"],
+      ] as unknown as ChartOptions<'line'>['scales'],
     },
   };
 

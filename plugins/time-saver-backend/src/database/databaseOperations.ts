@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Knex } from "knex";
-import { Logger } from "winston";
-import { roundNumericValues } from "../utils";
+import { Knex } from 'knex';
+import { Logger } from 'winston';
+import { roundNumericValues } from '../utils';
 
 export class DatabaseOperations {
   constructor(private readonly knex: Knex, private readonly logger: Logger) {}
@@ -26,7 +26,7 @@ export class DatabaseOperations {
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return rows;
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -35,12 +35,12 @@ export class DatabaseOperations {
     try {
       const insertedRow = await this.knex(tableName)
         .insert(data)
-        .returning("*");
+        .returning('*');
 
       this.logger.debug(`Data inserted successfully ${data}`);
       return insertedRow;
     } catch (error) {
-      this.logger.error("Error inserting data:", error);
+      this.logger.error('Error inserting data:', error);
       throw error; // Re-throw the error for handling further up the call stack
     }
   }
@@ -51,10 +51,10 @@ export class DatabaseOperations {
       .onConflict(conflictColumn)
       .merge()
       .then(() => {
-        this.logger.info("Data inserted successfully");
+        this.logger.info('Data inserted successfully');
       })
       .catch((error) => {
-        this.logger.error("Error inserting data:", error);
+        this.logger.error('Error inserting data:', error);
       });
   }
 
@@ -63,16 +63,16 @@ export class DatabaseOperations {
       .where(key)
       .update(data)
       .then(() => {
-        this.logger.info("Data updated successfully");
+        this.logger.info('Data updated successfully');
       })
       .catch((error) => {
-        this.logger.error("Error updating data:", error);
+        this.logger.error('Error updating data:', error);
       });
   }
 
   async delete(tableName: string, key: Record<string, string>) {
     await this.knex(tableName)
-      .returning("*")
+      .returning('*')
       .where(key)
       .del()
       .then((deletedRow) => {
@@ -82,7 +82,7 @@ export class DatabaseOperations {
         return deletedRow;
       })
       .catch((error) => {
-        this.logger.error("Error deleting data:", error);
+        this.logger.error('Error deleting data:', error);
       });
   }
 
@@ -97,28 +97,28 @@ export class DatabaseOperations {
   async getTemplateNameByTsId(templateTaskId: string) {
     try {
       const result = await this.knex.raw(
-        "SELECT template_name FROM ts_template_time_savings WHERE template_task_id = :templateTaskId LIMIT 1",
+        'SELECT template_name FROM ts_template_time_savings WHERE template_task_id = :templateTaskId LIMIT 1',
         { templateTaskId }
       );
       const rows = result.rows[0].template_name;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
   async getStatsByTemplateTaskId(templateTaskId: string) {
     try {
       const result = await this.knex.raw(
-        "SELECT sum(time_saved), team FROM ts_template_time_savings WHERE template_task_id = :templateTaskId GROUP BY team",
+        'SELECT sum(time_saved), team FROM ts_template_time_savings WHERE template_task_id = :templateTaskId GROUP BY team',
         { templateTaskId }
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -126,14 +126,14 @@ export class DatabaseOperations {
   async getStatsByTeam(team: string) {
     try {
       const result = await this.knex.raw(
-        "SELECT sum(time_saved), template_name from ts_template_time_savings where team = :team group by template_name, team;",
+        'SELECT sum(time_saved), template_name from ts_template_time_savings where team = :team group by template_name, team;',
         { team }
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -141,14 +141,14 @@ export class DatabaseOperations {
   async getStatsByTemplate(template: string) {
     try {
       const result = await this.knex.raw(
-        "SELECT sum(time_saved), team from ts_template_time_savings where template_name = :template group by template_name, team;",
+        'SELECT sum(time_saved), team from ts_template_time_savings where template_name = :template group by template_name, team;',
         { template }
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -156,13 +156,13 @@ export class DatabaseOperations {
   async getAllStats() {
     try {
       const result = await this.knex.raw(
-        "SELECT sum(time_saved), team, template_name from ts_template_time_savings group by team, template_name;"
+        'SELECT sum(time_saved), team, template_name from ts_template_time_savings group by team, template_name;'
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -187,7 +187,7 @@ export class DatabaseOperations {
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -211,7 +211,7 @@ export class DatabaseOperations {
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -235,7 +235,7 @@ export class DatabaseOperations {
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -257,7 +257,7 @@ export class DatabaseOperations {
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -279,7 +279,7 @@ export class DatabaseOperations {
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -291,7 +291,7 @@ export class DatabaseOperations {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
@@ -305,18 +305,18 @@ export class DatabaseOperations {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
   async getTimeSavedSum(tableName: string, column: string) {
     try {
-      const result = await this.knex.table(tableName).sum(column).as("sum");
+      const result = await this.knex.table(tableName).sum(column).as('sum');
       const rows = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error("Error selecting data:", error);
+      this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
