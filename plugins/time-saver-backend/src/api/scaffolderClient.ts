@@ -52,7 +52,9 @@ export class ScaffolderClient {
   if (keyConfig) {
       key = keyConfig[0].secret
     }
-    const decodedBytes = this.decodeFromBase64(key);
+    const decodedBytes = this.isBase64(key)
+      ? this.decodeFromBase64(key)
+      : key;
     const tokenSub = name ?? 'backstage-server'
 
     const payload = {
