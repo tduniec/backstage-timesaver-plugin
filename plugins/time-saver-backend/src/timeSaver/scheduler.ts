@@ -21,7 +21,11 @@ import { Knex } from 'knex';
 import { Config } from '@backstage/config';
 
 export class TsScheduler {
-  constructor(private readonly logger: Logger, private readonly config: Config, private readonly knex: Knex) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly config: Config,
+    private readonly knex: Knex
+  ) {}
 
   async schedule(taskRunner: TaskRunner) {
     const tsHandler = new TimeSaverHandler(this.logger, this.config, this.knex);
@@ -29,11 +33,11 @@ export class TsScheduler {
       id: uuid.v4(),
       fn: async () => {
         this.logger.info(
-          'START - Scheduler executed - fetching templates for TS plugin',
+          'START - Scheduler executed - fetching templates for TS plugin'
         );
         await tsHandler.fetchTemplates();
         this.logger.info(
-          'STOP - Scheduler executed - fetching templates for TS plugin',
+          'STOP - Scheduler executed - fetching templates for TS plugin'
         );
       },
     });

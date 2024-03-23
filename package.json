@@ -1,20 +1,28 @@
 {
   "name": "@tduniec/backstage-timesaver-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "node": "18 || 20"
   },
   "workspaces": {
-  "packages": [
-    "plugins/*"
-  ]},
+    "packages": [
+      "plugins/*"
+    ]
+  },
   "repository": "https://github.com/tduniec/backstage-timesaver-plugin.git",
   "author": "tduniec <tomekduniec@gmail.com>",
   "license": "Apache-2.0",
   "scripts": {
     "build": "yarn workspaces run build",
     "clean": "yarn workspaces run clean",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint --since origin/main",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "prettier:fix": "prettier . --write"
   },
   "devDependencies": {
     "@backstage/cli": "^0.25.1",
@@ -46,7 +54,6 @@
     "shx": "^0.3.2",
     "ts-node": "^10.4.0",
     "typescript": "~5.2.0"
-
   },
   "description": "This plugin provides an implementation of charts and statistics related to your time savings that are coming from usage of your templates.",
   "private": true

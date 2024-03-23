@@ -1,17 +1,16 @@
-
 import { Knex } from 'knex';
 import { Logger } from 'winston';
 
 export class ScaffolderDatabaseOperations {
   constructor(private readonly knex: Knex, private readonly logger: Logger) {}
 
-async collectSpecByTemplateId(templateTaskId: string) {
+  async collectSpecByTemplateId(templateTaskId: string) {
     try {
       const result = await this.knex.raw(
         `
             select spec from tasks where id=:templateTaskId
             `,
-        { templateTaskId },
+        { templateTaskId }
       );
       const rows = result.rows[0];
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);

@@ -8,7 +8,8 @@ This plugin provides an implementation of charts and statistics related to your 
 - [time-saver-backend](https://github.com/tduniec/backstage-timesaver-plugin/tree/main/plugins/time-saver-backend)
 
 ## Code
-https://github.com/tduniec/backstage-timesaver-plugin.git 
+
+https://github.com/tduniec/backstage-timesaver-plugin.git
 
 ## Installation
 
@@ -63,7 +64,8 @@ import { timeSaverPermission } from '@tduniec/backstage-plugin-time-saver-common
           />
         </RequirePermission>
 ```
-3. Wire up in the permissions backend  in `packages/backend/src/plugins/permission.ts`:
+
+3. Wire up in the permissions backend in `packages/backend/src/plugins/permission.ts`:
 
 ```ts
 ...

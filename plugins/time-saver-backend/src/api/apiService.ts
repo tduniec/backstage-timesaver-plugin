@@ -25,7 +25,7 @@ export class TsApi {
     private readonly logger: Logger,
     private readonly config: Config,
     knex: Knex,
-    scaffoldKx: Knex,
+    scaffoldKx: Knex
   ) {
     this.db = new DatabaseOperations(knex, logger);
     this.scaffolderDb = new ScaffolderDatabaseOperations(scaffoldKx, logger);
@@ -127,25 +127,29 @@ export class TsApi {
       this.config.getOptionalString('ts.backward.config') || undefined;
     if (!tsConfigObj) {
       this.logger.warn(`Backward processing not configured, escaping...`);
-      return { status: 'FAIL', message: 'Backward processing not configured in app-config.yaml file' };
+      return {
+        status: 'FAIL',
+        message: 'Backward processing not configured in app-config.yaml file',
+      };
     }
     try {
-      this.logger.info(`Starting backward template savings migration`)
+      this.logger.info(`Starting backward template savings migration`);
       const tsConfig = JSON.parse(String(tsConfigObj));
       const taskTemplateList = await new ScaffolderClient(
-        this.logger, this.config
+        this.logger,
+        this.config
       ).fetchTemplatesFromScaffolder();
       for (let i = 0; i < taskTemplateList.length; i++) {
         const singleTemplate = taskTemplateList[i];
         this.logger.debug(singleTemplate);
         const templateReference = singleTemplate.spec.templateInfo.entityRef;
         const substituteConfig = tsConfig.find(
-          (con: { entityRef: any }) => con.entityRef === templateReference,
+          (con: { entityRef: any }) => con.entityRef === templateReference
         );
         if (substituteConfig) {
           await this.updateExistsingTemplateWithSubstituteById(
             singleTemplate.id,
-            substituteConfig,
+            substituteConfig
           );
         }
       }
@@ -163,17 +167,17 @@ export class TsApi {
 
   public async updateExistsingTemplateWithSubstituteById(
     templateTaskId: string,
-    engData: object,
+    engData: object
   ) {
     const queryResult = JSON.parse(
-      (await this.scaffolderDb.collectSpecByTemplateId(templateTaskId)).spec,
+      (await this.scaffolderDb.collectSpecByTemplateId(templateTaskId)).spec
     );
     const metadata = queryResult.templateInfo.entity.metadata;
     metadata.substitute = engData;
 
     await this.scaffolderDb.updateTemplateTaskById(
       templateTaskId,
-      JSON.stringify(queryResult),
+      JSON.stringify(queryResult)
     );
     const outputBody = {
       stats: queryResult,
@@ -185,7 +189,7 @@ export class TsApi {
   public async getAllGroups() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      'team',
+      'team'
     );
     const groupList: string[] = queryResult.map(row => row.team);
     const outputBody = {
@@ -198,7 +202,7 @@ export class TsApi {
   public async getAllTemplateNames() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      'template_name',
+      'template_name'
     );
     const groupList: string[] = queryResult.map(row => row.template_name);
     const outputBody = {
@@ -211,7 +215,7 @@ export class TsApi {
   public async getAllTemplateTasks() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      'template_task_id',
+      'template_task_id'
     );
     const groupList: string[] = queryResult.map(row => row.template_task_id);
     const outputBody = {
@@ -222,12 +226,10 @@ export class TsApi {
   }
 
   public async getTemplateCount() {
-    const queryResult = (
-      await this.db.getTemplateCount()
-    )[0];
+    const queryResult = (await this.db.getTemplateCount())[0];
 
     const outputBody = {
-      templateTasks: parseInt(queryResult.count),
+      templateTasks: parseInt(queryResult.count, 10),
     };
     this.logger.info(JSON.stringify(outputBody));
     return outputBody;
@@ -245,6 +247,3 @@ export class TsApi {
     return outputBody;
   }
 }
-
-
-
