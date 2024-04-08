@@ -23,4 +23,5 @@ jobs:
       - name: Run tests and build
         run: |
           yarn tsc
+          yarn build
           yarn test
