@@ -1,0 +1,55 @@
+name: Node.js Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Check for changes in specific directories
+        id: check_changes
+        run: |
+          changed_plugins=$(git diff --name-only HEAD^ HEAD | grep '^plugins/' | cut -d/ -f2 | sort -u)
+          for plugin in $changed_plugins; do
+            if [[ -d "plugins/$plugin" ]]; then
+              changed_packages=$(git diff --name-only HEAD^ HEAD "plugins/$plugin" | cut -d/ -f4 | sort -u)
+              if echo "$changed_packages" | grep -qE '^(time-saver|time-saver-backend|time-saver-common)$'; then
+                echo "Changes detected in packages under plugins/$plugin directory."
+                echo "::set-output name=changes::true"
+              else
+                echo "No changes detected in packages under plugins/$plugin directory."
+              fi
+            fi
+          done
+          if [ -z "$changed_plugins" ]; then
+            echo "No changes detected in any plugin directories."
+            echo "::set-output name=changes::false"
+          fi
+      - name: Publish to npm if changes detected in packages
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          changed_plugins=$(git diff --name-only HEAD^ HEAD | grep '^plugins/' | cut -d/ -f2 | sort -u)
+          for plugin in $changed_plugins; do
+            if [[ -d "plugins/$plugin" ]]; then
+              changed_packages=$(git diff --name-only HEAD^ HEAD "plugins/$plugin" | cut -d/ -f4 | sort -u)
+              if echo "$changed_packages" | grep -qE '^(time-saver|time-saver-backend|time-saver-common)$'; then
+                echo "Publishing packages under plugins/$plugin directory."
+                cd "plugins/$plugin"
+                npm publish
+                cd ../..
+              fi
+            fi
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
