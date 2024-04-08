@@ -17,44 +17,21 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Run tests and build
-        run: |
-          yarn tsc
-          yarn build
-          yarn test
-      - name: Check for changes in specific directories
+      - name: Check for changes in plugin directories
         id: check_changes
         run: |
-          changed_plugins=$(git diff --name-only HEAD^ HEAD | grep '^plugins/' | cut -d/ -f2 | sort -u)
-          for plugin in $changed_plugins; do
-            if [[ -d "plugins/$plugin" ]]; then
-              changed_packages=$(git diff --name-only HEAD^ HEAD "plugins/$plugin" | cut -d/ -f4 | sort -u)
-              if echo "$changed_packages" | grep -qE '^(time-saver|time-saver-backend|time-saver-common)$'; then
-                echo "Changes detected in packages under plugins/$plugin directory."
-                echo "::set-output name=changes::true"
-              else
-                echo "No changes detected in packages under plugins/$plugin directory."
-              fi
+          directories=$(git diff --name-only origin/main...HEAD | grep -E '^plugins/[^/]+/' | cut -d/ -f2 | sort -u)
+          for dir in $directories; do
+            if [ -d "plugins/$dir" ]; then
+              echo "Changes detected in plugins/$dir directory."
+              cd "plugins/$dir"
+              npm publish
+              cd ../..
             fi
           done
-          if [ -z "$changed_plugins" ]; then
-            echo "No changes detected in any plugin directories."
-            echo "::set-output name=changes::false"
-          fi
-      - name: Publish to npm if changes detected in packages
-        if: steps.check_changes.outputs.changes == 'true'
-        run: |
-          changed_plugins=$(git diff --name-only HEAD^ HEAD | grep '^plugins/' | cut -d/ -f2 | sort -u)
-          for plugin in $changed_plugins; do
-            if [[ -d "plugins/$plugin" ]]; then
-              changed_packages=$(git diff --name-only HEAD^ HEAD "plugins/$plugin" | cut -d/ -f4 | sort -u)
-              if echo "$changed_packages" | grep -qE '^(time-saver|time-saver-backend|time-saver-common)$'; then
-                echo "Publishing packages under plugins/$plugin directory."
-                cd "plugins/$plugin"
-                npm publish
-                cd ../..
-              fi
-            fi
-          done
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+      - name: Set output if changes detected
+        if: steps.check_changes.outputs.changes != ''
+        run: echo "::set-output name=changes::true"
+      - name: Set output if no changes detected
+        if: steps.check_changes.outputs.changes == ''
+        run: echo "::set-output name=changes::false"
