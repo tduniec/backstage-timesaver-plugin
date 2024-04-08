@@ -14,6 +14,7 @@
   "scripts": {
     "build": "yarn workspaces run build",
     "clean": "yarn workspaces run clean",
+    "test": "yarn workspaces run test",
     "tsc": "tsc"
   },
   "devDependencies": {
