@@ -61,6 +61,29 @@
     "ts-node": "^10.4.0",
     "typescript": "~5.2.0"
   },
-  "description": "This plugin provides an implementation of charts and statistics related to your time savings that are coming from usage of your templates.",
-  "private": true
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ],
+    "*.md": [
+      "node ./scripts/check-docs-quality"
+    ],
+    "{plugins,packages}/*/catalog-info.yaml": [
+      "yarn backstage-repo-tools generate-catalog-info --ci"
+    ],
+    "{.github/CODEOWNERS,package.json}": [
+      "yarn backstage-repo-tools generate-catalog-info",
+      "git add */catalog-info.yaml"
+    ],
+    "./yarn.lock": [
+      "node ./scripts/verify-lockfile-duplicates --fix"
+    ],
+    "*/yarn.lock": [
+      "node ./scripts/verify-lockfile-duplicates --fix"
+    ]
+  }
 }
