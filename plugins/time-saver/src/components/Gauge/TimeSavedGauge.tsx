@@ -37,7 +37,7 @@ export function TimeSavedGauge({
 
   useEffect(() => {
     let url = `${configApi.getString(
-      'backend.baseUrl'
+      'backend.baseUrl',
     )}/api/time-saver/getTimeSavedSum`;
     if (number) {
       url = `${url}?divider=${number}`;

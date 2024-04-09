@@ -23,7 +23,7 @@ export class TimeSaverHandler {
   constructor(
     private readonly logger: Logger,
     private readonly config: Config,
-    knex: Knex
+    knex: Knex,
   ) {
     this.db = new DatabaseOperations(knex, logger);
   }
@@ -43,7 +43,7 @@ export class TimeSaverHandler {
 
     await this.db.truncate(this.tsTableName); // cleaning table
     templateTaskList = templateTaskList.filter(
-      (single: { status: string }) => single.status === 'completed'
+      (single: { status: string }) => single.status === 'completed',
     ); // filtering only completed
     for (let i = 0; i < templateTaskList.length; i++) {
       const singleTemplate = templateTaskList[i];
@@ -72,7 +72,7 @@ export class TimeSaverHandler {
         }
       } else {
         this.logger.debug(
-          `Template ${singleTemplate.id} does not have substitute fields on its body`
+          `Template ${singleTemplate.id} does not have substitute fields on its body`,
         );
       }
     }

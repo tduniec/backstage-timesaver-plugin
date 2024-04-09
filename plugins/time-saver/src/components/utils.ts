@@ -25,7 +25,7 @@ export function getRandomColor() {
 
 export async function fetchWithCredentials(
   url: string | URL,
-  options = {}
+  options = {},
 ): Promise<Response> {
   return fetch(url, {
     ...options,

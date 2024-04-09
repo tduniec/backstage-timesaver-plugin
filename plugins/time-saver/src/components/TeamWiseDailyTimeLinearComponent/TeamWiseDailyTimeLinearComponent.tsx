@@ -54,16 +54,16 @@ export function DailyTimeSummaryLineChartTeamWise({
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
-        'backend.baseUrl'
-      )}/api/time-saver/getDailyTimeSummary/team`
+        'backend.baseUrl',
+      )}/api/time-saver/getDailyTimeSummary/team`,
     )
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(
           (
             a: { date: string | number | Date },
-            b: { date: string | number | Date }
-          ) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            b: { date: string | number | Date },
+          ) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
         setData(dt);
       })
@@ -82,7 +82,7 @@ export function DailyTimeSummaryLineChartTeamWise({
     filteredData = data;
   }
   const uniqueTeams = Array.from(
-    new Set(filteredData.stats.map(stat => stat.team))
+    new Set(filteredData.stats.map(stat => stat.team)),
   );
 
   const options: ChartOptions<'line'> = {

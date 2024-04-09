@@ -29,7 +29,7 @@ export function TeamsGauge({}): React.ReactElement {
 
   useEffect(() => {
     const url = `${configApi.getString(
-      'backend.baseUrl'
+      'backend.baseUrl',
     )}/api/time-saver/groups`;
 
     fetchWithCredentials(url)

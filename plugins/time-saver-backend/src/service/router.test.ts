@@ -32,7 +32,7 @@ describe('createRouter', () => {
       backend: {
         database: { client: 'better-sqlite3', connection: ':memory:' },
       },
-    })
+    }),
   );
   const config = new ConfigReader({
     backend: {

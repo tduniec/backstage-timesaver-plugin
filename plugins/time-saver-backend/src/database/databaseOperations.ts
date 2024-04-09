@@ -77,7 +77,7 @@ export class DatabaseOperations {
       .del()
       .then(deletedRow => {
         this.logger.info(
-          `row deleted successfully: ${JSON.stringify(deletedRow)}`
+          `row deleted successfully: ${JSON.stringify(deletedRow)}`,
         );
         return deletedRow;
       })
@@ -98,7 +98,7 @@ export class DatabaseOperations {
     try {
       const result = await this.knex.raw(
         'SELECT template_name FROM ts_template_time_savings WHERE template_task_id = :templateTaskId LIMIT 1',
-        { templateTaskId }
+        { templateTaskId },
       );
       const rows = result.rows[0].template_name;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
@@ -112,7 +112,7 @@ export class DatabaseOperations {
     try {
       const result = await this.knex.raw(
         'SELECT sum(time_saved), team FROM ts_template_time_savings WHERE template_task_id = :templateTaskId GROUP BY team',
-        { templateTaskId }
+        { templateTaskId },
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
@@ -127,7 +127,7 @@ export class DatabaseOperations {
     try {
       const result = await this.knex.raw(
         'SELECT sum(time_saved), template_name from ts_template_time_savings where team = :team group by template_name, team;',
-        { team }
+        { team },
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
@@ -142,7 +142,7 @@ export class DatabaseOperations {
     try {
       const result = await this.knex.raw(
         'SELECT sum(time_saved), team from ts_template_time_savings where template_name = :template group by template_name, team;',
-        { template }
+        { template },
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
@@ -156,7 +156,7 @@ export class DatabaseOperations {
   async getAllStats() {
     try {
       const result = await this.knex.raw(
-        'SELECT sum(time_saved), team, template_name from ts_template_time_savings group by team, template_name;'
+        'SELECT sum(time_saved), team, template_name from ts_template_time_savings group by team, template_name;',
       );
       const rows = result.rows;
       this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);

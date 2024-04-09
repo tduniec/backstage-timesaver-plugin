@@ -50,7 +50,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
 
   useEffect(() => {
     let url = `${configApi.getString(
-      'backend.baseUrl'
+      'backend.baseUrl',
     )}/api/time-saver/getStats`;
     if (team) {
       url = `${url}?team=${team}`;

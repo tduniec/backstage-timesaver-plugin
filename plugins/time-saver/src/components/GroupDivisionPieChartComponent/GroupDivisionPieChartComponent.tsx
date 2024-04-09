@@ -44,7 +44,7 @@ export function GroupDivisionPieChart(): React.ReactElement {
 
   useEffect(() => {
     fetchWithCredentials(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats/group`
+      `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats/group`,
     )
       .then(response => response.json())
       .then(dt => setData(dt))
@@ -75,7 +75,7 @@ export function GroupDivisionPieChart(): React.ReactElement {
   const percentages = data.stats.map(stat => parseFloat(stat.percentage));
 
   const backgroundColors = Array.from({ length: labels.length }, () =>
-    getRandomColor()
+    getRandomColor(),
   );
 
   const dataAll = {

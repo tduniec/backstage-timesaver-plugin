@@ -27,7 +27,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { fetchWithCredentials } from '../utils';
-                                
+
 interface TeamSelectorProps {
   onTeamChange: (team: string) => void;
   onClearButtonClick?: () => void;
@@ -64,7 +64,7 @@ export default function TeamSelector({
 
   useEffect(() => {
     fetchWithCredentials(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/groups`
+      `${configApi.getString('backend.baseUrl')}/api/time-saver/groups`,
     )
       .then(response => response.json())
       .then(dt => setData(dt))

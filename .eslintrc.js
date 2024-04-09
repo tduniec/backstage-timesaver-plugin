@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-var path = require('path');
+const path = require('path');
 
 module.exports = {
   root: true,
   extends: [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier"
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
   ],
   plugins: ['@spotify', 'notice', 'react', 'testing-library', 'prettier'],
   rules: {
@@ -30,7 +30,7 @@ module.exports = {
     'notice/notice': [
       'error',
       {
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line no-restricted-syntax, no-undef
         templateFile: path.resolve(__dirname, './scripts/copyright-header.txt'),
         onNonMatchingHeader: 'replace',
       },

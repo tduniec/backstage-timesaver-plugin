@@ -35,7 +35,7 @@ export interface ServerOptions {
 }
 
 export async function startStandaloneServer(
-  options: ServerOptions
+  options: ServerOptions,
 ): Promise<Server> {
   const logger = options.logger.child({ service: 'time-saver-backend' });
   const config = await loadBackendConfig({ logger, argv: process.argv });
@@ -63,7 +63,7 @@ export async function startStandaloneServer(
       backend: {
         database: { client: 'better-sqlite3', connection: ':memory:' },
       },
-    })
+    }),
   );
   const database = manager.forPlugin('time-saver');
   logger.debug('Starting application server...');

@@ -45,7 +45,7 @@ const TS_PLUGIN_DEFAULT_SCHEDULE = {
 };
 
 export async function createRouter(
-  options: RouterOptions
+  options: RouterOptions,
 ): Promise<express.Router> {
   const { logger, config, database, scheduler } = options;
 
@@ -59,7 +59,7 @@ export async function createRouter(
   const tsScheduler = new TsScheduler(logger, config, kx);
 
   const taskRunner = scheduler.createScheduledTaskRunner(
-    TS_PLUGIN_DEFAULT_SCHEDULE
+    TS_PLUGIN_DEFAULT_SCHEDULE,
   );
   tsScheduler.schedule(taskRunner);
 

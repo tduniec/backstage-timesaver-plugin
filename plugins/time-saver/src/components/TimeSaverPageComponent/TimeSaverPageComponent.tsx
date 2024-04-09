@@ -48,7 +48,7 @@ export const TimeSaverPageComponent = () => {
 
   const handleChange = (
     _event: any,
-    _newValue: React.SetStateAction<number>
+    _newValue: React.SetStateAction<number>,
   ) => {
     setSelectedTab(_newValue);
   };

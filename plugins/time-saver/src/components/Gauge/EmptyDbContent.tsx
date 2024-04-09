@@ -37,7 +37,7 @@ export function EmptyTimeSaver({}): React.ReactElement {
 
   useEffect(() => {
     const url = `${configApi.getString(
-      'backend.baseUrl'
+      'backend.baseUrl',
     )}/api/time-saver/templates`;
 
     fetchWithCredentials(url)

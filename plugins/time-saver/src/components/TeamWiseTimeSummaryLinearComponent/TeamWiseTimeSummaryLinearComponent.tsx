@@ -50,22 +50,22 @@ export function TeamWiseTimeSummaryLinearChart({
   const configApi = useApi(configApiRef);
 
   const [data, setData] = useState<TeamWiseTimeSummaryLinearResponse | null>(
-    null
+    null,
   );
   const theme = useTheme();
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
-        'backend.baseUrl'
-      )}/api/time-saver/getTimeSummary/team`
+        'backend.baseUrl',
+      )}/api/time-saver/getTimeSummary/team`,
     )
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(
           (
             a: { date: string | number | Date },
-            b: { date: string | number | Date }
-          ) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            b: { date: string | number | Date },
+          ) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
         setData(dt);
       })
@@ -86,7 +86,7 @@ export function TeamWiseTimeSummaryLinearChart({
   }
 
   const uniqueTeams = Array.from(
-    new Set(filteredData.stats.map(stat => stat.team))
+    new Set(filteredData.stats.map(stat => stat.team)),
   );
 
   const options: ChartOptions<'line'> = {

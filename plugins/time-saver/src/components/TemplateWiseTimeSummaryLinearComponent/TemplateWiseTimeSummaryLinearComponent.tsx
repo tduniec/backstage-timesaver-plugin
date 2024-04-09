@@ -52,14 +52,14 @@ export function TemplateWiseTimeSummaryLinearChart({
   const theme = useTheme();
   useEffect(() => {
     const url = `${configApi.getString(
-      'backend.baseUrl'
+      'backend.baseUrl',
     )}/api/time-saver/getTimeSummary/template`;
     fetchWithCredentials(url)
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(
           (a: { date: string }, b: { date: string }) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime()
+            new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
         setData(dt);
       })
@@ -75,7 +75,7 @@ export function TemplateWiseTimeSummaryLinearChart({
     filteredData = {
       stats: data.stats.filter(
         (stat: { template_name: string }) =>
-          stat.template_name === template_name
+          stat.template_name === template_name,
       ),
     };
   } else {
@@ -85,9 +85,9 @@ export function TemplateWiseTimeSummaryLinearChart({
   const uniqueTemplates = Array.from(
     new Set(
       filteredData.stats.map(
-        (stat: { template_name: any }) => stat.template_name
-      )
-    )
+        (stat: { template_name: any }) => stat.template_name,
+      ),
+    ),
   );
 
   const options: ChartOptions<'line'> = {

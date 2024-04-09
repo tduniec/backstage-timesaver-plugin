@@ -21,15 +21,15 @@ import * as base64 from 'base64-js';
 export class ScaffolderClient {
   constructor(
     private readonly logger: Logger,
-    private readonly config: Config
-  ) { }
+    private readonly config: Config,
+  ) {}
 
   async fetchTemplatesFromScaffolder() {
     let backendUrl =
       this.config.getOptionalString('ts.backendUrl') ?? 'http://127.0.0.1:7007';
     backendUrl = backendUrl.replace(
       /(http:\/\/)localhost(:\d+)/g,
-      '$1127.0.0.1$2'
+      '$1127.0.0.1$2',
     ); // This changes relates to local setup since there is ERRCONREFUSSED using localhost
     const templatePath = '/api/scaffolder/v2/tasks';
     const callUrl = `${backendUrl}${templatePath}`;
@@ -41,7 +41,7 @@ export class ScaffolderClient {
         headers: {
           Authorization: `Bearer ${await this.generateBackendToken(
             this.config,
-            'backstage-server'
+            'backstage-server',
           )}`,
         },
       });
@@ -51,7 +51,7 @@ export class ScaffolderClient {
     } catch (error) {
       this.logger.error(
         `Problem retrieving response from url: ${callUrl}`,
-        error
+        error,
       );
       return [];
     }
@@ -64,10 +64,8 @@ export class ScaffolderClient {
     if (keyConfig) {
       key = keyConfig[0].secret;
     }
-    const decodedBytes = this.isBase64(key)
-      ? this.decodeFromBase64(key)
-      : key;
-    const tokenSub = name ?? 'backstage-server'
+    const decodedBytes = this.isBase64(key) ? this.decodeFromBase64(key) : key;
+    const tokenSub = name ?? 'backstage-server';
 
     const payload = {
       sub: tokenSub,
@@ -78,7 +76,9 @@ export class ScaffolderClient {
   }
 
   isBase64(value: string): boolean {
-    return /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(value);
+    return /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(
+      value,
+    );
   }
   decodeFromBase64(input: string): Buffer {
     return Buffer.from(base64.toByteArray(input));

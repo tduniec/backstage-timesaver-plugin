@@ -53,8 +53,8 @@ export function ByTemplateBarChart({
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString(
-        'backend.baseUrl'
-      )}/api/time-saver/getStats?templateName=${template_name} `
+        'backend.baseUrl',
+      )}/api/time-saver/getStats?templateName=${template_name} `,
     )
       .then(response => response.json())
       .then(dt => setData(dt))
@@ -110,7 +110,7 @@ export function ByTemplateBarChart({
   const datasets = data.stats.map(stat => stat.sum);
 
   const backgroundColors = Array.from({ length: datasets.length }, () =>
-    getRandomColor()
+    getRandomColor(),
   );
   const dataAll = {
     labels,

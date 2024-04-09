@@ -25,7 +25,7 @@ export class ScaffolderDatabaseOperations {
         `
             select spec from tasks where id=:templateTaskId
             `,
-        { templateTaskId }
+        { templateTaskId },
       );
       const rows = result.rows[0];
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);

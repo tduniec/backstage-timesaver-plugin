@@ -29,13 +29,13 @@ exports.up = async function up(knex) {
     namespace = await knex
       .raw(
         `SELECT (select nspname from pg_catalog.pg_namespace where oid=extnamespace)
-    FROM pg_extension where extname='uuid-ossp';`
+    FROM pg_extension where extname='uuid-ossp';`,
       )
       .then(s => s.rows[0].nspname);
     console.log(`uuid-ossp extension created in ${namespace} schema`);
     await knex.schema.createTable('ts_template_time_savings', table => {
       table.comment(
-        'Table contains template time savings with relation to the templateTaskId'
+        'Table contains template time savings with relation to the templateTaskId',
       );
       table
         .uuid('id')

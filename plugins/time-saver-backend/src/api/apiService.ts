@@ -25,7 +25,7 @@ export class TsApi {
     private readonly logger: Logger,
     private readonly config: Config,
     knex: Knex,
-    scaffoldKx: Knex
+    scaffoldKx: Knex,
   ) {
     this.db = new DatabaseOperations(knex, logger);
     this.scaffolderDb = new ScaffolderDatabaseOperations(scaffoldKx, logger);
@@ -137,19 +137,19 @@ export class TsApi {
       const tsConfig = JSON.parse(String(tsConfigObj));
       const taskTemplateList = await new ScaffolderClient(
         this.logger,
-        this.config
+        this.config,
       ).fetchTemplatesFromScaffolder();
       for (let i = 0; i < taskTemplateList.length; i++) {
         const singleTemplate = taskTemplateList[i];
         this.logger.debug(singleTemplate);
         const templateReference = singleTemplate.spec.templateInfo.entityRef;
         const substituteConfig = tsConfig.find(
-          (con: { entityRef: any }) => con.entityRef === templateReference
+          (con: { entityRef: any }) => con.entityRef === templateReference,
         );
         if (substituteConfig) {
           await this.updateExistsingTemplateWithSubstituteById(
             singleTemplate.id,
-            substituteConfig
+            substituteConfig,
           );
         }
       }
@@ -167,17 +167,17 @@ export class TsApi {
 
   public async updateExistsingTemplateWithSubstituteById(
     templateTaskId: string,
-    engData: object
+    engData: object,
   ) {
     const queryResult = JSON.parse(
-      (await this.scaffolderDb.collectSpecByTemplateId(templateTaskId)).spec
+      (await this.scaffolderDb.collectSpecByTemplateId(templateTaskId)).spec,
     );
     const metadata = queryResult.templateInfo.entity.metadata;
     metadata.substitute = engData;
 
     await this.scaffolderDb.updateTemplateTaskById(
       templateTaskId,
-      JSON.stringify(queryResult)
+      JSON.stringify(queryResult),
     );
     const outputBody = {
       stats: queryResult,
@@ -189,7 +189,7 @@ export class TsApi {
   public async getAllGroups() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      'team'
+      'team',
     );
     const groupList: string[] = queryResult.map(row => row.team);
     const outputBody = {
@@ -202,7 +202,7 @@ export class TsApi {
   public async getAllTemplateNames() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      'template_name'
+      'template_name',
     );
     const groupList: string[] = queryResult.map(row => row.template_name);
     const outputBody = {
@@ -215,7 +215,7 @@ export class TsApi {
   public async getAllTemplateTasks() {
     const queryResult = await this.db.getDistinctColumn(
       this.tsTableName,
-      'template_task_id'
+      'template_task_id',
     );
     const groupList: string[] = queryResult.map(row => row.template_task_id);
     const outputBody = {

@@ -36,7 +36,7 @@ export default function TemplateTaskAutocomplete({
 
   const handleChange = (
     _event: React.ChangeEvent<{}>,
-    value: string | null
+    value: string | null,
   ) => {
     const selectedTemplateTaskId = value || '';
     setTask(selectedTemplateTaskId);
@@ -48,7 +48,7 @@ export default function TemplateTaskAutocomplete({
 
   useEffect(() => {
     fetchWithCredentials(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/templateTasks`
+      `${configApi.getString('backend.baseUrl')}/api/time-saver/templateTasks`,
     )
       .then(response => response.json())
       .then(dt => setData(dt))

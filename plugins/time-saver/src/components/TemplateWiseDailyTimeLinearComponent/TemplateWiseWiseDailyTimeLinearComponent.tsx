@@ -53,7 +53,7 @@ export function DailyTimeSummaryLineChartTemplateWise({
   const theme = useTheme();
   useEffect(() => {
     const url = `${configApi.getString(
-      'backend.baseUrl'
+      'backend.baseUrl',
     )}/api/time-saver/getDailyTimeSummary/template`;
     fetchWithCredentials(url)
       .then(response => response.json())
@@ -61,8 +61,8 @@ export function DailyTimeSummaryLineChartTemplateWise({
         dt.stats.sort(
           (
             a: { date: string | number | Date },
-            b: { date: string | number | Date }
-          ) => new Date(a.date).getTime() - new Date(b.date).getTime()
+            b: { date: string | number | Date },
+          ) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
         setData(dt);
       })
@@ -83,7 +83,7 @@ export function DailyTimeSummaryLineChartTemplateWise({
   }
 
   const uniqueTemplates = Array.from(
-    new Set(filteredData.stats.map(stat => stat.template_name))
+    new Set(filteredData.stats.map(stat => stat.template_name)),
   );
 
   const options: ChartOptions<'line'> = {
