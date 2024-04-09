@@ -1,6 +1,8 @@
 {
   "name": "@tduniec/backstage-timesaver-plugin",
   "version": "1.0.1",
+  "description": "This plugin provides an implementation of charts and statistics related to your time savings that are coming from usage of your templates.",
+  "private": true,
   "engines": {
     "node": "18 || 20"
   },
