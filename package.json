@@ -24,8 +24,8 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier": "prettier --ignore-path .gitignore",
-    "prettier:check": "prettier --ignore-path .gitignore --check .",
-    "prettier:fix": "prettier --ignore-path .gitignore --write ."
+    "prettier:check-all": "prettier --ignore-path .gitignore --check .",
+    "prettier:fix-all": "prettier --ignore-path .gitignore --write ."
   },
   "devDependencies": {
     "@backstage/cli": "^0.25.1",
