@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 /*
  * Copyright 2024 The Backstage Authors
  *
@@ -27,7 +27,7 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { fetchWithCredentials } from '../utils';
-
+                                
 interface TeamSelectorProps {
   onTeamChange: (team: string) => void;
   onClearButtonClick?: () => void;
