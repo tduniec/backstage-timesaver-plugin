@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchWithCredentials } from '../utils';
-import { useTheme, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 
 interface TemplateTaskChange {
   onTemplateTaskChange: (templateTask: string) => void;
