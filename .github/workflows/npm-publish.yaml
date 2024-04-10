@@ -8,7 +8,6 @@ on:
 jobs:
   publish-npm:
     strategy:
-      max-parallel: 1
       matrix: 
         plugins: ['time-saver', 'time-saver-backend', 'time-saver-common']
     runs-on: ubuntu-latest
@@ -36,11 +35,11 @@ jobs:
           yarn run clean
           yarn run build
           yarn run test
+        working-directory: ./plugins/${{ matrix.plugins }}
 
       - name: Publish npm package
         run: |
            export PUBLISH=$(if [ "$(npm view $(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_name")) version)" == "$(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_version"))" ]; then echo false; else echo true; fi)
-           echo $PUBLISH
            if [ "$PUBLISH" == true ]; then npm publish --dry-run ; else echo "since release not created not publishing the package"; fi
         working-directory: ./plugins/${{ matrix.plugins }}
         env:
