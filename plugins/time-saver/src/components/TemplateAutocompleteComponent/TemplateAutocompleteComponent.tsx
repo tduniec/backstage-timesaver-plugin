@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { fetchWithCredentials } from '../utils';
-import { useTheme, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 
 interface TemplateChange {
   onTemplateChange: (templateTask: string) => void;
@@ -45,7 +45,6 @@ export default function TemplateAutocomplete({
 
   const [data, setData] = useState<TemplateResponse | null>(null);
   const configApi = useApi(configApiRef);
-  const theme = useTheme();
   useEffect(() => {
     fetchWithCredentials(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/templates`,
