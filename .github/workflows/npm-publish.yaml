@@ -10,7 +10,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-        plugins: ['time-saver', 'time-saver-backend' 'time-saver-common']
+        plugins: ['time-saver', 'time-saver-backend', 'time-saver-common']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
