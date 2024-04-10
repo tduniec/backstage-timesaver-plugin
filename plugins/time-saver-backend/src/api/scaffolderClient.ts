@@ -52,7 +52,9 @@ export class ScaffolderClient {
   if (keyConfig) {
       key = keyConfig[0].secret
     }
-    const decodedBytes = this.decodeFromBase64(key);
+    const decodedBytes = this.isBase64(key)
+      ? this.decodeFromBase64(key)
+      : key;
     const tokenSub = name ?? 'backstage-server'
 
     const payload = {
@@ -64,6 +66,9 @@ export class ScaffolderClient {
     return encodedJwt
   }
 
+  isBase64(value: string): boolean {
+    return /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$/.test(value);
+  }
   decodeFromBase64(input: string): Buffer {
     return Buffer.from(base64.toByteArray(input));
   }
