@@ -14,6 +14,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+        
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -25,7 +34,7 @@ jobs:
         run: |
            export PUBLISH=$(if [ "$(npm view $(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_name")) version)" == "$(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_version"))" ]; then echo false; else echo true; fi)
            echo $PUBLISH
-           if [ $PUBLISH==true ]; then yarn npm publish --dry-run ; else echo "since release not created not publishing the package"; fi
+           if [ $PUBLISH==true ]; then npm publish --dry-run ; else echo "since release not created not publishing the package"; fi
         working-directory: ./plugins/${{ matrix.plugins }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
