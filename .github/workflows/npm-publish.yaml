@@ -8,8 +8,10 @@ on:
 
 jobs:
   publish-npm:
-    matrix: 
-      plugins: ['time-saver', 'time-saver-common']
+    strategy:
+      max-parallel: 1
+      matrix: 
+        plugins: ['time-saver', 'time-saver-common']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
