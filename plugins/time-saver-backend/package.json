@@ -53,6 +53,7 @@
     "@testing-library/user-event": "^14.0.0",
     "@types/supertest": "^2.0.12",
     "@types/uuid": "^9.0.7",
+    "better-sqlite3": "^9.4.5",
     "msw": "^1.0.0",
     "supertest": "^6.2.4"
   },
