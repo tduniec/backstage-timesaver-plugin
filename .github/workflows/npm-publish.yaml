@@ -8,6 +8,8 @@ on:
 
 jobs:
   publish-npm:
+    matrix: 
+      plugins: ['time-saver', 'time-saver-common']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,23 +17,10 @@ jobs:
         with:
           node-version: 18
           registry-url: https://registry.npmjs.org/
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Check for changes in plugin directories
-        id: check_changes
+      - name: Check published version
         run: |
-          directories=$(git diff --name-only main...HEAD | grep -E '^plugins/[^/]+/' | cut -d/ -f2 | sort -u)
-          for dir in $directories; do
-            if [ -d "plugins/$dir" ]; then
-              echo "Changes detected in plugins/$dir directory."
-              cd "plugins/$dir"
-              npm publish
-              cd ../..
-            fi
-          done
-      - name: Set output if changes detected
-        if: steps.check_changes.outputs.changes != ''
-        run: echo "::set-output name=changes::true"
-      - name: Set output if no changes detected
-        if: steps.check_changes.outputs.changes == ''
-        run: echo "::set-output name=changes::false"
+           export PUBLISH=$(if [ "$(npm view $(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_name")) version)" == "$(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_version"))" ]; then echo true; else echo false; fi)
+           if [ $PUBLISH==true ]; then echo "PUBLISHING"; else echo "NOT"; fi
+        working-directory: ./plugins/${{ matrix.plugins }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
