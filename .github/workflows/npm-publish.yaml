@@ -1,6 +1,5 @@
 name: Node.js Package
 
-
 on:
   push:
     branches:
@@ -11,7 +10,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-        plugins: ['time-saver', 'time-saver-common']
+        plugins: ['time-saver', 'time-saver-backend' 'time-saver-common']
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,7 +21,7 @@ jobs:
       - name: Check published version
         run: |
            export PUBLISH=$(if [ "$(npm view $(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_name")) version)" == "$(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_version"))" ]; then echo false; else echo true; fi)
-           if [ $PUBLISH==true ]; then npm publish ; else echo "since release not created not publishing the package"; fi
+           if [ $PUBLISH==true ]; yarn npm publish ; else echo "since release not created not publishing the package"; fi
         working-directory: ./plugins/${{ matrix.plugins }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
