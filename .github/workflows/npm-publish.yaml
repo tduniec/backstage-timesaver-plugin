@@ -20,7 +20,7 @@ jobs:
       - name: Check for changes in plugin directories
         id: check_changes
         run: |
-          directories=$(git diff --name-only origin/main...HEAD | grep -E '^plugins/[^/]+/' | cut -d/ -f2 | sort -u)
+          directories=$(git diff --name-only main...HEAD | grep -E '^plugins/[^/]+/' | cut -d/ -f2 | sort -u)
           for dir in $directories; do
             if [ -d "plugins/$dir" ]; then
               echo "Changes detected in plugins/$dir directory."
