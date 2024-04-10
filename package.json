@@ -41,6 +41,7 @@
     "@types/node": "^18.17.8",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
+    "better-sqlite3": "^9.5.0",
     "command-exists": "^1.2.9",
     "concurrently": "^8.0.0",
     "cross-env": "^7.0.0",
