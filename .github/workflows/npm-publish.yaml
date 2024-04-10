@@ -3,7 +3,7 @@ name: Publish package
 on:
   push:
     branches:
-      - ci
+      - main
 
 jobs:
   publish-npm:
@@ -40,7 +40,7 @@ jobs:
       - name: Publish npm package
         run: |
            export PUBLISH=$(if [ "$(npm view $(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_name")) version)" == "$(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_version"))" ]; then echo false; else echo true; fi)
-           if [ "$PUBLISH" == true ]; then npm publish --dry-run ; else echo "since release not created not publishing the package"; fi
+           if [ "$PUBLISH" == true ]; then npm publish ; else echo "since release not created not publishing the package"; fi
         working-directory: ./plugins/${{ matrix.plugins }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
