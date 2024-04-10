@@ -1,9 +1,6 @@
 name: Build and Test Packages
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
