@@ -19,7 +19,7 @@
     "clean": "yarn workspaces run clean",
     "tsc": "tsc",
     "test": "yarn workspaces run test",
-    "test:all": "backstage-cli repo test --coverage",
+    "test:all": "backstage-cli repo test --coverage --detectOpenHandles",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
