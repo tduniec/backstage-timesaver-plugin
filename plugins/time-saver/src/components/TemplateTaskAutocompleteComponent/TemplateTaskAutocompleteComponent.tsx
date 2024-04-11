@@ -35,7 +35,7 @@ export default function TemplateTaskAutocomplete({
   const [_task, setTask] = React.useState('');
 
   const handleChange = (
-    _event: React.ChangeEvent<{}>,
+    _event: React.ChangeEvent<NonNullable<unknown>>,
     value: string | null,
   ) => {
     const selectedTemplateTaskId = value || '';

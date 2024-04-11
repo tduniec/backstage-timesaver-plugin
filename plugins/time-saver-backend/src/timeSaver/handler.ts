@@ -20,7 +20,11 @@ import { ScaffolderClient } from '../api/scaffolderClient';
 import { Config } from '@backstage/config';
 
 export class TimeSaverHandler {
-  constructor(private readonly logger: Logger, private readonly config: Config, knex: Knex) {
+  constructor(
+    private readonly logger: Logger,
+    private readonly config: Config,
+    knex: Knex,
+  ) {
     this.db = new DatabaseOperations(knex, logger);
   }
   private readonly db: DatabaseOperations;
@@ -53,7 +57,12 @@ export class TimeSaverHandler {
         undefined;
       if (templateSubstituteData) {
         for (const key in templateSubstituteData.engineering) {
-          if (templateSubstituteData.engineering.hasOwnProperty(key)) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              templateSubstituteData.engineering,
+              key,
+            )
+          ) {
             const value = templateSubstituteData.engineering[key];
             await this.db.insert(this.tsTableName, {
               template_task_id: singleTemplate.id,

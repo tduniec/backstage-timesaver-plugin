@@ -34,7 +34,7 @@ describe('createRouter', () => {
       },
     }),
   );
-  const config =  new ConfigReader({
+  const config = new ConfigReader({
     backend: {
       database: { client: 'better-sqlite3', connection: ':memory:' },
     },
@@ -55,8 +55,9 @@ describe('createRouter', () => {
 
   const taskRunner = new PersistingTaskRunner();
   const scheduler = {
-    createScheduledTaskRunner: (_: any) => taskRunner,
+    createScheduledTaskRunner: (_: unknown) => taskRunner,
   } as unknown as PluginTaskScheduler;
+  //  TODO : validate createScheduledTaskRunner parameters types.
 
   beforeAll(async () => {
     const router = await createRouter({

@@ -55,8 +55,9 @@ export async function startStandaloneServer(
 
   const taskRunner = new PersistingTaskRunner();
   const scheduler = {
-    createScheduledTaskRunner: (_: any) => taskRunner,
+    createScheduledTaskRunner: (_: unknown) => taskRunner,
   } as unknown as PluginTaskScheduler;
+  //  TODO : Validate createScheduledTaskRunner type
 
   const manager = DatabaseManager.fromConfig(
     new ConfigReader({

@@ -23,7 +23,7 @@ type GroupsResponse = {
   groups: string[];
 };
 
-export function TeamsGauge({}): React.ReactElement {
+export function TeamsGauge(): React.ReactElement {
   const configApi = useApi(configApiRef);
   const [data, setData] = useState<GroupsResponse | null>(null);
 

@@ -131,10 +131,15 @@ export function DailyTimeSummaryLineChartTeamWise({
     datasets: uniqueTeams.map(tm => {
       const templateData = filteredData.stats
         .filter((stat: { team: string | undefined }) => stat.team === tm)
-        .map((stat: { date: any; total_time_saved: any }) => ({
-          x: stat.date,
-          y: stat.total_time_saved,
-        }));
+        .map(
+          (stat: {
+            date: string | undefined;
+            total_time_saved: number | undefined;
+          }) => ({
+            x: stat.date,
+            y: stat.total_time_saved,
+          }),
+        );
 
       return {
         label: tm,
@@ -144,6 +149,7 @@ export function DailyTimeSummaryLineChartTeamWise({
       };
     }),
   };
+  // TODO : Verify date and total_time_saved types
 
   return <Line options={options} data={allData} />;
 }

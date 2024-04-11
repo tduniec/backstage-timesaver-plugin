@@ -23,7 +23,7 @@ type TemplateTaskCountResponse = {
   templateTasks: number;
 };
 
-export function TemplateCountGauge({}): React.ReactElement {
+export function TemplateCountGauge(): React.ReactElement {
   const configApi = useApi(configApiRef);
   const [data, setData] = useState<TemplateTaskCountResponse | null>(null);
 

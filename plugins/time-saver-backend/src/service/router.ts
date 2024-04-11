@@ -24,6 +24,7 @@ import { TsApi } from '../api/apiService';
 import { Config } from '@backstage/config';
 import { TsScheduler } from '../timeSaver/scheduler';
 import { ScaffolderDb } from '../database/scaffolderDb';
+import { error } from 'console';
 
 export interface RouterOptions {
   logger: Logger;
@@ -53,6 +54,11 @@ export async function createRouter(
   const scaffolderDbKx = new ScaffolderDb(config).scaffolderKnex();
   const kx = await tsDatabaseInstance.get();
   await TsDatabase.runMigrations(kx);
+
+  if (!scaffolderDbKx) {
+    logger.error('Could not get scaffolder database info');
+    throw error('Could not get scaffolder database info');
+  }
 
   const tsHandler = new TimeSaverHandler(logger, config, kx);
   const apiHandler = new TsApi(logger, config, kx, scaffolderDbKx);
@@ -146,7 +152,9 @@ export async function createRouter(
   router.get('/getTimeSavedSum', async (request, response) => {
     const divider: number = Number(request.query.divider);
     if (divider !== undefined && divider <= 0) {
-      response.status(400).json({ error: 'Divider should be a positive number' });
+      response
+        .status(400)
+        .json({ error: 'Divider should be a positive number' });
       return;
     }
     const result = divider

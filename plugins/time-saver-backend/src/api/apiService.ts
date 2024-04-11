@@ -127,23 +127,28 @@ export class TsApi {
       this.config.getOptionalString('ts.backward.config') || undefined;
     if (!tsConfigObj) {
       this.logger.warn(`Backward processing not configured, escaping...`);
-      return { status: 'FAIL', message: 'Backward processing not configured in app-config.yaml file' };
+      return {
+        status: 'FAIL',
+        message: 'Backward processing not configured in app-config.yaml file',
+      };
     }
     try {
-      this.logger.info(`Starting backward template savings migration`)
+      this.logger.info(`Starting backward template savings migration`);
       const tsConfig = JSON.parse(String(tsConfigObj));
       const taskTemplateList = await new ScaffolderClient(
-        this.logger, this.config
+        this.logger,
+        this.config,
       ).fetchTemplatesFromScaffolder();
       for (let i = 0; i < taskTemplateList.length; i++) {
         const singleTemplate = taskTemplateList[i];
         this.logger.debug(singleTemplate);
         const templateReference = singleTemplate.spec.templateInfo.entityRef;
         const substituteConfig = tsConfig.find(
-          (con: { entityRef: any }) => con.entityRef === templateReference,
+          (con: { entityRef: unknown }) => con.entityRef === templateReference,
         );
+        // TODO : Define / create entityRef type
         if (substituteConfig) {
-          await this.updateExistsingTemplateWithSubstituteById(
+          await this.updateExistingTemplateWithSubstituteById(
             singleTemplate.id,
             substituteConfig,
           );
@@ -161,7 +166,7 @@ export class TsApi {
     };
   }
 
-  public async updateExistsingTemplateWithSubstituteById(
+  public async updateExistingTemplateWithSubstituteById(
     templateTaskId: string,
     engData: object,
   ) {
@@ -222,12 +227,10 @@ export class TsApi {
   }
 
   public async getTemplateCount() {
-    const queryResult = (
-      await this.db.getTemplateCount()
-    )[0];
+    const queryResult = (await this.db.getTemplateCount())[0];
 
     const outputBody = {
-      templateTasks: parseInt(queryResult.count),
+      templateTasks: parseInt(queryResult.count, 10),
     };
     this.logger.info(JSON.stringify(outputBody));
     return outputBody;
@@ -245,6 +248,3 @@ export class TsApi {
     return outputBody;
   }
 }
-
-
-

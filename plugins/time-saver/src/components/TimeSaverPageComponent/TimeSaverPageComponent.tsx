@@ -47,11 +47,12 @@ export const TimeSaverPageComponent = () => {
   const [template, setTemplate] = useState('');
 
   const handleChange = (
-    _event: any,
+    _event: unknown,
     _newValue: React.SetStateAction<number>,
   ) => {
     setSelectedTab(_newValue);
   };
+  // TODO : Define / create _event type
 
   const handleTeamChange = (team: string) => {
     setSelectedTeam(team);

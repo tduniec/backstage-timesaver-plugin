@@ -8,7 +8,8 @@ This plugin provides an implementation of charts and statistics related to your 
 - [time-saver-common](https://github.com/tduniec/backstage-timesaver-plugin/tree/main/plugins/time-saver-common)
 
 ## Code
-https://github.com/tduniec/backstage-timesaver-plugin.git 
+
+https://github.com/tduniec/backstage-timesaver-plugin.git
 
 ## Installation
 
@@ -50,7 +51,7 @@ const timeSaverEnv = useHotMemoize(module, () => createEnv('timesaver'));
 
 ...
 
-apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use authMiddleware if you are using it for backend 
+apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use authMiddleware if you are using it for backend
 
 ```
 
@@ -87,8 +88,8 @@ If your backend deployment is separate from your frontend you can use below conf
 ```yaml
 ts:
   backendUrl: https://my-awesome-backstage.com
-
 ```
+
 ## Migration
 
 This plugins supports backward compatibility with migration. You can specify your Time Saver metadata for each template name. Then the migration will be performed once executing the API request to `/migrate` endpoint of the plugin.

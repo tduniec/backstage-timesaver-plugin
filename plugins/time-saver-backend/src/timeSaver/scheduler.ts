@@ -21,7 +21,11 @@ import { Knex } from 'knex';
 import { Config } from '@backstage/config';
 
 export class TsScheduler {
-  constructor(private readonly logger: Logger, private readonly config: Config, private readonly knex: Knex) {}
+  constructor(
+    private readonly logger: Logger,
+    private readonly config: Config,
+    private readonly knex: Knex,
+  ) {}
 
   async schedule(taskRunner: TaskRunner) {
     const tsHandler = new TimeSaverHandler(this.logger, this.config, this.knex);

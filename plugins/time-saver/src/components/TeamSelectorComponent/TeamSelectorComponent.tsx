@@ -1,4 +1,3 @@
-//@ts-nocheck
 /*
  * Copyright 2024 The Backstage Authors
  *
@@ -14,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {
@@ -75,7 +73,7 @@ export default function TeamSelector({
     return <CircularProgress />;
   }
 
-  const groups = data.groups;
+  const { groups } = data;
   return (
     <Box style={{ minWidth: 360, display: 'flex', flexWrap: 'nowrap', gap: 6 }}>
       <FormControl fullWidth variant="outlined">

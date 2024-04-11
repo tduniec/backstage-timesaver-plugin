@@ -8,7 +8,8 @@ This plugin provides an implementation of charts and statistics related to your 
 - [time-saver-common](https://github.com/tduniec/backstage-timesaver-plugin/tree/main/plugins/time-saver-common)
 
 ## Code
-https://github.com/tduniec/backstage-timesaver-plugin.git 
+
+https://github.com/tduniec/backstage-timesaver-plugin.git
 
 ## Screens
 

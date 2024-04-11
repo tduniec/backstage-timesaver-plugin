@@ -23,7 +23,7 @@ type TemplateResponse = {
   templates: string[];
 };
 
-export function TemplatesGauge({}): React.ReactElement {
+export function TemplatesGauge(): React.ReactElement {
   const configApi = useApi(configApiRef);
   const [data, setData] = useState<TemplateResponse | null>(null);
 
