@@ -59,8 +59,10 @@ export class ScaffolderClient {
   }
 
   async generateBackendToken(config: Config, name?: string) {
-    let key = '';
-    const keyConfig: any = config.getOptional('backend.auth.keys');
+    let key: string = '';
+    let decodedBytes: Buffer | string = '';
+    const keyConfig: { secret: string }[] | undefined = config.getOptional('backend.auth.keys');
+
     if (keyConfig) {
       key = keyConfig[0].secret;
     }
