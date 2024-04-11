@@ -55,8 +55,9 @@ describe('createRouter', () => {
 
   const taskRunner = new PersistingTaskRunner();
   const scheduler = {
-    createScheduledTaskRunner: (_: any) => taskRunner,
+    createScheduledTaskRunner: (_: unknown) => taskRunner,
   } as unknown as PluginTaskScheduler;
+  //  TODO : validate createScheduledTaskRunner parameters types.
 
   beforeAll(async () => {
     const router = await createRouter({

@@ -18,7 +18,7 @@ import { Logger } from 'winston';
 import { roundNumericValues } from '../utils';
 
 export class DatabaseOperations {
-  constructor(private readonly knex: Knex, private readonly logger: Logger) {}
+  constructor(private readonly knex: Knex, private readonly logger: Logger) { }
 
   async select(tableName: string, column: string, key: Record<string, string>) {
     try {
@@ -31,7 +31,8 @@ export class DatabaseOperations {
     }
   }
 
-  async insert(tableName: string, data: any) {
+  async insert(tableName: string, data: NonNullable<unknown>) {
+    //  TODO : Verify data type
     try {
       const insertedRow = await this.knex(tableName)
         .insert(data)
@@ -45,7 +46,8 @@ export class DatabaseOperations {
     }
   }
 
-  async insertOveride(tableName: string, data: any, conflictColumn: string) {
+  async insertOverride(tableName: string, data: NonNullable<unknown>, conflictColumn: string) {
+    //  TODO : Verify data type
     await this.knex(tableName)
       .insert(data)
       .onConflict(conflictColumn)
@@ -58,7 +60,8 @@ export class DatabaseOperations {
       });
   }
 
-  async update(tableName: string, data: any, key: Record<string, string>) {
+  async update(tableName: string, data: NonNullable<unknown>, key: Record<string, string>) {
+    //  TODO : Verify data type
     await this.knex(tableName)
       .where(key)
       .update(data)
