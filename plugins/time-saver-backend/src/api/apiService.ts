@@ -144,10 +144,11 @@ export class TsApi {
         this.logger.debug(singleTemplate);
         const templateReference = singleTemplate.spec.templateInfo.entityRef;
         const substituteConfig = tsConfig.find(
-          (con: { entityRef: any }) => con.entityRef === templateReference,
+          (con: { entityRef: unknown }) => con.entityRef === templateReference,
         );
+        // TODO : Define / create entityRef type
         if (substituteConfig) {
-          await this.updateExistsingTemplateWithSubstituteById(
+          await this.updateExistingTemplateWithSubstituteById(
             singleTemplate.id,
             substituteConfig,
           );
@@ -165,7 +166,7 @@ export class TsApi {
     };
   }
 
-  public async updateExistsingTemplateWithSubstituteById(
+  public async updateExistingTemplateWithSubstituteById(
     templateTaskId: string,
     engData: object,
   ) {
