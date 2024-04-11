@@ -30,7 +30,7 @@ type TemplatesResponse = {
   templates: string[];
 };
 
-export function EmptyTimeSaver({}): React.ReactElement {
+export function EmptyTimeSaver(): React.ReactElement {
   const configApi = useApi(configApiRef);
 
   const [data, setData] = useState<TemplatesResponse | null>(null);
