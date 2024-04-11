@@ -8,7 +8,7 @@ on:
 jobs:
   publish-npm:
     strategy:
-      matrix: 
+      matrix:
         plugins: ['time-saver', 'time-saver-backend', 'time-saver-common']
     runs-on: ubuntu-latest
     steps:
@@ -21,7 +21,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-        
+
       - uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -39,8 +39,8 @@ jobs:
 
       - name: Publish npm package
         run: |
-           export PUBLISH=$(if [ "$(npm view $(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_name")) version)" == "$(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_version"))" ]; then echo false; else echo true; fi)
-           if [ "$PUBLISH" == true ]; then npm publish ; else echo "since release not created not publishing the package"; fi
+          export PUBLISH=$(if [ "$(npm view $(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_name")) version)" == "$(cut -d "=" -f 2 <<< $(npm run env | grep "npm_package_version"))" ]; then echo false; else echo true; fi)
+          if [ "$PUBLISH" == true ]; then npm publish ; else echo "since release not created not publishing the package"; fi
         working-directory: ./plugins/${{ matrix.plugins }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

@@ -34,12 +34,13 @@ export interface DatabaseConfiguration {
 }
 
 export class ScaffolderDb {
-  constructor(private readonly config: Config) { }
+  constructor(private readonly config: Config) {}
 
   private readonly scaffolderDbName = 'backstage_plugin_scaffolder';
 
   scaffolderKnex() {
-    const dbConfig: DatabaseConfiguration | undefined = this.config.getOptional('backend.database');
+    const dbConfig: DatabaseConfiguration | undefined =
+      this.config.getOptional('backend.database');
 
     if (dbConfig) {
       const knex: Knex.Knex = Knex({

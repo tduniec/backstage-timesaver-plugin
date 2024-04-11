@@ -22,7 +22,7 @@ export class ScaffolderClient {
   constructor(
     private readonly logger: Logger,
     private readonly config: Config,
-  ) { }
+  ) {}
 
   async fetchTemplatesFromScaffolder() {
     let backendUrl =
@@ -61,7 +61,8 @@ export class ScaffolderClient {
   async generateBackendToken(config: Config, name?: string) {
     let key: string = '';
     let decodedBytes: Buffer | string = '';
-    const keyConfig: { secret: string }[] | undefined = config.getOptional('backend.auth.keys');
+    const keyConfig: { secret: string }[] | undefined =
+      config.getOptional('backend.auth.keys');
 
     if (keyConfig) {
       key = keyConfig[0].secret;

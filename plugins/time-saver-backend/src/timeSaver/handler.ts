@@ -57,7 +57,12 @@ export class TimeSaverHandler {
         undefined;
       if (templateSubstituteData) {
         for (const key in templateSubstituteData.engineering) {
-          if (Object.prototype.hasOwnProperty.call(templateSubstituteData.engineering, key)) {
+          if (
+            Object.prototype.hasOwnProperty.call(
+              templateSubstituteData.engineering,
+              key,
+            )
+          ) {
             const value = templateSubstituteData.engineering[key];
             await this.db.insert(this.tsTableName, {
               template_task_id: singleTemplate.id,

@@ -27,9 +27,9 @@ export function roundNumericValues<T>(obj: T): T {
     if (typeof input === 'object' && input !== null) {
       Object.values(input).map((value: unknown) => {
         switch (typeof value) {
-          case "number":
+          case 'number':
             return roundValue(value);
-          case "object":
+          case 'object':
             return roundObject(value);
           default:
             return value;

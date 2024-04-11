@@ -137,10 +137,15 @@ export function TemplateWiseTimeSummaryLinearChart({
     datasets: uniqueTemplates.map(tn => {
       const templateData = filteredData.stats
         .filter((stat: { template_name: string }) => stat.template_name === tn)
-        .map((stat: { date: string | undefined; total_time_saved: number | undefined }) => ({
-          x: stat.date,
-          y: stat.total_time_saved,
-        }));
+        .map(
+          (stat: {
+            date: string | undefined;
+            total_time_saved: number | undefined;
+          }) => ({
+            x: stat.date,
+            y: stat.total_time_saved,
+          }),
+        );
       // TODO : verify that date and total_time_saved types.
 
       return {
