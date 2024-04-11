@@ -23,15 +23,18 @@ export function roundNumericValues<T>(obj: T): T {
     return parseFloat(rounded.toFixed(2));
   };
 
-  const roundObject = (input: any): any => {
+  const roundObject = (input: object | unknown): unknown => {
     if (typeof input === 'object' && input !== null) {
-      for (const key in input) {
-        if (typeof input[key] === 'number') {
-          input[key] = roundValue(input[key]);
-        } else if (typeof input[key] === 'object') {
-          input[key] = roundObject(input[key]);
+      Object.values(input).map((value: unknown) => {
+        switch (typeof value) {
+          case "number":
+            return roundValue(value);
+          case "object":
+            return roundObject(value);
+          default:
+            return value;
         }
-      }
+      });
     }
     return input;
   };
