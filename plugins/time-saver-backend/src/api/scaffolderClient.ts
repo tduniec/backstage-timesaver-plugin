@@ -22,7 +22,7 @@ export class ScaffolderClient {
   constructor(
     private readonly logger: Logger,
     private readonly config: Config,
-  ) {}
+  ) { }
 
   async fetchTemplatesFromScaffolder() {
     let backendUrl =
@@ -69,9 +69,8 @@ export class ScaffolderClient {
     } else {
       decodedBytes = '';
     }
-    const decodedBytes = this.isBase64(key) ? this.decodeFromBase64(key) : key;
-    const tokenSub = name ?? 'backstage-server';
 
+    const tokenSub = name ?? 'backstage-server';
     const payload = {
       sub: tokenSub,
       exp: Math.floor(Date.now() / 1000) + 3600, // Current timestamp + 1 hours in seconds
