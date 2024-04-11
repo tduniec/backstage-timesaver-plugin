@@ -96,5 +96,6 @@
     "*/yarn.lock": [
       "node ./scripts/verify-lockfile-duplicates --fix"
     ]
-  }
+  },
+  "packageManager": "yarn@1.22.19"
 }
