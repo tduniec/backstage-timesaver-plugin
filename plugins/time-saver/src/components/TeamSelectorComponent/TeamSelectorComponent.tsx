@@ -75,7 +75,7 @@ export default function TeamSelector({
     return <CircularProgress />;
   }
 
-  const groups = data.groups;
+  const {groups} = data;
   return (
     <Box style={{ minWidth: 360, display: 'flex', flexWrap: 'nowrap', gap: 6 }}>
       <FormControl fullWidth variant="outlined">
