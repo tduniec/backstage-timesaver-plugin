@@ -15,9 +15,10 @@
   "author": "tduniec <tomekduniec@gmail.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "yarn workspaces run build",
-    "clean": "yarn workspaces run clean",
+    "build:all": "backstage-cli repo build --all",
+    "clean": "backstage-cli repo clean",
     "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
     "test": "yarn workspaces run test",
     "test:all": "backstage-cli repo test --coverage --detectOpenHandles",
     "fix": "backstage-cli repo fix",
