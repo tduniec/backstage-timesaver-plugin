@@ -33,7 +33,7 @@
     "@backstage/theme": "^0.5.3",
     "@material-ui/core": "^4.9.13",
     "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "4.0.0-alpha.61",
+    "@mui/material": "^5.15.16",
     "@mui/x-data-grid": "^7.3.2",
     "@types/react-chartjs-2": "^2.5.7",
     "chart.js": "^4.4.2",
@@ -51,8 +51,12 @@
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
+    "@types/react": "^18.3.1",
     "@types/uuid": "^9.0.8",
-    "msw": "^1.0.0"
+    "msw": "^1.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.0"
   },
   "files": [
     "dist"
