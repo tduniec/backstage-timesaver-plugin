@@ -34,7 +34,7 @@ export interface DatabaseConfiguration {
 }
 
 export class ScaffolderDb {
-  constructor(private readonly config: Config) {}
+  constructor(private readonly config: Config) { }
 
   private readonly scaffolderDbName = 'backstage_plugin_scaffolder';
 
