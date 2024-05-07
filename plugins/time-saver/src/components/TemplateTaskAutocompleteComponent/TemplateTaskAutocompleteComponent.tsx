@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from 'react';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
