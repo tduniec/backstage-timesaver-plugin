@@ -31,6 +31,6 @@ jobs:
       - name: Run tests and build
         run: |
           yarn clean
-          yarn tsc
-          yarn build
+          yarn tsc:full
+          yarn build:all
           yarn test
