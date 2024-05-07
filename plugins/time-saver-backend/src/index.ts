@@ -14,4 +14,4 @@
  * limitations under the License.
  */
 export * from './service/router';
-export { timeSaverPlugin as default} from './service/newRouter'
+export { timeSaverPlugin as default} from './service/router'
