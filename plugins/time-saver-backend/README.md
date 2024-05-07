@@ -59,7 +59,6 @@ apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use a
 
 2. Wire up the plugin in Backstage new backend system
 
-
 in `packages/backend/src/index.ts`
 
 ```ts

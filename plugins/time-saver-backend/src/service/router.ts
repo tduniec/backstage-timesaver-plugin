@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { coreServices, createBackendPlugin } from '@backstage/backend-plugin-api';
-import { PluginDatabaseManager, errorHandler, loggerToWinstonLogger, } from '@backstage/backend-common';
+import {
+  coreServices,
+  createBackendPlugin,
+} from '@backstage/backend-plugin-api';
+import {
+  PluginDatabaseManager,
+  errorHandler,
+  loggerToWinstonLogger,
+} from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import express from 'express';
 import Router from 'express-promise-router';
@@ -40,8 +47,14 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, config, database, scheduler } = options;
   const baseRouter = registerRouter();
-  const plugin = await PluginInitializer.builder(baseRouter, logger, config, database, scheduler);
-  const router = plugin.timeSaverRouter
+  const plugin = await PluginInitializer.builder(
+    baseRouter,
+    logger,
+    config,
+    database,
+    scheduler,
+  );
+  const router = plugin.timeSaverRouter;
   router.use(errorHandler());
   return router;
 }
@@ -60,8 +73,14 @@ export const timeSaverPlugin = createBackendPlugin({
       async init({ config, logger, scheduler, database, http }) {
         const baseRouter = registerRouter();
         const winstonLogger = loggerToWinstonLogger(logger);
-        const plugin = await PluginInitializer.builder(baseRouter, winstonLogger, config, database, scheduler);
-        const router = plugin.timeSaverRouter
+        const plugin = await PluginInitializer.builder(
+          baseRouter,
+          winstonLogger,
+          config,
+          database,
+          scheduler,
+        );
+        const router = plugin.timeSaverRouter;
         http.use(router);
       },
     });

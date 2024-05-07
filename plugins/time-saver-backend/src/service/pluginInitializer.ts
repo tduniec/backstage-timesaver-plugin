@@ -26,104 +26,138 @@ import { Router } from 'express';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 
 interface PluginDependencies {
-    router: Router;
-    logger: Logger;
-    config: Config;
-    database: PluginDatabaseManager;
-    scheduler: PluginTaskScheduler;
+  router: Router;
+  logger: Logger;
+  config: Config;
+  database: PluginDatabaseManager;
+  scheduler: PluginTaskScheduler;
 }
 
 const TS_PLUGIN_DEFAULT_SCHEDULE = {
-    frequency: {
-      minutes: 5,
-    },
-    timeout: {
-      minutes: 30,
-    },
-    initialDelay: {
-      seconds: 60,
-    },
-  };
+  frequency: {
+    minutes: 5,
+  },
+  timeout: {
+    minutes: 30,
+  },
+  initialDelay: {
+    seconds: 60,
+  },
+};
 
 export class PluginInitializer {
-    private logger!: Logger;
-    private config!: Config;
-    private scheduler!: PluginTaskScheduler;
-    private database!: PluginDatabaseManager;
-    private tsHandler!: TimeSaverHandler;
-    private apiHandler!: TsApi;
-    private tsScheduler!: TsScheduler;
-    private router!: Router;
+  private logger!: Logger;
+  private config!: Config;
+  private scheduler!: PluginTaskScheduler;
+  private database!: PluginDatabaseManager;
+  private tsHandler!: TimeSaverHandler;
+  private apiHandler!: TsApi;
+  private tsScheduler!: TsScheduler;
+  private router!: Router;
 
-    private constructor(router: Router, logger: Logger, config: Config, database: PluginDatabaseManager, scheduler: PluginTaskScheduler) {
-        this.router = router
-        this.logger = logger;
-        this.config = config;
-        this.database = database;
-        this.scheduler = scheduler;
-      }
-      
-      static async builder(router: Router, logger: Logger, config: Config, database: PluginDatabaseManager, scheduler: PluginTaskScheduler): Promise<PluginInitializer> {
-        const instance = new PluginInitializer(router, logger, config, database, scheduler);
-        await instance.initialize();
-        return instance;
-      }
+  private constructor(
+    router: Router,
+    logger: Logger,
+    config: Config,
+    database: PluginDatabaseManager,
+    scheduler: PluginTaskScheduler,
+  ) {
+    this.router = router;
+    this.logger = logger;
+    this.config = config;
+    this.database = database;
+    this.scheduler = scheduler;
+  }
 
-    private async initialize() {
-        // Initialize logger, config, database and scheduler
-        this.logger = this.dependencies.logger;
-        this.config = this.dependencies.config;
-        this.database = this.dependencies.database;
-        this.scheduler = this.dependencies.scheduler;
+  static async builder(
+    router: Router,
+    logger: Logger,
+    config: Config,
+    database: PluginDatabaseManager,
+    scheduler: PluginTaskScheduler,
+  ): Promise<PluginInitializer> {
+    const instance = new PluginInitializer(
+      router,
+      logger,
+      config,
+      database,
+      scheduler,
+    );
+    await instance.initialize();
+    return instance;
+  }
 
-        // Initialize TsDatabase and run migrations
-        const tsDatabaseInstance = TsDatabase.create(this.database);
-        const kx = await tsDatabaseInstance.get();
-        await TsDatabase.runMigrations(kx);
+  private async initialize() {
+    // Initialize logger, config, database and scheduler
+    this.logger = this.dependencies.logger;
+    this.config = this.dependencies.config;
+    this.database = this.dependencies.database;
+    this.scheduler = this.dependencies.scheduler;
 
-        // Initialize ScaffolderDb
-        const scaffolderDbKx = new ScaffolderDb(this.config).scaffolderKnex();
-        if (!scaffolderDbKx) {
-            this.logger.error('Could not get scaffolder database info');
-            throw new Error('Could not get scaffolder database info');
-        }
+    // Initialize TsDatabase and run migrations
+    const tsDatabaseInstance = TsDatabase.create(this.database);
+    const kx = await tsDatabaseInstance.get();
+    await TsDatabase.runMigrations(kx);
 
-        // Initialize handlers
-        this.tsHandler = new TimeSaverHandler(this.logger, this.config, kx);
-        this.apiHandler = new TsApi(this.logger, this.config, kx, scaffolderDbKx);
-        this.tsScheduler = new TsScheduler(this.logger, this.config, kx);
-
-        // Scheduler
-        const taskRunner = this.scheduler.createScheduledTaskRunner(
-            TS_PLUGIN_DEFAULT_SCHEDULE,
-          );
-          this.tsScheduler.schedule(taskRunner);
-
-        // registering routes
-        this.router = setupCommonRoutes(this.router,this.logger, this.tsHandler, this.tsApi)
-
+    // Initialize ScaffolderDb
+    const scaffolderDbKx = new ScaffolderDb(this.config).scaffolderKnex();
+    if (!scaffolderDbKx) {
+      this.logger.error('Could not get scaffolder database info');
+      throw new Error('Could not get scaffolder database info');
     }
 
-    private get dependencies(): PluginDependencies {
-        if ( !this.router ||!this.logger || !this.config || !this.database || !this.scheduler) {
-            throw new Error('PluginInitializer not properly initialized');
-        }
-        return { router: this.router, logger: this.logger, config: this.config, database: this.database, scheduler: this.scheduler};
-    }
+    // Initialize handlers
+    this.tsHandler = new TimeSaverHandler(this.logger, this.config, kx);
+    this.apiHandler = new TsApi(this.logger, this.config, kx, scaffolderDbKx);
+    this.tsScheduler = new TsScheduler(this.logger, this.config, kx);
 
-    get timeSaverHandler(): TimeSaverHandler {
-        return this.tsHandler;
-    }
+    // Scheduler
+    const taskRunner = this.scheduler.createScheduledTaskRunner(
+      TS_PLUGIN_DEFAULT_SCHEDULE,
+    );
+    this.tsScheduler.schedule(taskRunner);
 
-    get tsApi(): TsApi {
-        return this.apiHandler;
-    }
+    // registering routes
+    this.router = setupCommonRoutes(
+      this.router,
+      this.logger,
+      this.tsHandler,
+      this.tsApi,
+    );
+  }
 
-    get timeSaverScheduler(): TsScheduler {
-        return this.tsScheduler;
+  private get dependencies(): PluginDependencies {
+    if (
+      !this.router ||
+      !this.logger ||
+      !this.config ||
+      !this.database ||
+      !this.scheduler
+    ) {
+      throw new Error('PluginInitializer not properly initialized');
     }
+    return {
+      router: this.router,
+      logger: this.logger,
+      config: this.config,
+      database: this.database,
+      scheduler: this.scheduler,
+    };
+  }
 
-    get timeSaverRouter(): Router {
-      return this.router;
+  get timeSaverHandler(): TimeSaverHandler {
+    return this.tsHandler;
+  }
+
+  get tsApi(): TsApi {
+    return this.apiHandler;
+  }
+
+  get timeSaverScheduler(): TsScheduler {
+    return this.tsScheduler;
+  }
+
+  get timeSaverRouter(): Router {
+    return this.router;
   }
 }
