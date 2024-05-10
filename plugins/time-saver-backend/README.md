@@ -55,6 +55,16 @@ apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use a
 
 ```
 
+### New Backend - instalation
+
+2. Wire up the plugin in Backstage new backend system
+
+in `packages/backend/src/index.ts`
+
+```ts
+backend.add(import('@tduniec/backstage-plugin-time-saver-backend'));
+```
+
 3. Install [time-saver](../time-saver/README.md) part if not installed already
 
 ## Generate Statistics

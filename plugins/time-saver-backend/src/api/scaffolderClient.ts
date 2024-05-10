@@ -22,7 +22,7 @@ export class ScaffolderClient {
   constructor(
     private readonly logger: Logger,
     private readonly config: Config,
-  ) { }
+  ) {}
 
   async fetchTemplatesFromScaffolder() {
     let backendUrl =
