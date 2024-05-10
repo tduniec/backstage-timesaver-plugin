@@ -21,10 +21,12 @@ import {
 import { ConfigReader } from '@backstage/config';
 import { Knex } from 'knex';
 
-const migrationsDir = resolvePackagePath(
-  '@tduniec/backstage-plugin-time-saver-backend',
-  'migrations',
-);
+const migrationsDir = process.env.NODE_ENV !== 'test'
+  ? resolvePackagePath(
+    '@tduniec/backstage-plugin-time-saver-backend',
+    'migrations',
+  )
+  : './plugins/time-saver-backend/migrations/'
 
 /**
  * Ensures that a database connection is established exactly once and only when
