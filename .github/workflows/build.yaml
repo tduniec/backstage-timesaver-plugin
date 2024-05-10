@@ -33,4 +33,4 @@ jobs:
           yarn clean
           yarn tsc:full
           yarn build:all
-          yarn test
+          yarn test:all
