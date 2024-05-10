@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { PluginDatabaseManager, errorHandler } from '@backstage/backend-common';
+import {
+  coreServices,
+  createBackendPlugin,
+} from '@backstage/backend-plugin-api';
+import {
+  PluginDatabaseManager,
+  errorHandler,
+  loggerToWinstonLogger,
+} from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import express from 'express';
 import Router from 'express-promise-router';
 import { Logger } from 'winston';
-import { TsDatabase } from '../database/tsDatabase';
-import { TimeSaverHandler } from '../timeSaver/handler';
-import { TsApi } from '../api/apiService';
 import { Config } from '@backstage/config';
-import { TsScheduler } from '../timeSaver/scheduler';
-import { ScaffolderDb } from '../database/scaffolderDb';
-import { error } from 'console';
+import { PluginInitializer } from './pluginInitializer';
 
 export interface RouterOptions {
   logger: Logger;
@@ -33,136 +36,53 @@ export interface RouterOptions {
   scheduler: PluginTaskScheduler;
 }
 
-const TS_PLUGIN_DEFAULT_SCHEDULE = {
-  frequency: {
-    minutes: 5,
-  },
-  timeout: {
-    minutes: 30,
-  },
-  initialDelay: {
-    seconds: 60,
-  },
-};
+function registerRouter() {
+  const router = Router();
+  router.use(express.json());
+  return router;
+}
 
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
   const { logger, config, database, scheduler } = options;
-
-  const tsDatabaseInstance = TsDatabase.create(database);
-  const scaffolderDbKx = new ScaffolderDb(config).scaffolderKnex();
-  const kx = await tsDatabaseInstance.get();
-  await TsDatabase.runMigrations(kx);
-
-  if (!scaffolderDbKx) {
-    logger.error('Could not get scaffolder database info');
-    throw error('Could not get scaffolder database info');
-  }
-
-  const tsHandler = new TimeSaverHandler(logger, config, kx);
-  const apiHandler = new TsApi(logger, config, kx, scaffolderDbKx);
-  const tsScheduler = new TsScheduler(logger, config, kx);
-
-  const taskRunner = scheduler.createScheduledTaskRunner(
-    TS_PLUGIN_DEFAULT_SCHEDULE,
+  const baseRouter = registerRouter();
+  const plugin = await PluginInitializer.builder(
+    baseRouter,
+    logger,
+    config,
+    database,
+    scheduler,
   );
-  tsScheduler.schedule(taskRunner);
-
-  const router = Router();
-  router.use(express.json());
-
-  router.get('/health', (_, response) => {
-    logger.info('PONG!');
-    response.json({ status: 'ok' });
-  });
-
-  router.get('/generateSavings', async (_, response) => {
-    const status = await tsHandler.fetchTemplates();
-    response.json({ status: status });
-  });
-
-  router.get('/getStats/', async (request, response) => {
-    const templateId = request.query.templateTaskId;
-    const team = request.query.team;
-    const templateName = request.query.templateName;
-    let result;
-    if (templateId) {
-      result = await apiHandler.getStatsByTemplateTaskId(String(templateId));
-    } else if (team) {
-      result = await apiHandler.getStatsByTeam(String(team));
-    } else if (templateName) {
-      result = await apiHandler.getStatsByTemplate(String(templateName));
-    } else {
-      result = await apiHandler.getAllStats();
-    }
-    response.json(result);
-  });
-
-  router.get('/getStats/group', async (_request, response) => {
-    const result = await apiHandler.getGroupDivisionStats();
-    response.json(result);
-  });
-
-  router.get('/getDailyTimeSummary/team', async (_request, response) => {
-    const result = await apiHandler.getDailyTimeSummariesTeamWise();
-    response.json(result);
-  });
-
-  router.get('/getDailyTimeSummary/template', async (_request, response) => {
-    const result = await apiHandler.getDailyTimeSummariesTemplateWise();
-    response.json(result);
-  });
-
-  router.get('/getTimeSummary/team', async (_request, response) => {
-    const result = await apiHandler.getTimeSummarySavedTeamWise();
-    response.json(result);
-  });
-
-  router.get('/getTimeSummary/template', async (_request, response) => {
-    const result = await apiHandler.getTimeSummarySavedTemplateWise();
-    response.json(result);
-  });
-
-  router.get('/migrate', async (_request, response) => {
-    const result = await apiHandler.updateTemplatesWithSubstituteData();
-    response.json(result);
-  });
-
-  router.get('/groups', async (_request, response) => {
-    const result = await apiHandler.getAllGroups();
-    response.json(result);
-  });
-
-  router.get('/templates', async (_request, response) => {
-    const result = await apiHandler.getAllTemplateNames();
-    response.json(result);
-  });
-
-  router.get('/templateTasks', async (_request, response) => {
-    const result = await apiHandler.getAllTemplateTasks();
-    response.json(result);
-  });
-
-  router.get('/getTemplateCount', async (_request, response) => {
-    const result = await apiHandler.getTemplateCount();
-    response.json(result);
-  });
-
-  router.get('/getTimeSavedSum', async (request, response) => {
-    const divider: number = Number(request.query.divider);
-    if (divider !== undefined && divider <= 0) {
-      response
-        .status(400)
-        .json({ error: 'Divider should be a positive number' });
-      return;
-    }
-    const result = divider
-      ? await apiHandler.getTimeSavedSum(divider)
-      : await apiHandler.getTimeSavedSum();
-    response.json(result);
-  });
-
+  const router = plugin.timeSaverRouter;
   router.use(errorHandler());
   return router;
 }
+
+export const timeSaverPlugin = createBackendPlugin({
+  pluginId: 'time-saver',
+  register(env) {
+    env.registerInit({
+      deps: {
+        logger: coreServices.logger,
+        config: coreServices.rootConfig,
+        scheduler: coreServices.scheduler,
+        database: coreServices.database,
+        http: coreServices.httpRouter,
+      },
+      async init({ config, logger, scheduler, database, http }) {
+        const baseRouter = registerRouter();
+        const winstonLogger = loggerToWinstonLogger(logger);
+        const plugin = await PluginInitializer.builder(
+          baseRouter,
+          winstonLogger,
+          config,
+          database,
+          scheduler,
+        );
+        const router = plugin.timeSaverRouter;
+        http.use(router);
+      },
+    });
+  },
+});
