@@ -26,7 +26,7 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable --immutable-cache --check-cache
 
       - name: Run code quality checks
         run: |
