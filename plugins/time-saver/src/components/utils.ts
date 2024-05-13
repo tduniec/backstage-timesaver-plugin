@@ -23,12 +23,3 @@ export function getRandomColor() {
   return color;
 }
 
-export async function fetchWithCredentials(
-  url: string | URL,
-  options = {},
-): Promise<Response> {
-  return fetch(url, {
-    ...options,
-    credentials: 'include',
-  });
-}
