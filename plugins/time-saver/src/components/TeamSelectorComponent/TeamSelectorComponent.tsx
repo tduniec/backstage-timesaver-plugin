@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   Button,
@@ -24,7 +24,6 @@ import {
   InputLabel,
   MenuItem,
 } from '@material-ui/core';
-import { fetchWithCredentials } from '../utils';
 
 interface TeamSelectorProps {
   onTeamChange: (team: string) => void;
@@ -59,9 +58,10 @@ export default function TeamSelector({
 
   const [data, setData] = useState<GroupsResponse | null>(null);
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
   useEffect(() => {
-    fetchWithCredentials(
+    fetchApi.fetch(
       `${configApi.getString('backend.baseUrl')}/api/time-saver/groups`,
     )
       .then(response => response.json())
