@@ -62,7 +62,7 @@ export function ByTeamBarChart({
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, team]);
+  }, [configApi, team, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

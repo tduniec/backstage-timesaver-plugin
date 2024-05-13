@@ -50,7 +50,7 @@ export function GroupDivisionPieChart(): React.ReactElement {
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi]);
+  }, [configApi, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

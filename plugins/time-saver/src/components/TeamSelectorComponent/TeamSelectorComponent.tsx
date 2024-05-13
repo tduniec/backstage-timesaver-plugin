@@ -67,7 +67,7 @@ export default function TeamSelector({
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, onTeamChange]);
+  }, [configApi, onTeamChange, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

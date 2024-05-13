@@ -47,7 +47,7 @@ export function TimeSavedGauge({
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, number]);
+  }, [configApi, number, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

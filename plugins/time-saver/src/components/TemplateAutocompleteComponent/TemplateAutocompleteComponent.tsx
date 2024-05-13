@@ -52,7 +52,7 @@ export default function TemplateAutocomplete({
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi]);
+  }, [configApi, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

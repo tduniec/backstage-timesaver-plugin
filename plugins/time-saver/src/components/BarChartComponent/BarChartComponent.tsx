@@ -63,7 +63,7 @@ export function BarChart({
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, templateTaskId]);
+  }, [configApi, templateTaskId, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

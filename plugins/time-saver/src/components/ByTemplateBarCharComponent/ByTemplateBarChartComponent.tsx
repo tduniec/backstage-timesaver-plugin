@@ -60,7 +60,7 @@ export function ByTemplateBarChart({
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, template_name]);
+  }, [configApi, template_name, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

@@ -65,7 +65,7 @@ export function TemplateWiseTimeSummaryLinearChart({
         setData(dt);
       })
       .catch();
-  }, [configApi, template_name]);
+  }, [configApi, template_name, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

@@ -71,7 +71,7 @@ export function TeamWiseTimeSummaryLinearChart({
         setData(dt);
       })
       .catch();
-  }, [configApi, team]);
+  }, [configApi, team, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

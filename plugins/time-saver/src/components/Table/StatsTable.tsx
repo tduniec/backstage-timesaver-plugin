@@ -69,7 +69,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
         setSortModel([{ field: 'sum', sort: 'desc' }]);
       })
       .catch();
-  }, [configApi, team, template_name]);
+  }, [configApi, team, template_name, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
