@@ -58,7 +58,8 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
       url = `${url}?templateName=${template_name}`;
     }
 
-    fetchApi.fetch(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then((dt: AllStatsChartResponse) => {
         const statsWithIds = dt.stats.map((stat, index) => ({

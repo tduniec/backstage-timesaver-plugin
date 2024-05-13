@@ -52,11 +52,12 @@ export function ByTemplateBarChart({
   const theme = useTheme();
 
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getStats?templateName=${template_name} `,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getStats?templateName=${template_name} `,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

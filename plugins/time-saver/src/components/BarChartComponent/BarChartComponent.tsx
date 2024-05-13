@@ -55,11 +55,12 @@ export function BarChart({
   const theme = useTheme();
 
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getStats?templateTaskId=${templateTaskId} `,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getStats?templateTaskId=${templateTaskId} `,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

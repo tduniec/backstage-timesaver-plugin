@@ -32,7 +32,8 @@ export function TemplateCountGauge(): React.ReactElement {
       'backend.baseUrl',
     )}/api/time-saver/getTemplateCount`;
 
-    fetchApi.fetch(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

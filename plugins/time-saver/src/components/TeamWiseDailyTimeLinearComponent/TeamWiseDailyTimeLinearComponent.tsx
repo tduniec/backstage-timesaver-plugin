@@ -53,11 +53,12 @@ export function DailyTimeSummaryLineChartTeamWise({
   const [data, setData] = useState<DailyTimeSummaryResponse | null>(null);
   const theme = useTheme();
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getDailyTimeSummary/team`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getDailyTimeSummary/team`,
+      )
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(

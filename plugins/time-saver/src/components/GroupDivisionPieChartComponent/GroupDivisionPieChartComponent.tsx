@@ -44,9 +44,12 @@ export function GroupDivisionPieChart(): React.ReactElement {
   const theme = useTheme();
 
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats/group`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getStats/group`,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

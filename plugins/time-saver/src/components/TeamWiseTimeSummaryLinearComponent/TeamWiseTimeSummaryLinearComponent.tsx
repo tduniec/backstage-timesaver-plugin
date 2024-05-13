@@ -55,11 +55,12 @@ export function TeamWiseTimeSummaryLinearChart({
   );
   const theme = useTheme();
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getTimeSummary/team`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getTimeSummary/team`,
+      )
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(

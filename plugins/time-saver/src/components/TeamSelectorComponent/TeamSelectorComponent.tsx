@@ -61,9 +61,8 @@ export default function TeamSelector({
   const fetchApi = useApi(fetchApiRef);
 
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/groups`,
-    )
+    fetchApi
+      .fetch(`${configApi.getString('backend.baseUrl')}/api/time-saver/groups`)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

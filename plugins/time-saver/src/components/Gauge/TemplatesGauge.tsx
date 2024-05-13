@@ -32,7 +32,8 @@ export function TemplatesGauge(): React.ReactElement {
       'backend.baseUrl',
     )}/api/time-saver/templates`;
 
-    fetchApi.fetch(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

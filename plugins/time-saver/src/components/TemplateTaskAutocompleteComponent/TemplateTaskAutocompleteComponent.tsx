@@ -47,9 +47,12 @@ export default function TemplateTaskAutocomplete({
   const fetchApi = useApi(fetchApiRef);
 
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/templateTasks`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/templateTasks`,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

@@ -56,7 +56,8 @@ export function DailyTimeSummaryLineChartTemplateWise({
     const url = `${configApi.getString(
       'backend.baseUrl',
     )}/api/time-saver/getDailyTimeSummary/template`;
-    fetchApi.fetch(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(

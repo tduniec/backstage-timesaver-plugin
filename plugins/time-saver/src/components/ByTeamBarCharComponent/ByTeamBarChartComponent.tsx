@@ -54,11 +54,12 @@ export function ByTeamBarChart({
   const theme = useTheme();
 
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getStats?team=${team} `,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getStats?team=${team} `,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

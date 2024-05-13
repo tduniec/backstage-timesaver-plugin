@@ -55,7 +55,8 @@ export function TemplateWiseTimeSummaryLinearChart({
     const url = `${configApi.getString(
       'backend.baseUrl',
     )}/api/time-saver/getTimeSummary/template`;
-    fetchApi.fetch(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(

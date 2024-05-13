@@ -47,9 +47,10 @@ export function AllStatsBarChart(): React.ReactElement {
   const theme = useTheme();
 
   useEffect(() => {
-    fetchApi.fetch(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString('backend.baseUrl')}/api/time-saver/getStats`,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();

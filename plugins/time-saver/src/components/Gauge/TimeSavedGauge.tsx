@@ -43,7 +43,8 @@ export function TimeSavedGauge({
       url = `${url}?divider=${number}`;
     }
 
-    fetchApi.fetch(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
