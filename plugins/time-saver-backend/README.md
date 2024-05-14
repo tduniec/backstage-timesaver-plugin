@@ -55,7 +55,7 @@ apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use a
 
 ```
 
-3. Generate and specify an static token for communication against the scaffolder using service to service authentication. Please have in mind that the plugin looks for time-saver as the subject.
+3. Generate and specify a static token for communication with the scaffold using service-to-service authentication. This can be retrieved using the subject `time-saver` with the configuration object.
 
 ```yaml
 backend:
@@ -64,7 +64,7 @@ backend:
       ...
       - type: static
         options:
-          token: ${MY_SECRET}
+          token: ${TIME_SAVER_AUTH_TOKEN}
           subject: time-saver
 ```
 
