@@ -25,8 +25,8 @@ import {
   ChartOptions,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { fetchWithCredentials, getRandomColor } from '../utils';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
+import { getRandomColor } from '../utils';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTheme } from '@material-ui/core';
 
@@ -48,15 +48,17 @@ export function DailyTimeSummaryLineChartTeamWise({
   team,
 }: DailyTimeSummaryLineProps): React.ReactElement {
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
   const [data, setData] = useState<DailyTimeSummaryResponse | null>(null);
   const theme = useTheme();
   useEffect(() => {
-    fetchWithCredentials(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getDailyTimeSummary/team`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getDailyTimeSummary/team`,
+      )
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(
@@ -68,7 +70,7 @@ export function DailyTimeSummaryLineChartTeamWise({
         setData(dt);
       })
       .catch();
-  }, [configApi, team]);
+  }, [configApi, team, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

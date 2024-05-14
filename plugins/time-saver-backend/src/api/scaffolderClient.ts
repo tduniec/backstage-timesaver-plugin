@@ -61,11 +61,17 @@ export class ScaffolderClient {
   async generateBackendToken(config: Config, name?: string) {
     let key: string = '';
     let decodedBytes: Buffer | string = '';
-    const keyConfig: { secret: string }[] | undefined =
-      config.getOptional('backend.auth.keys');
+    const keyConfig:
+      | { type: string; options: { token: string; subject: string } }[]
+      | undefined = config.getOptional('backend.auth.externalAccess');
 
-    if (keyConfig) {
-      key = keyConfig[0].secret;
+    keyConfig?.forEach(item => {
+      if (item.options.subject === 'time-saver') {
+        key = item.options.token;
+      }
+    });
+
+    if (key !== '') {
       decodedBytes = this.isBase64(key) ? this.decodeFromBase64(key) : key;
     } else {
       decodedBytes = '';

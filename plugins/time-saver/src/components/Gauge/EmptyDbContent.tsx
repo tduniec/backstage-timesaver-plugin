@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   Table,
@@ -24,7 +24,6 @@ import {
   TableContainer,
   TableRow,
 } from '@material-ui/core';
-import { fetchWithCredentials } from '../utils';
 
 type TemplatesResponse = {
   templates: string[];
@@ -32,6 +31,7 @@ type TemplatesResponse = {
 
 export function EmptyTimeSaver(): React.ReactElement {
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
   const [data, setData] = useState<TemplatesResponse | null>(null);
 
@@ -40,11 +40,12 @@ export function EmptyTimeSaver(): React.ReactElement {
       'backend.baseUrl',
     )}/api/time-saver/templates`;
 
-    fetchWithCredentials(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi]);
+  }, [configApi, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
