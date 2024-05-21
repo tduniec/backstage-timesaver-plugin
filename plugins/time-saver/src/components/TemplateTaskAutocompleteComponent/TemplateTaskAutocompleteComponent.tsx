@@ -16,9 +16,8 @@
 import * as React from 'react';
 import { Autocomplete } from '@material-ui/lab';
 import { useEffect, useState } from 'react';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { fetchWithCredentials } from '../utils';
 import { TextField } from '@material-ui/core';
 
 interface TemplateTaskChange {
@@ -45,15 +44,19 @@ export default function TemplateTaskAutocomplete({
 
   const [data, setData] = useState<TemplateTasksResponse | null>(null);
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
   useEffect(() => {
-    fetchWithCredentials(
-      `${configApi.getString('backend.baseUrl')}/api/time-saver/templateTasks`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/templateTasks`,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi]);
+  }, [configApi, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

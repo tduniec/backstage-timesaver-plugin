@@ -24,8 +24,8 @@ import {
   ChartOptions,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { fetchWithCredentials, getRandomColor } from '../utils';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
+import { getRandomColor } from '../utils';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTheme } from '@material-ui/core';
 
@@ -47,19 +47,21 @@ export function ByTemplateBarChart({
   template_name,
 }: ByTemplateBarChartProps): React.ReactElement {
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
   const [data, setData] = useState<TemplateChartResponse | null>(null);
   const theme = useTheme();
 
   useEffect(() => {
-    fetchWithCredentials(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getStats?templateName=${template_name} `,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getStats?templateName=${template_name} `,
+      )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, template_name]);
+  }, [configApi, template_name, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

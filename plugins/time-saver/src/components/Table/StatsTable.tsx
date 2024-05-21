@@ -16,9 +16,8 @@
 import React, { useState, useEffect } from 'react';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
-import { fetchWithCredentials } from '../utils';
 import { useTheme, Paper } from '@material-ui/core';
 
 type Stat = {
@@ -45,6 +44,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
   ]);
 
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
   const theme = useTheme();
 
@@ -58,7 +58,8 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
       url = `${url}?templateName=${template_name}`;
     }
 
-    fetchWithCredentials(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then((dt: AllStatsChartResponse) => {
         const statsWithIds = dt.stats.map((stat, index) => ({
@@ -69,7 +70,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
         setSortModel([{ field: 'sum', sort: 'desc' }]);
       })
       .catch();
-  }, [configApi, team, template_name]);
+  }, [configApi, team, template_name, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
