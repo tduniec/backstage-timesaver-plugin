@@ -35,10 +35,10 @@
     "jest-haste-map@^29.7.0": "patch:jest-haste-map@npm%3A29.7.0#./.yarn/patches/jest-haste-map-npm-29.7.0-e3be419eff.patch"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.25.1",
-    "@backstage/codemods": "workspace:*",
-    "@backstage/create-app": "workspace:*",
-    "@backstage/repo-tools": "workspace:*",
+    "@backstage/cli": "^0.26.9",
+    "@backstage/codemods": "^0.1.49",
+    "@backstage/create-app": "^0.5.16",
+    "@backstage/repo-tools": "^0.9.2",
     "@changesets/cli": "^2.14.0",
     "@octokit/rest": "^19.0.3",
     "@playwright/test": "^1.32.3",
