@@ -1,7 +1,7 @@
 {
   "name": "@tduniec/backstage-plugin-time-saver-common",
   "description": "Common functionalities for the time-saver plugin",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
   "license": "Apache-2.0",
@@ -17,7 +17,13 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "common-library"
+    "role": "common-library",
+    "pluginId": "time-saver",
+    "pluginPackages": [
+      "@tduniec/backstage-plugin-time-saver",
+      "@tduniec/backstage-plugin-time-saver-backend",
+      "@tduniec/backstage-plugin-time-saver-common"
+    ]
   },
   "sideEffects": false,
   "scripts": {
@@ -29,11 +35,11 @@
     "postpack": "backstage-cli package postpack"
   },
   "dependencies": {
-    "@backstage/core-plugin-api": "^1.8.2",
-    "@backstage/plugin-permission-common": "0.7.12"
+    "@backstage/core-plugin-api": "^1.9.3",
+    "@backstage/plugin-permission-common": "^0.7.14"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.25.1"
+    "@backstage/cli": "^0.26.9"
   },
   "files": [
     "dist"
