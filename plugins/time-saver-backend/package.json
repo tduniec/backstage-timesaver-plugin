@@ -15,7 +15,13 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "time-saver",
+    "pluginPackages": [
+      "@tduniec/backstage-plugin-time-saver",
+      "@tduniec/backstage-plugin-time-saver-backend",
+      "@tduniec/backstage-plugin-time-saver-common"
+    ]
   },
   "scripts": {
     "start": "backstage-cli package start",
