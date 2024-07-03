@@ -52,7 +52,7 @@ export class TimeSaverHandler {
         .replace('T', ' ')
         .replace('Z', ' UTC');
       this.logger.info(`Parsing template task ${singleTemplate.id}`);
-      const templateSubstituteData =
+      let templateSubstituteData =
         singleTemplate.spec.templateInfo.entity.metadata.substitute ||
         undefined;
       if (templateSubstituteData) {
