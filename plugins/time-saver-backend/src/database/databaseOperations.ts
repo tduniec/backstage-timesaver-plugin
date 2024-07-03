@@ -166,12 +166,14 @@ export class DatabaseOperations {
 
   async getAllStats() {
     try {
-      const result = await this.knex.raw(
-        'SELECT sum(time_saved), team, template_name from ts_template_time_savings group by team, template_name;',
-      );
-      const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
-      return roundNumericValues(rows);
+      const result = await this.knex('ts_template_time_savings')
+        .sum('time_saved')
+        .select('team', 'role', 'template_name')
+        .groupBy('team')
+        .groupBy('role')
+        .groupBy('template_name');
+      this.logger.info(`Data selected successfully ${JSON.stringify(result)}`);
+      return roundNumericValues(result);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
