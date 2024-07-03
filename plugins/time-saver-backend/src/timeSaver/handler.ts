@@ -55,24 +55,12 @@ export class TimeSaverHandler {
       let templateSubstituteData =
         singleTemplate.spec.templateInfo.entity.metadata.substitute ||
         undefined;
-      if (templateSubstituteData) {
-        for (const key in templateSubstituteData.engineering) {
-          if (
-            Object.prototype.hasOwnProperty.call(
-              templateSubstituteData.engineering,
-              key,
-            )
-          ) {
-            const value = templateSubstituteData.engineering[key];
-            await this.db.insert(this.tsTableName, {
-              template_task_id: singleTemplate.id,
-              created_at: createdAtForPostgres,
-              template_name: singleTemplate.spec.templateInfo.entityRef,
-              team: key,
-              time_saved: value,
-              template_task_status: singleTemplate.status,
-              created_by: singleTemplate.createdBy,
-            });
+      templateSubstituteData = Object.fromEntries(
+        Object.entries(templateSubstituteData).filter(e => e[0] !== 'entityRef')
+      );
+
+      const createTemplateStats = async ({ team, role, timeSaved }: { team: string, role: string, timeSaved: number }) =>
+        await this.db.insert(this.tsTableName, {
           }
         }
       } else {
