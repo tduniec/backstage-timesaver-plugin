@@ -57,6 +57,7 @@ export class TimeSaverHandler {
       let templateSubstituteData =
         singleTemplate.spec.templateInfo.entity.metadata.substitute ||
         undefined;
+      //  Skip entityRef key
       templateSubstituteData = Object.fromEntries(
         Object.entries(templateSubstituteData).filter(e => e[0] !== 'entityRef')
       );
@@ -72,6 +73,41 @@ export class TimeSaverHandler {
           template_task_status: singleTemplate.status,
           created_by: singleTemplate.createdBy,
         });
+
+      if (templateSubstituteData) {
+        // Check if it's nested
+        let role: string = '';
+        let nesting_levels: number = 0;
+        for (const team in templateSubstituteData) {
+          //  Check if is object
+          if (typeof templateSubstituteData[team] === 'object' && templateSubstituteData[team] !== null) {
+            // 2 level classification
+            if (nesting_levels && nesting_levels !== 2) {
+              this.logger.error(`Different nesting levels found. Started with 2 levels, then 1 level was found: ${JSON.stringify(templateSubstituteData)}`);
+              break;
+            }
+            nesting_levels = 2;
+
+            Object.entries(templateSubstituteData[team]).forEach(async ([roleName, roleTimeSaved]) => {
+              const timeSaved = parseInt(roleTimeSaved as string, 10);
+              if (typeof timeSaved !== 'number') {
+                this.logger.error(`Wrong value type found in annotation: ${roleTimeSaved}`);
+              }
+              await createTemplateStats({ team, role: roleName, timeSaved });
+            });
+          } else if (typeof templateSubstituteData[team] === 'number') {
+            // 1 level classification
+            if (nesting_levels && nesting_levels !== 1) {
+              this.logger.error(`Different nesting levels found. Started with 1 level, then 2 levels were found: ${JSON.stringify(templateSubstituteData)}`);
+              break;
+            }
+            nesting_levels = 1;
+
+            const timeSaved = templateSubstituteData[team];
+            role = team;
+            await createTemplateStats({ team: this.globalTeam, role, timeSaved });
+          } else {
+            this.logger.error(`Malformed team/role structure ${JSON.stringify(templateSubstituteData)}`);
           }
         }
       } else {
