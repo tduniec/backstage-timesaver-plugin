@@ -149,6 +149,23 @@ export class DatabaseOperations {
     }
   }
 
+  async getStatsByRole(role: string) {
+    try {
+      const result = await this.knex('ts_template_time_savings')
+        .sum('time_saved')
+        .select('template_name')
+        .where('role', role)
+        .groupBy('template_name')
+        .groupBy('role');
+
+      this.logger.info(`Data selected successfully ${JSON.stringify(result)}`);
+      return roundNumericValues(result);
+    } catch (error) {
+      this.logger.error('Error selecting data:', error);
+      throw error;
+    }
+  }
+
   async getStatsByTemplate(template: string) {
     try {
       const result = await this.knex.raw(
