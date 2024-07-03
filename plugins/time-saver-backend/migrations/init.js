@@ -95,6 +95,7 @@ exports.up = async function up(knex) {
         .comment('Template name as template entity_reference');
 
       table.string('team').comment('Team name of saved time');
+      table.string('role').comment('Role name of saved time');
 
       table
         .float('time_saved', 2)
