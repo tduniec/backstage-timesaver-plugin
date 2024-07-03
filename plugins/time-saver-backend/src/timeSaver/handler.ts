@@ -26,9 +26,11 @@ export class TimeSaverHandler {
     knex: Knex,
   ) {
     this.db = new DatabaseOperations(knex, logger);
+    this.globalTeam = this.config.getString('ts.globalTeam') ?? 'Global';
   }
   private readonly db: DatabaseOperations;
   private readonly tsTableName = 'ts_template_time_savings';
+  private readonly globalTeam: string;
 
   async fetchTemplates() {
     const scaffolderClient = new ScaffolderClient(this.logger, this.config);
