@@ -56,6 +56,16 @@ export class TsApi {
     return outputBody;
   }
 
+  public async getStatsByRole(role: string) {
+    const queryResult = await this.db.getStatsByRole(role);
+    const outputBody = {
+      role: role,
+      stats: queryResult,
+    };
+    this.logger.info(JSON.stringify(outputBody));
+    return outputBody;
+  }
+
   public async getStatsByTemplate(template: string) {
     const queryResult = await this.db.getStatsByTemplate(template);
     const outputBody = {
