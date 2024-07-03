@@ -36,8 +36,7 @@ export function setupCommonRoutes(
 
   router.get('/getStats/', async (request, response) => {
     const templateId = request.query.templateTaskId;
-    const team = request.query.team;
-    const templateName = request.query.templateName;
+    const { team, role, templateName } = request.query;
     let result;
     if (templateId) {
       result = await apiHandler.getStatsByTemplateTaskId(String(templateId));
