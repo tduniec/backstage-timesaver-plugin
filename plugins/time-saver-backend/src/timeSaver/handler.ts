@@ -61,6 +61,15 @@ export class TimeSaverHandler {
 
       const createTemplateStats = async ({ team, role, timeSaved }: { team: string, role: string, timeSaved: number }) =>
         await this.db.insert(this.tsTableName, {
+          template_task_id: singleTemplate.id,
+          created_at: createdAtForPostgres,
+          template_name: singleTemplate.spec.templateInfo.entityRef,
+          team: team,
+          role: role,
+          time_saved: timeSaved,
+          template_task_status: singleTemplate.status,
+          created_by: singleTemplate.createdBy,
+        });
           }
         }
       } else {
