@@ -18,7 +18,7 @@ import { Logger } from 'winston';
 import { roundNumericValues } from '../utils';
 
 export class DatabaseOperations {
-  constructor(private readonly knex: Knex, private readonly logger: Logger) {}
+  constructor(private readonly knex: Knex, private readonly logger: Logger) { }
 
   async select(tableName: string, column: string, key: Record<string, string>) {
     try {
