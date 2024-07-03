@@ -42,6 +42,8 @@ export function setupCommonRoutes(
       result = await apiHandler.getStatsByTemplateTaskId(String(templateId));
     } else if (team) {
       result = await apiHandler.getStatsByTeam(String(team));
+    } else if (role) {
+      result = await apiHandler.getStatsByRole(String(role));
     } else if (templateName) {
       result = await apiHandler.getStatsByTemplate(String(templateName));
     } else {
