@@ -27,6 +27,7 @@ export class TsApi {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
+    private readonly auth: AuthService,
     knex: Knex,
     scaffoldKx: Knex,
   ) {
@@ -141,6 +142,7 @@ export class TsApi {
       const taskTemplateList = await new ScaffolderClient(
         this.logger,
         this.config,
+        this.auth,
       ).fetchTemplatesFromScaffolder();
       for (let i = 0; i < taskTemplateList.length; i++) {
         const singleTemplate = taskTemplateList[i];
