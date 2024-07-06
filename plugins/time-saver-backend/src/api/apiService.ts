@@ -25,8 +25,8 @@ import { ScaffolderDatabaseOperations } from '../database/scaffolderDatabaseOper
 
 export class TsApi {
   constructor(
-    private readonly logger: Logger,
-    private readonly config: Config,
+    private readonly logger: LoggerService,
+    private readonly config: RootConfigService,
     knex: Knex,
     scaffoldKx: Knex,
   ) {
