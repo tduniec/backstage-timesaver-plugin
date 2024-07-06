@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Config } from '@backstage/config';
-import { Logger } from 'winston';
-import jwt from 'jsonwebtoken';
-import * as base64 from 'base64-js';
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 
 export class ScaffolderClient {
   constructor(
