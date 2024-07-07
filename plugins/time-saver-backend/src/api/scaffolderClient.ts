@@ -46,6 +46,15 @@ export class ScaffolderClient {
         },
       });
       const data = await response.json();
+      this.logger.info(`token: ${token}`);
+      this.logger.info(`TS - ${JSON.stringify(data)}`);
+      if (Object.hasOwn(data, 'error')) {
+        this.logger.error(`Problem retrieving scaffolder tasks`, data.error);
+        return [];
+      } else if (!Object.hasOwn(data, 'tasks')) {
+        this.logger.error(`Tasks key not found in scaffolder tasks call`);
+        return [];
+      }
       templateTaskList = data.tasks;
     } catch (error) {
       this.logger.error(
