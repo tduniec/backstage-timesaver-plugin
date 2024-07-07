@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import express from 'express';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { TimeSaverHandler } from '../timeSaver/handler';
 import { TsApi } from '../api/apiService';
 
 export function setupCommonRoutes(
   router: express.Router,
-  logger: Logger,
+  logger: LoggerService,
   tsHandler: TimeSaverHandler,
   apiHandler: TsApi,
 ) {
