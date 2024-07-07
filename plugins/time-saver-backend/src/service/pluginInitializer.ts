@@ -30,6 +30,8 @@ import { PluginTaskScheduler } from '@backstage/backend-tasks';
 
 interface PluginDependencies {
   router: Router;
+  logger: LoggerService;
+  config: RootConfigService;
   auth: AuthService;
   database: PluginDatabaseManager;
   scheduler: PluginTaskScheduler;
@@ -48,6 +50,8 @@ const TS_PLUGIN_DEFAULT_SCHEDULE = {
 };
 
 export class PluginInitializer {
+  private logger!: LoggerService;
+  private config!: RootConfigService;
   private auth!: AuthService;
   private scheduler!: PluginTaskScheduler;
   private database!: PluginDatabaseManager;
@@ -58,6 +62,8 @@ export class PluginInitializer {
 
   private constructor(
     router: Router,
+    logger: LoggerService,
+    config: RootConfigService,
     auth: AuthService,
     database: PluginDatabaseManager,
     scheduler: PluginTaskScheduler,
@@ -72,6 +78,8 @@ export class PluginInitializer {
 
   static async builder(
     router: Router,
+    logger: LoggerService,
+    config: RootConfigService,
     auth: AuthService,
     database: PluginDatabaseManager,
     scheduler: PluginTaskScheduler,
@@ -109,10 +117,19 @@ export class PluginInitializer {
     }
 
     // Initialize handlers
+    this.tsHandler = new TimeSaverHandler(
+      this.logger,
+      this.config,
       this.auth,
       kx,
+    );
+    this.apiHandler = new TsApi(
+      this.logger,
+      this.config,
       this.auth,
       kx,
+      scaffolderDbKx,
+    );
     this.tsScheduler = new TsScheduler(this.logger, this.config, this.auth, kx);
 
     // Scheduler
