@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from 'winston';
-import { Config } from '@backstage/config';
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { PluginDatabaseManager } from '@backstage/backend-common';
 import { TimeSaverHandler } from '../timeSaver/handler';
 import { TsApi } from '../api/apiService';
