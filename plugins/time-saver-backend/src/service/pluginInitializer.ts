@@ -30,8 +30,7 @@ import { PluginTaskScheduler } from '@backstage/backend-tasks';
 
 interface PluginDependencies {
   router: Router;
-  logger: Logger;
-  config: Config;
+  auth: AuthService;
   database: PluginDatabaseManager;
   scheduler: PluginTaskScheduler;
 }
@@ -49,8 +48,7 @@ const TS_PLUGIN_DEFAULT_SCHEDULE = {
 };
 
 export class PluginInitializer {
-  private logger!: Logger;
-  private config!: Config;
+  private auth!: AuthService;
   private scheduler!: PluginTaskScheduler;
   private database!: PluginDatabaseManager;
   private tsHandler!: TimeSaverHandler;
@@ -60,22 +58,21 @@ export class PluginInitializer {
 
   private constructor(
     router: Router,
-    logger: Logger,
-    config: Config,
+    auth: AuthService,
     database: PluginDatabaseManager,
     scheduler: PluginTaskScheduler,
   ) {
     this.router = router;
     this.logger = logger;
     this.config = config;
+    this.auth = auth;
     this.database = database;
     this.scheduler = scheduler;
   }
 
   static async builder(
     router: Router,
-    logger: Logger,
-    config: Config,
+    auth: AuthService,
     database: PluginDatabaseManager,
     scheduler: PluginTaskScheduler,
   ): Promise<PluginInitializer> {
@@ -83,6 +80,7 @@ export class PluginInitializer {
       router,
       logger,
       config,
+      auth,
       database,
       scheduler,
     );
@@ -94,6 +92,7 @@ export class PluginInitializer {
     // Initialize logger, config, database and scheduler
     this.logger = this.dependencies.logger;
     this.config = this.dependencies.config;
+    this.auth = this.dependencies.auth;
     this.database = this.dependencies.database;
     this.scheduler = this.dependencies.scheduler;
 
@@ -110,9 +109,10 @@ export class PluginInitializer {
     }
 
     // Initialize handlers
-    this.tsHandler = new TimeSaverHandler(this.logger, this.config, kx);
-    this.apiHandler = new TsApi(this.logger, this.config, kx, scaffolderDbKx);
-    this.tsScheduler = new TsScheduler(this.logger, this.config, kx);
+      this.auth,
+      kx,
+      this.auth,
+      kx,
 
     // Scheduler
     const taskRunner = this.scheduler.createScheduledTaskRunner(
@@ -134,6 +134,7 @@ export class PluginInitializer {
       !this.router ||
       !this.logger ||
       !this.config ||
+      !this.auth ||
       !this.database ||
       !this.scheduler
     ) {
@@ -143,6 +144,7 @@ export class PluginInitializer {
       router: this.router,
       logger: this.logger,
       config: this.config,
+      auth: this.auth,
       database: this.database,
       scheduler: this.scheduler,
     };
