@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 import { Knex } from 'knex';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { roundNumericValues } from '../utils';
 
 export class DatabaseOperations {
-  constructor(private readonly knex: Knex, private readonly logger: Logger) {}
+  constructor(
+    private readonly knex: Knex,
+    private readonly logger: LoggerService,
+  ) {}
 
   async select(tableName: string, column: string, key: Record<string, string>) {
     try {
