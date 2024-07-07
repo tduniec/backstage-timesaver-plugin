@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
   coreServices,
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
-import {
-  PluginDatabaseManager,
-  errorHandler,
-  loggerToWinstonLogger,
-} from '@backstage/backend-common';
+import { PluginDatabaseManager, errorHandler } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import express from 'express';
 import Router from 'express-promise-router';
-import { Logger } from 'winston';
-import { Config } from '@backstage/config';
 import { PluginInitializer } from './pluginInitializer';
 
 export interface RouterOptions {
