@@ -113,6 +113,7 @@ export class PluginInitializer {
       kx,
       this.auth,
       kx,
+    this.tsScheduler = new TsScheduler(this.logger, this.config, this.auth, kx);
 
     // Scheduler
     const taskRunner = this.scheduler.createScheduledTaskRunner(
