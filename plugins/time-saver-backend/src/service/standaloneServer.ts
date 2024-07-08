@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { LoggerService } from '@backstage/backend-plugin-api';
 import {
   DatabaseManager,
   createServiceBuilder,
   loadBackendConfig,
 } from '@backstage/backend-common';
 import { Server } from 'http';
-import { Logger } from 'winston';
 import { createRouter } from './router';
 import { ConfigReader } from '@backstage/config';
 import {
@@ -31,7 +31,7 @@ import {
 export interface ServerOptions {
   port: number;
   enableCors: boolean;
-  logger: Logger;
+  logger: LoggerService;
 }
 
 export async function startStandaloneServer(
