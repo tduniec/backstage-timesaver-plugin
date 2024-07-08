@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from 'winston';
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
 import { DatabaseOperations } from '../database/databaseOperations';
 import { ScaffolderClient } from '../api/scaffolderClient';
