@@ -43,12 +43,13 @@ function registerRouter() {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, database, scheduler } = options;
+  const { logger, config, auth, database, scheduler } = options;
   const baseRouter = registerRouter();
   const plugin = await PluginInitializer.builder(
     baseRouter,
     logger,
     config,
+    auth,
     database,
     scheduler,
   );
@@ -64,16 +65,18 @@ export const timeSaverPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         config: coreServices.rootConfig,
+        auth: coreServices.auth,
         scheduler: coreServices.scheduler,
         database: coreServices.database,
         http: coreServices.httpRouter,
       },
-      async init({ config, logger, scheduler, database, http }) {
+      async init({ auth, config, logger, scheduler, database, http }) {
         const baseRouter = registerRouter();
         const plugin = await PluginInitializer.builder(
           baseRouter,
           logger,
           config,
+          auth,
           database,
           scheduler,
         );
