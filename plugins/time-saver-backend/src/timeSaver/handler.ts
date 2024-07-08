@@ -21,11 +21,10 @@ import {
 import { Knex } from 'knex';
 import { DatabaseOperations } from '../database/databaseOperations';
 import { ScaffolderClient } from '../api/scaffolderClient';
-import { Config } from '@backstage/config';
 
 export class TimeSaverHandler {
   constructor(
-    private readonly logger: Logger,
+    private readonly config: RootConfigService,
     private readonly config: Config,
     knex: Knex,
   ) {
