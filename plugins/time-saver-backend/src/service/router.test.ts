@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DatabaseManager, getVoidLogger } from '@backstage/backend-common';
+import { DatabaseManager, getVoidLogger, HostDiscovery } from '@backstage/backend-common';
 import express from 'express';
 import request from 'supertest';
 
@@ -60,9 +60,11 @@ describe('createRouter', () => {
   //  TODO : validate createScheduledTaskRunner parameters types.
 
   beforeAll(async () => {
+    const discovery = HostDiscovery.fromConfig(config);
     const router = await createRouter({
       database: database,
       logger: getVoidLogger(),
+      discovery: discovery,
       config: config,
       scheduler: scheduler,
     });
