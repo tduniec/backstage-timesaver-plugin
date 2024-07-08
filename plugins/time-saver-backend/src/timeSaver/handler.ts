@@ -16,7 +16,7 @@
 import {
   AuthService,
   LoggerService,
-  RootConfigService,
+  RootConfigService
 } from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
 import { DatabaseOperations } from '../database/databaseOperations';
@@ -35,11 +35,7 @@ export class TimeSaverHandler {
   private readonly tsTableName = 'ts_template_time_savings';
 
   async fetchTemplates() {
-    const scaffolderClient = new ScaffolderClient(
-      this.logger,
-      this.config,
-      this.auth,
-    );
+    const scaffolderClient = new ScaffolderClient(this.logger, this.config, this.auth);
     this.logger.info(`START - Collecting Time Savings data from templates...}`);
 
     let templateTaskList = [];
@@ -50,7 +46,7 @@ export class TimeSaverHandler {
     }
 
     await this.db.truncate(this.tsTableName); // cleaning table
-    this.logger.info(`Template task list: ${JSON.stringify(templateTaskList)}`);
+    this.logger.debug(`Template task list: ${JSON.stringify(templateTaskList)}`);
     templateTaskList = templateTaskList.filter(
       (single: { status: string }) => single.status === 'completed',
     ); // filtering only completed

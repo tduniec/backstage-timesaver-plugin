@@ -21,12 +21,12 @@ export class DatabaseOperations {
   constructor(
     private readonly knex: Knex,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async select(tableName: string, column: string, key: Record<string, string>) {
     try {
       const rows = await this.knex.select(column).from(tableName).where(key);
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return rows;
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -60,7 +60,7 @@ export class DatabaseOperations {
       .onConflict(conflictColumn)
       .merge()
       .then(() => {
-        this.logger.info('Data inserted successfully');
+        this.logger.debug('Data inserted successfully');
       })
       .catch(error => {
         this.logger.error('Error inserting data:', error);
@@ -77,7 +77,7 @@ export class DatabaseOperations {
       .where(key)
       .update(data)
       .then(() => {
-        this.logger.info('Data updated successfully');
+        this.logger.debug('Data updated successfully');
       })
       .catch(error => {
         this.logger.error('Error updating data:', error);
@@ -90,7 +90,7 @@ export class DatabaseOperations {
       .where(key)
       .del()
       .then(deletedRow => {
-        this.logger.info(
+        this.logger.debug(
           `row deleted successfully: ${JSON.stringify(deletedRow)}`,
         );
         return deletedRow;
@@ -115,7 +115,7 @@ export class DatabaseOperations {
         { templateTaskId },
       );
       const rows = result.rows[0].template_name;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -129,7 +129,7 @@ export class DatabaseOperations {
         { templateTaskId },
       );
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -144,7 +144,7 @@ export class DatabaseOperations {
         { team },
       );
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -159,7 +159,7 @@ export class DatabaseOperations {
         { template },
       );
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -173,7 +173,7 @@ export class DatabaseOperations {
         'SELECT sum(time_saved), team, template_name from ts_template_time_savings group by team, template_name;',
       );
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -198,7 +198,7 @@ export class DatabaseOperations {
             team;
             `);
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -222,7 +222,7 @@ export class DatabaseOperations {
             date;
             `);
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -246,7 +246,7 @@ export class DatabaseOperations {
             date;             
             `);
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -268,7 +268,7 @@ export class DatabaseOperations {
             team, TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD'), created_at;
             `);
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
@@ -290,7 +290,7 @@ export class DatabaseOperations {
             TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD');            
             `);
       const rows = result.rows;
-      this.logger.info(`Data selected successfully ${JSON.stringify(rows)}`);
+      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
       this.logger.error('Error selecting data:', error);
