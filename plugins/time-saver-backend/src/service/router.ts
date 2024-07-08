@@ -27,9 +27,10 @@ import Router from 'express-promise-router';
 import { PluginInitializer } from './pluginInitializer';
 
 export interface RouterOptions {
-  logger: Logger;
+  logger: LoggerService;
   database: PluginDatabaseManager;
-  config: Config;
+  config: RootConfigService;
+  auth: AuthService;
   scheduler: PluginTaskScheduler;
 }
 
@@ -69,10 +70,9 @@ export const timeSaverPlugin = createBackendPlugin({
       },
       async init({ config, logger, scheduler, database, http }) {
         const baseRouter = registerRouter();
-        const winstonLogger = loggerToWinstonLogger(logger);
         const plugin = await PluginInitializer.builder(
           baseRouter,
-          winstonLogger,
+          logger,
           config,
           database,
           scheduler,
