@@ -24,7 +24,7 @@ export class ScaffolderClient {
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
     private readonly auth: AuthService,
-  ) { }
+  ) {}
 
   async fetchTemplatesFromScaffolder() {
     let backendUrl =
