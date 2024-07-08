@@ -45,7 +45,7 @@ const TS_PLUGIN_DEFAULT_SCHEDULE = {
     minutes: 30,
   },
   initialDelay: {
-    seconds: 0,
+    seconds: 30,
   },
 };
 
