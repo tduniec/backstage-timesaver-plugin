@@ -21,7 +21,7 @@ export class DatabaseOperations {
   constructor(
     private readonly knex: Knex,
     private readonly logger: LoggerService,
-  ) { }
+  ) {}
 
   async select(tableName: string, column: string, key: Record<string, string>) {
     try {

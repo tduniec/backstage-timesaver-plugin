@@ -24,7 +24,7 @@ export class ScaffolderClient {
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
     private readonly auth: AuthService,
-  ) { }
+  ) {}
 
   async fetchTemplatesFromScaffolder() {
     let backendUrl =
@@ -46,7 +46,9 @@ export class ScaffolderClient {
         },
       });
       const data = await response.json();
-      this.logger.debug(`Successful call to scaffolder backend. Data:${JSON.stringify(data)}`);
+      this.logger.debug(
+        `Successful call to scaffolder backend. Data:${JSON.stringify(data)}`,
+      );
       if (Object.hasOwn(data, 'error')) {
         this.logger.error(`Problem retrieving scaffolder tasks`, data.error);
         return [];
