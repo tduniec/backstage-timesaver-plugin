@@ -24,6 +24,7 @@ import { ScaffolderClient } from '../api/scaffolderClient';
 
 export class TimeSaverHandler {
   constructor(
+    private readonly logger: LoggerService,
     private readonly config: RootConfigService,
     private readonly config: Config,
     knex: Knex,
@@ -45,6 +46,7 @@ export class TimeSaverHandler {
     }
 
     await this.db.truncate(this.tsTableName); // cleaning table
+    this.logger.info(`Template task list: ${JSON.stringify(templateTaskList)}`);
     templateTaskList = templateTaskList.filter(
       (single: { status: string }) => single.status === 'completed',
     ); // filtering only completed
