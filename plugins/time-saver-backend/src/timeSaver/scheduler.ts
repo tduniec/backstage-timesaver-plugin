@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { TaskRunner } from '@backstage/backend-tasks';
-import { Logger } from 'winston';
 import * as uuid from 'uuid';
 import { TimeSaverHandler } from './handler';
 import { Knex } from 'knex';
