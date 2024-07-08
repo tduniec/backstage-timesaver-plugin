@@ -26,7 +26,7 @@ export class TimeSaverHandler {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
-    private readonly config: Config,
+    private readonly auth: AuthService,
     knex: Knex,
   ) {
     this.db = new DatabaseOperations(knex, logger);
@@ -35,7 +35,11 @@ export class TimeSaverHandler {
   private readonly tsTableName = 'ts_template_time_savings';
 
   async fetchTemplates() {
-    const scaffolderClient = new ScaffolderClient(this.logger, this.config);
+    const scaffolderClient = new ScaffolderClient(
+      this.logger,
+      this.config,
+      this.auth,
+    );
     this.logger.info(`START - Collecting Time Savings data from templates...}`);
 
     let templateTaskList = [];
