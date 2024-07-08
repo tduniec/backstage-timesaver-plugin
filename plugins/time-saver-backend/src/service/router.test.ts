@@ -40,7 +40,12 @@ describe('createRouter', () => {
   );
   const config = new ConfigReader({
     backend: {
-      database: { client: 'better-sqlite3', connection: ':memory:' },
+      baseUrl: 'http://127.0.0.1',
+      listen: { port: 7007 },
+      database: {
+        client: 'better-sqlite3',
+        connection: ':memory:',
+      },
     },
   });
   const database = manager.forPlugin('time-saver');
