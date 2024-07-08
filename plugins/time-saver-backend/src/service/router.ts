@@ -19,8 +19,13 @@ import {
   RootConfigService,
   coreServices,
   createBackendPlugin,
+  DiscoveryService,
 } from '@backstage/backend-plugin-api';
-import { PluginDatabaseManager, errorHandler } from '@backstage/backend-common';
+import {
+  PluginDatabaseManager,
+  errorHandler,
+  createLegacyAuthAdapters,
+} from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import express from 'express';
 import Router from 'express-promise-router';
@@ -30,8 +35,9 @@ export interface RouterOptions {
   logger: LoggerService;
   database: PluginDatabaseManager;
   config: RootConfigService;
-  auth: AuthService;
+  auth?: AuthService;
   scheduler: PluginTaskScheduler;
+  discovery: DiscoveryService;
 }
 
 function registerRouter() {
@@ -43,8 +49,9 @@ function registerRouter() {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, auth, database, scheduler } = options;
+  const { logger, config, database, scheduler } = options;
   const baseRouter = registerRouter();
+  const { auth } = createLegacyAuthAdapters(options);
   const plugin = await PluginInitializer.builder(
     baseRouter,
     logger,
