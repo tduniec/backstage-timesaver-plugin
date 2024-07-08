@@ -18,6 +18,7 @@ import {
   DatabaseManager,
   createServiceBuilder,
   loadBackendConfig,
+  HostDiscovery,
 } from '@backstage/backend-common';
 import { Server } from 'http';
 import { createRouter } from './router';
@@ -39,6 +40,7 @@ export async function startStandaloneServer(
 ): Promise<Server> {
   const logger = options.logger.child({ service: 'time-saver-backend' });
   const config = await loadBackendConfig({ logger, argv: process.argv });
+  const discovery = HostDiscovery.fromConfig(config);
 
   class PersistingTaskRunner implements TaskRunner {
     private tasks: TaskInvocationDefinition[] = [];
@@ -70,9 +72,10 @@ export async function startStandaloneServer(
   logger.debug('Starting application server...');
   const router = await createRouter({
     logger,
-    config: config,
-    database: database,
-    scheduler: scheduler,
+    config,
+    database,
+    discovery,
+    scheduler,
   });
 
   let service = createServiceBuilder(module)
