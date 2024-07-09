@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from 'winston';
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
 import { DatabaseOperations } from '../database/databaseOperations';
 import { ScaffolderClient } from './scaffolderClient';
-import { Config } from '@backstage/config';
 import { ScaffolderDatabaseOperations } from '../database/scaffolderDatabaseOperations';
 
 export class TsApi {
   constructor(
-    private readonly logger: Logger,
-    private readonly config: Config,
+    private readonly logger: LoggerService,
+    private readonly config: RootConfigService,
+    private readonly auth: AuthService,
     knex: Knex,
     scaffoldKx: Knex,
   ) {
@@ -42,7 +46,7 @@ export class TsApi {
       templateName: templateName,
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -52,7 +56,7 @@ export class TsApi {
       team: team,
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -62,7 +66,7 @@ export class TsApi {
       template_name: template,
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -71,7 +75,7 @@ export class TsApi {
     const outputBody = {
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -80,7 +84,7 @@ export class TsApi {
     const outputBody = {
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -89,7 +93,7 @@ export class TsApi {
     const outputBody = {
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
   public async getDailyTimeSummariesTemplateWise() {
@@ -97,7 +101,7 @@ export class TsApi {
     const outputBody = {
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -106,7 +110,7 @@ export class TsApi {
     const outputBody = {
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
   public async getTimeSummarySavedTemplateWise() {
@@ -114,7 +118,7 @@ export class TsApi {
     const outputBody = {
       stats: queryResult,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -138,6 +142,7 @@ export class TsApi {
       const taskTemplateList = await new ScaffolderClient(
         this.logger,
         this.config,
+        this.auth,
       ).fetchTemplatesFromScaffolder();
       for (let i = 0; i < taskTemplateList.length; i++) {
         const singleTemplate = taskTemplateList[i];
@@ -196,7 +201,7 @@ export class TsApi {
     const outputBody = {
       groups: groupList,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -209,7 +214,7 @@ export class TsApi {
     const outputBody = {
       templates: groupList,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -222,7 +227,7 @@ export class TsApi {
     const outputBody = {
       templateTasks: groupList,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -232,7 +237,7 @@ export class TsApi {
     const outputBody = {
       templateTasks: parseInt(queryResult.count, 10),
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
@@ -244,7 +249,7 @@ export class TsApi {
     const outputBody = {
       timeSaved: queryResult.sum / dividerInt,
     };
-    this.logger.info(JSON.stringify(outputBody));
+    this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 }

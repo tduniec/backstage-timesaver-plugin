@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 import { Knex } from 'knex';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 
 export class ScaffolderDatabaseOperations {
-  constructor(private readonly knex: Knex, private readonly logger: Logger) {}
+  constructor(
+    private readonly knex: Knex,
+    private readonly logger: LoggerService,
+  ) {}
 
   async collectSpecByTemplateId(templateTaskId: string) {
     try {

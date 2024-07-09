@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { TaskRunner } from '@backstage/backend-tasks';
-import { Logger } from 'winston';
 import * as uuid from 'uuid';
 import { TimeSaverHandler } from './handler';
 import { Knex } from 'knex';
-import { Config } from '@backstage/config';
 
 export class TsScheduler {
   constructor(
-    private readonly logger: Logger,
-    private readonly config: Config,
+    private readonly logger: LoggerService,
+    private readonly config: RootConfigService,
+    private readonly auth: AuthService,
     private readonly knex: Knex,
   ) {}
 
   async schedule(taskRunner: TaskRunner) {
-    const tsHandler = new TimeSaverHandler(this.logger, this.config, this.knex);
+    const tsHandler = new TimeSaverHandler(
+      this.logger,
+      this.config,
+      this.auth,
+      this.knex,
+    );
     await taskRunner.run({
       id: uuid.v4(),
       fn: async () => {
