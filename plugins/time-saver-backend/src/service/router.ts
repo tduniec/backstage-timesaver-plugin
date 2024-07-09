@@ -14,26 +14,30 @@
  * limitations under the License.
  */
 import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
   coreServices,
   createBackendPlugin,
+  DiscoveryService,
 } from '@backstage/backend-plugin-api';
 import {
   PluginDatabaseManager,
   errorHandler,
-  loggerToWinstonLogger,
+  createLegacyAuthAdapters,
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import express from 'express';
 import Router from 'express-promise-router';
-import { Logger } from 'winston';
-import { Config } from '@backstage/config';
 import { PluginInitializer } from './pluginInitializer';
 
 export interface RouterOptions {
-  logger: Logger;
+  logger: LoggerService;
   database: PluginDatabaseManager;
-  config: Config;
+  config: RootConfigService;
+  auth?: AuthService;
   scheduler: PluginTaskScheduler;
+  discovery: DiscoveryService;
 }
 
 function registerRouter() {
@@ -47,10 +51,12 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, config, database, scheduler } = options;
   const baseRouter = registerRouter();
+  const { auth } = createLegacyAuthAdapters(options);
   const plugin = await PluginInitializer.builder(
     baseRouter,
     logger,
     config,
+    auth,
     database,
     scheduler,
   );
@@ -66,17 +72,18 @@ export const timeSaverPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         config: coreServices.rootConfig,
+        auth: coreServices.auth,
         scheduler: coreServices.scheduler,
         database: coreServices.database,
         http: coreServices.httpRouter,
       },
-      async init({ config, logger, scheduler, database, http }) {
+      async init({ auth, config, logger, scheduler, database, http }) {
         const baseRouter = registerRouter();
-        const winstonLogger = loggerToWinstonLogger(logger);
         const plugin = await PluginInitializer.builder(
           baseRouter,
-          winstonLogger,
+          logger,
           config,
+          auth,
           database,
           scheduler,
         );

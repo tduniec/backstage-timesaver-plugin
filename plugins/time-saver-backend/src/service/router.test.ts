@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DatabaseManager, getVoidLogger } from '@backstage/backend-common';
+import {
+  DatabaseManager,
+  getVoidLogger,
+  HostDiscovery,
+} from '@backstage/backend-common';
 import express from 'express';
 import request from 'supertest';
 
@@ -36,7 +40,12 @@ describe('createRouter', () => {
   );
   const config = new ConfigReader({
     backend: {
-      database: { client: 'better-sqlite3', connection: ':memory:' },
+      baseUrl: 'http://127.0.0.1',
+      listen: { port: 7007 },
+      database: {
+        client: 'better-sqlite3',
+        connection: ':memory:',
+      },
     },
   });
   const database = manager.forPlugin('time-saver');
@@ -60,9 +69,11 @@ describe('createRouter', () => {
   //  TODO : validate createScheduledTaskRunner parameters types.
 
   beforeAll(async () => {
+    const discovery = HostDiscovery.fromConfig(config);
     const router = await createRouter({
       database: database,
       logger: getVoidLogger(),
+      discovery: discovery,
       config: config,
       scheduler: scheduler,
     });

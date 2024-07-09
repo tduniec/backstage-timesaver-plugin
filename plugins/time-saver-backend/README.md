@@ -55,22 +55,9 @@ apiRouter.use('/time-saver', await timeSaver(timeSaverEnv)); // you should use a
 
 ```
 
-3. Generate and specify a static token for communication with the scaffold using service-to-service authentication. This can be retrieved using the subject `time-saver` with the configuration object.
-
-```yaml
-backend:
-  auth:
-    externalAccess:
-      ...
-      - type: static
-        options:
-          token: ${TIME_SAVER_AUTH_TOKEN}
-          subject: time-saver
-```
-
 ### New Backend - instalation
 
-2. Wire up the plugin in Backstage new backend system
+1. Wire up the plugin in Backstage new backend system
 
 in `packages/backend/src/index.ts`
 
@@ -78,7 +65,7 @@ in `packages/backend/src/index.ts`
 backend.add(import('@tduniec/backstage-plugin-time-saver-backend'));
 ```
 
-3. Install [time-saver](../time-saver/README.md) part if not installed already
+2. Install [time-saver](../time-saver/README.md) part if not installed already
 
 ## Generate Statistics
 

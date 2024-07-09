@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from 'winston';
-import { Config } from '@backstage/config';
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { PluginDatabaseManager } from '@backstage/backend-common';
 import { TimeSaverHandler } from '../timeSaver/handler';
 import { TsApi } from '../api/apiService';
@@ -27,8 +30,9 @@ import { PluginTaskScheduler } from '@backstage/backend-tasks';
 
 interface PluginDependencies {
   router: Router;
-  logger: Logger;
-  config: Config;
+  logger: LoggerService;
+  config: RootConfigService;
+  auth: AuthService;
   database: PluginDatabaseManager;
   scheduler: PluginTaskScheduler;
 }
@@ -41,13 +45,14 @@ const TS_PLUGIN_DEFAULT_SCHEDULE = {
     minutes: 30,
   },
   initialDelay: {
-    seconds: 60,
+    seconds: 30,
   },
 };
 
 export class PluginInitializer {
-  private logger!: Logger;
-  private config!: Config;
+  private logger!: LoggerService;
+  private config!: RootConfigService;
+  private auth!: AuthService;
   private scheduler!: PluginTaskScheduler;
   private database!: PluginDatabaseManager;
   private tsHandler!: TimeSaverHandler;
@@ -57,22 +62,25 @@ export class PluginInitializer {
 
   private constructor(
     router: Router,
-    logger: Logger,
-    config: Config,
+    logger: LoggerService,
+    config: RootConfigService,
+    auth: AuthService,
     database: PluginDatabaseManager,
     scheduler: PluginTaskScheduler,
   ) {
     this.router = router;
     this.logger = logger;
     this.config = config;
+    this.auth = auth;
     this.database = database;
     this.scheduler = scheduler;
   }
 
   static async builder(
     router: Router,
-    logger: Logger,
-    config: Config,
+    logger: LoggerService,
+    config: RootConfigService,
+    auth: AuthService,
     database: PluginDatabaseManager,
     scheduler: PluginTaskScheduler,
   ): Promise<PluginInitializer> {
@@ -80,6 +88,7 @@ export class PluginInitializer {
       router,
       logger,
       config,
+      auth,
       database,
       scheduler,
     );
@@ -91,6 +100,7 @@ export class PluginInitializer {
     // Initialize logger, config, database and scheduler
     this.logger = this.dependencies.logger;
     this.config = this.dependencies.config;
+    this.auth = this.dependencies.auth;
     this.database = this.dependencies.database;
     this.scheduler = this.dependencies.scheduler;
 
@@ -107,9 +117,20 @@ export class PluginInitializer {
     }
 
     // Initialize handlers
-    this.tsHandler = new TimeSaverHandler(this.logger, this.config, kx);
-    this.apiHandler = new TsApi(this.logger, this.config, kx, scaffolderDbKx);
-    this.tsScheduler = new TsScheduler(this.logger, this.config, kx);
+    this.tsHandler = new TimeSaverHandler(
+      this.logger,
+      this.config,
+      this.auth,
+      kx,
+    );
+    this.apiHandler = new TsApi(
+      this.logger,
+      this.config,
+      this.auth,
+      kx,
+      scaffolderDbKx,
+    );
+    this.tsScheduler = new TsScheduler(this.logger, this.config, this.auth, kx);
 
     // Scheduler
     const taskRunner = this.scheduler.createScheduledTaskRunner(
@@ -131,6 +152,7 @@ export class PluginInitializer {
       !this.router ||
       !this.logger ||
       !this.config ||
+      !this.auth ||
       !this.database ||
       !this.scheduler
     ) {
@@ -140,6 +162,7 @@ export class PluginInitializer {
       router: this.router,
       logger: this.logger,
       config: this.config,
+      auth: this.auth,
       database: this.database,
       scheduler: this.scheduler,
     };
