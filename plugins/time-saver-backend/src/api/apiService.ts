@@ -23,6 +23,18 @@ import { DatabaseOperations } from '../database/databaseOperations';
 import { ScaffolderClient } from './scaffolderClient';
 import { ScaffolderDatabaseOperations } from '../database/scaffolderDatabaseOperations';
 
+export interface TemplateSpecs {
+  specs: {
+    templateInfo: {
+      entity: {
+        metadata: {
+          substitute: object;
+        }
+      }
+    }
+  }
+}
+
 export class TsApi {
   constructor(
     private readonly logger: LoggerService,
@@ -122,45 +134,143 @@ export class TsApi {
     return outputBody;
   }
 
-  public async updateTemplatesWithSubstituteData(): Promise<{
+  public async updateTemplatesWithSubstituteData(requestData?: string): Promise<{
     status: string;
     message?: string;
+    migrationStatisticsReport?: object;
     error?: Error;
   }> {
-    const tsConfigObj =
-      this.config.getOptionalString('ts.backward.config') || undefined;
-    if (!tsConfigObj) {
-      this.logger.warn(`Backward processing not configured, escaping...`);
-      return {
-        status: 'FAIL',
-        message: 'Backward processing not configured in app-config.yaml file',
-      };
+    let templateClassification: [];
+    let migrationStatisticsReport: {
+      updatedTemplates: {
+        total: number,
+        list: string[]
+      },
+      missingTemplates: {
+        total: number,
+        list: string[]
+      },
+    } = {
+      updatedTemplates: {
+        total: 0,
+        list: []
+      },
+      missingTemplates: {
+        total: 0,
+        list: []
+      }
     }
+    if (requestData) {
+      try {
+        templateClassification = JSON.parse(requestData);
+        this.logger.debug(`Found classification in API POST body: ${JSON.stringify(templateClassification)}`)
+      } catch (error) {
+        const msg = 'Migration: Could not parse JSON object from POST call body, aborting...';
+        this.logger.error(msg, error);
+        return {
+          status: 'FAIL',
+          message: `${msg} - ${error}`
+        }
+      }
+    } else {
+      const tsConfigObj =
+        this.config.getOptionalString('ts.backward.config') || undefined;
+      if (!tsConfigObj) {
+        const errorMessage = 'Migration: Could not find backward migration configuration in app-config.x.yaml, aborting...';
+        this.logger.error(errorMessage);
+        return {
+          status: 'FAIL',
+          message: errorMessage,
+        };
+      }
+
+      try {
+        templateClassification = JSON.parse(String(tsConfigObj));
+        this.logger.debug(`Found classification in app-config.x.yaml: ${JSON.stringify(templateClassification)}`)
+      } catch (error) {
+        const msg = 'Migration: Could not parse backward migration configuration as JSON object from app-config.x.yaml, aborting...';
+        this.logger.error(msg, error);
+        return {
+          status: 'FAIL',
+          message: `${msg} - ${error}`
+        }
+      }
+    }
+
     try {
-      this.logger.info(`Starting backward template savings migration`);
-      const tsConfig = JSON.parse(String(tsConfigObj));
+      interface ClassificationMigrationEntry {
+        entityRef?: number;
+        [key: string]: unknown;
+      }
+
+      this.logger.info(`Starting backward migration`);
       const taskTemplateList = await new ScaffolderClient(
         this.logger,
         this.config,
         this.auth,
       ).fetchTemplatesFromScaffolder();
       for (let i = 0; i < taskTemplateList.length; i++) {
-        const singleTemplate = taskTemplateList[i];
-        this.logger.debug(singleTemplate);
-        const templateReference = singleTemplate.spec.templateInfo.entityRef;
-        const substituteConfig = tsConfig.find(
-          (con: { entityRef: unknown }) => con.entityRef === templateReference,
+        const scaffolderTaskRecord = taskTemplateList[i];
+        this.logger.debug(`Migrating template ${JSON.stringify(scaffolderTaskRecord)}`);
+        const { entityRef: templateEntityRef } = scaffolderTaskRecord.spec.templateInfo;
+        this.logger.debug(`Found template with entityRef: ${templateEntityRef}`);
+        const classificationEntry = templateClassification.find(
+          (con: { entityRef: string | undefined }) => con.entityRef === templateEntityRef,
         );
-        // TODO : Define / create entityRef type
-        if (substituteConfig) {
-          await this.updateExistingTemplateWithSubstituteById(
-            singleTemplate.id,
-            substituteConfig,
+
+        if (classificationEntry) {
+          //  Delete entityRef
+          const newClassificationEntry = Object.assign({}, classificationEntry as ClassificationMigrationEntry);
+          delete newClassificationEntry.entityRef;
+
+          const newTemplateTaskRecordSpecs = {
+            ...scaffolderTaskRecord.spec,
+            templateInfo: {
+              ...scaffolderTaskRecord.spec.templateInfo,
+              entity: {
+                ...scaffolderTaskRecord.spec.templateInfo.entity,
+                metadata: {
+                  ...scaffolderTaskRecord.spec.templateInfo.entity.metadata,
+                  substitute: newClassificationEntry
+                }
+              }
+            }
+          }
+
+          const patchQueryResult = await this.scaffolderDb.updateTemplateTaskById(
+            scaffolderTaskRecord.id,
+            JSON.stringify(newTemplateTaskRecordSpecs),
           );
+
+          if (patchQueryResult) {
+            migrationStatisticsReport = {
+              ...migrationStatisticsReport,
+              updatedTemplates: {
+                total: ++migrationStatisticsReport.updatedTemplates.total,
+                list: [
+                  ...migrationStatisticsReport.updatedTemplates.list,
+                  scaffolderTaskRecord.id
+                ]
+              }
+            }
+            this.logger.debug(`scaffolderTaskRecord with id ${scaffolderTaskRecord.id} was patched`);
+          }
+        } else {
+          migrationStatisticsReport = {
+            ...migrationStatisticsReport,
+            missingTemplates: {
+              total: ++migrationStatisticsReport.missingTemplates.total,
+              list: [
+                ...migrationStatisticsReport.missingTemplates.list,
+                scaffolderTaskRecord.id
+              ]
+            }
+          }
+          this.logger.debug(`scaffolderTaskRecord with id ${scaffolderTaskRecord.id} was not found in scaffolder DB`);
         }
       }
     } catch (error) {
-      this.logger.error(`problem with template backward migration`, error);
+      this.logger.error(`Could not continue with backward migration, aborting...`, error);
       return {
         status: 'error',
         error: error as Error,
@@ -168,28 +278,8 @@ export class TsApi {
     }
     return {
       status: 'SUCCESS',
+      migrationStatisticsReport
     };
-  }
-
-  public async updateExistingTemplateWithSubstituteById(
-    templateTaskId: string,
-    engData: object,
-  ) {
-    const queryResult = JSON.parse(
-      (await this.scaffolderDb.collectSpecByTemplateId(templateTaskId)).spec,
-    );
-    const metadata = queryResult.templateInfo.entity.metadata;
-    metadata.substitute = engData;
-
-    await this.scaffolderDb.updateTemplateTaskById(
-      templateTaskId,
-      JSON.stringify(queryResult),
-    );
-    const outputBody = {
-      stats: queryResult,
-    };
-    this.logger.debug(JSON.stringify(outputBody));
-    return outputBody;
   }
 
   public async getAllGroups() {
