@@ -81,6 +81,12 @@ export function setupCommonRoutes(
     response.json(result);
   });
 
+  router.post('/migrate', async (_request, response) => {
+    const template_classification = _request.body;
+    const result = await apiHandler.updateTemplatesWithSubstituteData(template_classification);
+    response.json(result);
+  });
+
   router.get('/groups', async (_request, response) => {
     const result = await apiHandler.getAllGroups();
     response.json(result);
