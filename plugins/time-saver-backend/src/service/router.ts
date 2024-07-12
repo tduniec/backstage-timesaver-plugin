@@ -76,8 +76,9 @@ export const timeSaverPlugin = createBackendPlugin({
         scheduler: coreServices.scheduler,
         database: coreServices.database,
         http: coreServices.httpRouter,
+        httpRouter: coreServices.httpRouter,
       },
-      async init({ auth, config, logger, scheduler, database, http }) {
+      async init({ auth, config, logger, scheduler, database, http, httpRouter }) {
         const baseRouter = registerRouter();
         const plugin = await PluginInitializer.builder(
           baseRouter,
@@ -89,6 +90,11 @@ export const timeSaverPlugin = createBackendPlugin({
         );
         const router = plugin.timeSaverRouter;
         http.use(router);
+
+        httpRouter.addAuthPolicy({
+          path: '/migrate',
+          allow: 'unauthenticated',
+        });
       },
     });
   },
