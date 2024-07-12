@@ -20,32 +20,28 @@ export class ScaffolderDatabaseOperations {
   constructor(
     private readonly knex: Knex,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   async collectSpecByTemplateId(templateTaskId: string) {
     try {
-      const result = await this.knex.raw(
-        `
-            select spec from tasks where id=:templateTaskId
-            `,
-        { templateTaskId },
-      );
-      const rows = result.rows[0];
-      this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
-      return rows;
+      const result = await this.knex('tasks')
+        .select('spec')
+        .where('id', templateTaskId);
+      this.logger.debug(`collectSpecByTemplateId : Data selected successfully ${JSON.stringify(result)}`);
+      return result;
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
     }
   }
 
-  async updateTemplateTaskById(templateTaskId: string, data: string) {
+  async updateTemplateTaskById(templateTaskId: string, tenplateTaskSpecs: string) {
     try {
-      await this.knex('tasks')
+      const result = await this.knex('tasks')
         .where({ id: templateTaskId })
-        .update({ spec: data });
-      this.logger.debug(`Data selected successfully `);
-      return;
+        .update({ spec: tenplateTaskSpecs });
+      this.logger.debug(`updateTemplateTaskById : Data selected successfully ${JSON.stringify(result)}`);
+      return result;
     } catch (error) {
       this.logger.error('Error selecting data:', error);
       throw error;
