@@ -81,7 +81,9 @@ export function setupCommonRoutes(
 
   router.post('/migrate', async (_request, response) => {
     const template_classification = _request.body;
-    const result = await apiHandler.updateTemplatesWithSubstituteData(template_classification);
+    const result = await apiHandler.updateTemplatesWithSubstituteData(
+      template_classification,
+    );
     response.json(result);
   });
 

@@ -78,7 +78,15 @@ export const timeSaverPlugin = createBackendPlugin({
         http: coreServices.httpRouter,
         httpRouter: coreServices.httpRouter,
       },
-      async init({ auth, config, logger, scheduler, database, http, httpRouter }) {
+      async init({
+        auth,
+        config,
+        logger,
+        scheduler,
+        database,
+        http,
+        httpRouter,
+      }) {
         const baseRouter = registerRouter();
         const plugin = await PluginInitializer.builder(
           baseRouter,
