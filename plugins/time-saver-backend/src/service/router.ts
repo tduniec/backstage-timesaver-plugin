@@ -103,6 +103,11 @@ export const timeSaverPlugin = createBackendPlugin({
           path: '/migrate',
           allow: 'unauthenticated',
         });
+
+        httpRouter.addAuthPolicy({
+          path: '/generate-sample-classification',
+          allow: 'unauthenticated',
+        });
       },
     });
   },
