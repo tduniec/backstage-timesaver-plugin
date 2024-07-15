@@ -1,5 +1,11 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 2.2.0
+
+### Minor Changes
+
+- Added /generate-sample-classification API to provide easier backward migrations.
+
 ## 2.1.0
 
 ### Minor Changes
