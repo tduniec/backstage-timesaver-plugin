@@ -91,7 +91,7 @@ export function setupCommonRoutes(
     const { useScaffolderTasksEntries } = _request.query;
     response.json(
       await apiHandler.getSampleMigrationClassificationConfig(undefined, {
-        useScaffolderTasksEntries: !!useScaffolderTasksEntries,
+        useScaffolderTasksEntries: !!(useScaffolderTasksEntries === 'true'),
       }),
     );
   });
