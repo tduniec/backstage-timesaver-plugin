@@ -47,6 +47,11 @@ const DEFAULT_SAMPLE_CLASSIFICATION = {
   },
 };
 
+const DEFAULT_SAMPLE_TEMPLATES_TASKS = [
+  'template:default/create-github-project',
+  'template:default/create-nodejs-service',
+  'template:default/create-golang-service',
+];
 
 export class TsApi {
   constructor(
