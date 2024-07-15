@@ -19,6 +19,7 @@ import {
   createServiceBuilder,
   loadBackendConfig,
   HostDiscovery,
+  UrlReaders,
 } from '@backstage/backend-common';
 import { Server } from 'http';
 import { createRouter } from './router';
@@ -76,6 +77,7 @@ export async function startStandaloneServer(
     database,
     discovery,
     scheduler,
+    urlReader: UrlReaders.default({ logger, config }),
   });
 
   let service = createServiceBuilder(module)
