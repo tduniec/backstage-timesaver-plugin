@@ -49,6 +49,7 @@ export class TimeSaverHandler {
       return 'FAIL';
     }
 
+    this.logger.debug('Truncating database');
     await this.db.truncate(this.tsTableName); // cleaning table
     this.logger.debug(
       `Template task list: ${JSON.stringify(templateTaskList)}`,

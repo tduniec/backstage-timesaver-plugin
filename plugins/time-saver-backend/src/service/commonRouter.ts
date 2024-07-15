@@ -35,9 +35,7 @@ export function setupCommonRoutes(
   });
 
   router.get('/getStats/', async (request, response) => {
-    const templateId = request.query.templateTaskId;
-    const team = request.query.team;
-    const templateName = request.query.templateName;
+    const { templateId, team, templateName } = request.query;
     let result;
     if (templateId) {
       result = await apiHandler.getStatsByTemplateTaskId(String(templateId));
@@ -78,6 +76,14 @@ export function setupCommonRoutes(
 
   router.get('/migrate', async (_request, response) => {
     const result = await apiHandler.updateTemplatesWithSubstituteData();
+    response.json(result);
+  });
+
+  router.post('/migrate', async (_request, response) => {
+    const template_classification = _request.body;
+    const result = await apiHandler.updateTemplatesWithSubstituteData(
+      template_classification,
+    );
     response.json(result);
   });
 

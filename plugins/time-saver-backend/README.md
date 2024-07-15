@@ -104,9 +104,29 @@ ts:
 
 This plugins supports backward compatibility with migration. You can specify your Time Saver metadata for each template name. Then the migration will be performed once executing the API request to `/migrate` endpoint of the plugin.
 
-Configure your backward time savings here:
+The configuration could be setup in 2 different ways: either using the app-config file or directly making a POST request to /migrate. Either way, a response in JSON format like the following will be sent back:
 
-Open the `app-config.yaml` file
+```json
+{
+  "updatedTemplates": {
+    "total": 2,
+    "list": [
+      "template:default/create-github-project",
+      "template:default/create-golang-project"
+    ]
+  },
+  "missingTemplates": {
+    "total": 1,
+    "list": ["template:default/create-perfect-world"]
+  }
+}
+```
+
+where `updatedTemplates` are the correlated templates found in the scaffolder tasks database and `missingTemplates` are the ones not found.
+
+### a) Migration classification through app-config file
+
+Add the following to your `app-config.yaml` file:
 
 ```yaml
 ts:
@@ -123,4 +143,41 @@ ts:
         } 
       ]
     # extend this list if needed
+```
+
+**Note: In order for your new classification to take effect, you'll need to redeploy.**
+
+### b) Migration classification through /migrate POST API call
+
+Use any endpoint testing tool like [curl](https://curl.se/), [postman](https://www.postman.com/) or [thunder client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client) and send your new configuration in a POST request body as a JSON object. Make sure your POST request is using `Content-Type: application/json` headers.
+
+Example:
+
+```json
+[
+  {
+    "entityRef": "template:default/create-github-project",
+    "engineering": {
+      "devsecops": 3,
+      "developer": 1
+    }
+  },
+  {
+    "entityRef": "template:default/create-golang-project",
+    "engineering": {
+      "devsecops": 1,
+      "developer": 2
+    }
+  }
+  // extend this list if needed
+]
+```
+
+Using curl:
+
+```shell
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '[{"entityRef":"template:default/create-github-project","engineering":{"devsecops":3,"developer":1}},{"entityRef":"template:default/create-golang-project","engineering":{"devsecops":1,"developer":2}}]' \
+  http://localhost:7007/api/time-saver/migrate
 ```

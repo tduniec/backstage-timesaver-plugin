@@ -1,5 +1,11 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 2.1.0
+
+### Minor Changes
+
+- Fixed scaffolder DB corruption when trying to backward migrate. Opened up /migrate endpoint unautheticated. Improved DB querying trhough Knex.
+
 ## 2.0.0
 
 ### Major Changes
