@@ -152,6 +152,43 @@ export class TsApi {
     return outputBody;
   }
 
+  public async getSampleMigrationClassificationConfig(
+    customClassificationRequest?: object,
+    options?: SampleMigrationClassificationConfigOptions,
+  ) {
+    if (
+      typeof customClassificationRequest === 'object' &&
+      !Object.keys(customClassificationRequest).length
+    ) {
+      const errorMessage = `getSampleMigrationClassificationConfig : customClassificationRequest cannot be an empty object`
+      this.logger.error(
+        `getSampleMigrationClassificationConfig : customClassificationRequest cannot be an empty object`,
+      );
+      return {
+        status: 'FAIL',
+        errorMessage
+      }
+    }
+
+    const sampleClassification =
+      customClassificationRequest || DEFAULT_SAMPLE_CLASSIFICATION;
+    const templatesList = options?.useScaffolderTasksEntries
+      ? (await this.getAllTemplateTasks()).templateTasks
+      : DEFAULT_SAMPLE_TEMPLATES_TASKS;
+    this.logger.debug(
+      `Generating sample classification configuration with ${options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
+      } templates tasks list and ${customClassificationRequest ? 'user-defined' : 'default'
+      } classification`,
+    );
+    return {
+      status: 'OK',
+      data: templatesList.map(t => ({
+        'entityRef': t,
+        ...sampleClassification,
+      }))
+    };
+  }
+
   public async updateTemplatesWithSubstituteData(
     requestData?: string,
   ): Promise<{
