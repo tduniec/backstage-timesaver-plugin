@@ -20,6 +20,8 @@ import {
   coreServices,
   createBackendPlugin,
   DiscoveryService,
+  UrlReaderService,
+  HttpAuthService,
 } from '@backstage/backend-plugin-api';
 import {
   PluginDatabaseManager,
@@ -33,11 +35,13 @@ import { PluginInitializer } from './pluginInitializer';
 
 export interface RouterOptions {
   logger: LoggerService;
-  database: PluginDatabaseManager;
   config: RootConfigService;
-  auth?: AuthService;
-  scheduler: PluginTaskScheduler;
   discovery: DiscoveryService;
+  database: PluginDatabaseManager;
+  scheduler: PluginTaskScheduler;
+  urlReader: UrlReaderService;
+  auth?: AuthService;
+  httpAuth?: HttpAuthService;
 }
 
 function registerRouter() {
@@ -77,6 +81,7 @@ export const timeSaverPlugin = createBackendPlugin({
         database: coreServices.database,
         http: coreServices.httpRouter,
         httpRouter: coreServices.httpRouter,
+        urlReader: coreServices.urlReader,
       },
       async init({
         auth,
