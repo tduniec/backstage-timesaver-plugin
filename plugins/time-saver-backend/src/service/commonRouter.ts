@@ -87,6 +87,16 @@ export function setupCommonRoutes(
     response.json(result);
   });
 
+  router.get('/generate-sample-classification', async (_request, response) => {
+    const { useScaffolderTasksEntries } = _request.query;
+    response.json(
+      await apiHandler.getSampleMigrationClassificationConfig(undefined, {
+        useScaffolderTasksEntries: !!useScaffolderTasksEntries
+      })
+    )
+  });
+
+
   router.get('/groups', async (_request, response) => {
     const result = await apiHandler.getAllGroups();
     response.json(result);
