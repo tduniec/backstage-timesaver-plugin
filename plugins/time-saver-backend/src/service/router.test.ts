@@ -13,21 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  DatabaseManager,
-  getVoidLogger,
-  HostDiscovery,
-} from '@backstage/backend-common';
+import { UrlReaders } from '@backstage/backend-defaults/urlReader';
+import { DatabaseManager } from '@backstage/backend-defaults/database';
 import express from 'express';
 import request from 'supertest';
 
 import { createRouter } from './router';
+// import { CatalogRequestOptions } from '@backstage/catalog-client';
 import { ConfigReader } from '@backstage/config';
 import {
   PluginTaskScheduler,
   TaskInvocationDefinition,
   TaskRunner,
 } from '@backstage/backend-tasks';
+import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
+
+// let catalogRequestOptions: CatalogRequestOptions;
+
+const testDiscovery: jest.Mocked<PluginEndpointDiscovery> = {
+  getBaseUrl: jest
+    .fn()
+    .mockResolvedValue('http://localhost:7007/api/time-saver'),
+  getExternalBaseUrl: jest.fn(),
+};
+const mockUrlReader = UrlReaders.default({
+  logger: mockServices.logger.mock(),
+  config: new ConfigReader({}),
+});
 
 describe('createRouter', () => {
   let app: express.Express;
@@ -69,13 +81,26 @@ describe('createRouter', () => {
   //  TODO : validate createScheduledTaskRunner parameters types.
 
   beforeAll(async () => {
-    const discovery = HostDiscovery.fromConfig(config);
+    // const discovery = HostDiscovery.fromConfig(config);
+    // const router = await createRouter({
+    //   database: database,
+    //   logger: getVoidLogger(),
+    //   discovery: discovery,
+    //   config: config,
+    //   scheduler: scheduler,
+    // });
+    // app = express().use(router);
     const router = await createRouter({
-      database: database,
-      logger: getVoidLogger(),
-      discovery: discovery,
+      // config: new ConfigReader({}),
       config: config,
+      logger: mockServices.logger.mock(),
+      // database: createDatabase(),
+      database: database,
+      discovery: testDiscovery,
+      urlReader: mockUrlReader,
       scheduler: scheduler,
+      auth: mockServices.auth(),
+      httpAuth: mockServices.httpAuth(),
     });
     app = express().use(router);
   });
