@@ -96,6 +96,18 @@ export function setupCommonRoutes(
     )
   });
 
+  router.post('/generate-sample-classification', async (_request, response) => {
+    const {
+      customClassificationRequest,
+      options
+    } = _request.body
+    response.json(
+      await apiHandler.getSampleMigrationClassificationConfig(
+        customClassificationRequest,
+        options
+      )
+    )
+  });
 
   router.get('/groups', async (_request, response) => {
     const result = await apiHandler.getAllGroups();
