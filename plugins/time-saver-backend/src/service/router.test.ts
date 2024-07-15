@@ -126,5 +126,4 @@ describe('createRouter', () => {
   describe('GET /health', () => {
     itTestGETApiEndpoint('returns ok', '/health', { status: 'ok' });
   });
-
 });
