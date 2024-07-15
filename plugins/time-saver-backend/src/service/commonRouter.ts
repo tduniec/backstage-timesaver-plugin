@@ -91,22 +91,19 @@ export function setupCommonRoutes(
     const { useScaffolderTasksEntries } = _request.query;
     response.json(
       await apiHandler.getSampleMigrationClassificationConfig(undefined, {
-        useScaffolderTasksEntries: !!useScaffolderTasksEntries
-      })
-    )
+        useScaffolderTasksEntries: !!useScaffolderTasksEntries,
+      }),
+    );
   });
 
   router.post('/generate-sample-classification', async (_request, response) => {
-    const {
-      customClassificationRequest,
-      options
-    } = _request.body
+    const { customClassificationRequest, options } = _request.body;
     response.json(
       await apiHandler.getSampleMigrationClassificationConfig(
         customClassificationRequest,
-        options
-      )
-    )
+        options,
+      ),
+    );
   });
 
   router.get('/groups', async (_request, response) => {

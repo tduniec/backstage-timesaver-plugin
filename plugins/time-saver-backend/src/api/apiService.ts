@@ -160,14 +160,14 @@ export class TsApi {
       typeof customClassificationRequest === 'object' &&
       !Object.keys(customClassificationRequest).length
     ) {
-      const errorMessage = `getSampleMigrationClassificationConfig : customClassificationRequest cannot be an empty object`
+      const errorMessage = `getSampleMigrationClassificationConfig : customClassificationRequest cannot be an empty object`;
       this.logger.error(
         `getSampleMigrationClassificationConfig : customClassificationRequest cannot be an empty object`,
       );
       return {
         status: 'FAIL',
-        errorMessage
-      }
+        errorMessage,
+      };
     }
 
     const sampleClassification =
@@ -176,16 +176,18 @@ export class TsApi {
       ? (await this.getAllTemplateTasks()).templateTasks
       : DEFAULT_SAMPLE_TEMPLATES_TASKS;
     this.logger.debug(
-      `Generating sample classification configuration with ${options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
-      } templates tasks list and ${customClassificationRequest ? 'user-defined' : 'default'
+      `Generating sample classification configuration with ${
+        options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
+      } templates tasks list and ${
+        customClassificationRequest ? 'user-defined' : 'default'
       } classification`,
     );
     return {
       status: 'OK',
       data: templatesList.map(t => ({
-        'entityRef': t,
+        entityRef: t,
         ...sampleClassification,
-      }))
+      })),
     };
   }
 
