@@ -39,6 +39,14 @@ export interface SampleMigrationClassificationConfigOptions {
   useScaffolderTasksEntries?: boolean;
 }
 
+const DEFAULT_SAMPLE_CLASSIFICATION = {
+  engineering: {
+    devops: 8,
+    development_team: 8,
+    security: 3,
+  },
+};
+
 
 export class TsApi {
   constructor(
