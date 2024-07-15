@@ -35,6 +35,11 @@ export interface TemplateSpecs {
   };
 }
 
+export interface SampleMigrationClassificationConfigOptions {
+  useScaffolderTasksEntries?: boolean;
+}
+
+
 export class TsApi {
   constructor(
     private readonly logger: LoggerService,
