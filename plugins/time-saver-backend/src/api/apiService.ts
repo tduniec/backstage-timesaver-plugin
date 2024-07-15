@@ -241,8 +241,9 @@ export class TsApi {
           )}`,
         );
       } catch (error) {
-        const msg =
-          `Migration: Could not parse JSON object from POST call body "${JSON.stringify(requestData)}", aborting...`;
+        const msg = `Migration: Could not parse JSON object from POST call body "${JSON.stringify(
+          requestData,
+        )}", aborting...`;
         this.logger.error(msg, error);
         return {
           status: 'FAIL',
