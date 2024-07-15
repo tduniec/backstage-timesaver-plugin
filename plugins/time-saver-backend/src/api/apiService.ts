@@ -225,8 +225,15 @@ export class TsApi {
           templateClassification = requestData;
         }
 
-        if (!templateClassification || !Object.keys(templateClassification).length) {
-          throw new Error(`Invalid classification ${JSON.stringify(requestData)}. Either it was empty or could not parse JSON string. Aborting...`);
+        if (
+          !templateClassification ||
+          !Object.keys(templateClassification).length
+        ) {
+          throw new Error(
+            `Invalid classification ${JSON.stringify(
+              requestData,
+            )}. Either it was empty or could not parse JSON string. Aborting...`,
+          );
         }
         this.logger.debug(
           `Found classification in API POST body: ${JSON.stringify(
