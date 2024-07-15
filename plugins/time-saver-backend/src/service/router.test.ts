@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DiscoveryService } from '@backstage/backend-plugin-api';
 import { UrlReaders } from '@backstage/backend-defaults/urlReader';
 import { DatabaseManager } from '@backstage/backend-defaults/database';
 import express from 'express';
@@ -26,11 +27,11 @@ import {
   TaskInvocationDefinition,
   TaskRunner,
 } from '@backstage/backend-tasks';
-import { mockCredentials, mockServices } from '@backstage/backend-test-utils';
+import { mockServices } from '@backstage/backend-test-utils';
 
 // let catalogRequestOptions: CatalogRequestOptions;
 
-const testDiscovery: jest.Mocked<PluginEndpointDiscovery> = {
+const testDiscovery: jest.Mocked<DiscoveryService> = {
   getBaseUrl: jest
     .fn()
     .mockResolvedValue('http://localhost:7007/api/time-saver'),
