@@ -35,6 +35,24 @@ export interface TemplateSpecs {
   };
 }
 
+export interface SampleMigrationClassificationConfigOptions {
+  useScaffolderTasksEntries?: boolean;
+}
+
+const DEFAULT_SAMPLE_CLASSIFICATION = {
+  engineering: {
+    devops: 8,
+    development_team: 8,
+    security: 3,
+  },
+};
+
+const DEFAULT_SAMPLE_TEMPLATES_TASKS = [
+  'template:default/create-github-project',
+  'template:default/create-nodejs-service',
+  'template:default/create-golang-service',
+];
+
 export class TsApi {
   constructor(
     private readonly logger: LoggerService,
@@ -134,6 +152,45 @@ export class TsApi {
     return outputBody;
   }
 
+  public async getSampleMigrationClassificationConfig(
+    customClassificationRequest?: object,
+    options?: SampleMigrationClassificationConfigOptions,
+  ) {
+    if (
+      typeof customClassificationRequest === 'object' &&
+      !Object.keys(customClassificationRequest).length
+    ) {
+      const errorMessage = `getSampleMigrationClassificationConfig : customClassificationRequest cannot be an empty object`;
+      this.logger.error(
+        `getSampleMigrationClassificationConfig : customClassificationRequest cannot be an empty object`,
+      );
+      return {
+        status: 'FAIL',
+        errorMessage,
+      };
+    }
+
+    const sampleClassification =
+      customClassificationRequest || DEFAULT_SAMPLE_CLASSIFICATION;
+    const templatesList = options?.useScaffolderTasksEntries
+      ? (await this.getAllTemplateTasks()).templateTasks
+      : DEFAULT_SAMPLE_TEMPLATES_TASKS;
+    this.logger.debug(
+      `Generating sample classification configuration with ${
+        options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
+      } templates tasks list and ${
+        customClassificationRequest ? 'user-defined' : 'default'
+      } classification`,
+    );
+    return {
+      status: 'OK',
+      data: templatesList.map(t => ({
+        entityRef: t,
+        ...sampleClassification,
+      })),
+    };
+  }
+
   public async updateTemplatesWithSubstituteData(
     requestData?: string,
   ): Promise<{
@@ -164,15 +221,31 @@ export class TsApi {
     };
     if (requestData) {
       try {
-        templateClassification = JSON.parse(requestData);
+        if (typeof requestData !== 'object') {
+          templateClassification = JSON.parse(requestData);
+        } else {
+          templateClassification = requestData;
+        }
+
+        if (
+          !templateClassification ||
+          !Object.keys(templateClassification).length
+        ) {
+          throw new Error(
+            `Invalid classification ${JSON.stringify(
+              requestData,
+            )}. Either it was empty or could not parse JSON string. Aborting...`,
+          );
+        }
         this.logger.debug(
           `Found classification in API POST body: ${JSON.stringify(
             templateClassification,
           )}`,
         );
       } catch (error) {
-        const msg =
-          'Migration: Could not parse JSON object from POST call body, aborting...';
+        const msg = `Migration: Could not parse JSON object from POST call body "${JSON.stringify(
+          requestData,
+        )}", aborting...`;
         this.logger.error(msg, error);
         return {
           status: 'FAIL',
