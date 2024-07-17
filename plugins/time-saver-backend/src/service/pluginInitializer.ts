@@ -16,13 +16,13 @@
 import {
   AuthService,
   LoggerService,
+  DatabaseService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { PluginDatabaseManager } from '@backstage/backend-common';
 import { TimeSaverHandler } from '../timeSaver/handler';
 import { TsApi } from '../api/apiService';
-import { TsDatabase } from '../database/tsDatabase';
-import { ScaffolderDb } from '../database/scaffolderDb';
+import { ScaffolderDatabase } from '../database/ScaffolderDatabase';
+import { TimeSaverDatabase } from '../database/TimeSaverDatabase';
 import { TsScheduler } from '../timeSaver/scheduler';
 import { setupCommonRoutes } from './commonRouter';
 import { Router } from 'express';
@@ -33,7 +33,7 @@ interface PluginDependencies {
   logger: LoggerService;
   config: RootConfigService;
   auth: AuthService;
-  database: PluginDatabaseManager;
+  database: DatabaseService;
   scheduler: PluginTaskScheduler;
 }
 
@@ -54,7 +54,7 @@ export class PluginInitializer {
   private config!: RootConfigService;
   private auth!: AuthService;
   private scheduler!: PluginTaskScheduler;
-  private database!: PluginDatabaseManager;
+  private database!: DatabaseService;
   private tsHandler!: TimeSaverHandler;
   private apiHandler!: TsApi;
   private tsScheduler!: TsScheduler;
@@ -65,7 +65,7 @@ export class PluginInitializer {
     logger: LoggerService,
     config: RootConfigService,
     auth: AuthService,
-    database: PluginDatabaseManager,
+    database: DatabaseService,
     scheduler: PluginTaskScheduler,
   ) {
     this.router = router;
@@ -81,7 +81,7 @@ export class PluginInitializer {
     logger: LoggerService,
     config: RootConfigService,
     auth: AuthService,
-    database: PluginDatabaseManager,
+    database: DatabaseService,
     scheduler: PluginTaskScheduler,
   ): Promise<PluginInitializer> {
     const instance = new PluginInitializer(
@@ -105,32 +105,36 @@ export class PluginInitializer {
     this.scheduler = this.dependencies.scheduler;
 
     // Initialize TsDatabase and run migrations
-    const tsDatabaseInstance = TsDatabase.create(this.database);
-    const kx = await tsDatabaseInstance.get();
-    await TsDatabase.runMigrations(kx);
 
-    // Initialize ScaffolderDb
-    const scaffolderDbKx = new ScaffolderDb(this.config).scaffolderKnex();
-    if (!scaffolderDbKx) {
-      this.logger.error('Could not get scaffolder database info');
-      throw new Error('Could not get scaffolder database info');
-    }
+    const timeSaverDbInstance = await TimeSaverDatabase.create(
+      this.database,
+      this.logger,
+    );
+    const scaffolderDbInstance = await ScaffolderDatabase.create(
+      this.config,
+      this.logger,
+    );
 
     // Initialize handlers
     this.tsHandler = new TimeSaverHandler(
       this.logger,
       this.config,
       this.auth,
-      kx,
+      timeSaverDbInstance,
     );
     this.apiHandler = new TsApi(
       this.logger,
       this.config,
       this.auth,
-      kx,
-      scaffolderDbKx,
+      timeSaverDbInstance,
+      scaffolderDbInstance,
     );
-    this.tsScheduler = new TsScheduler(this.logger, this.config, this.auth, kx);
+    this.tsScheduler = new TsScheduler(
+      this.logger,
+      this.config,
+      this.auth,
+      timeSaverDbInstance,
+    );
 
     // Scheduler
     const taskRunner = this.scheduler.createScheduledTaskRunner(
