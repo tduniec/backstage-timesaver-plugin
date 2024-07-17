@@ -18,8 +18,7 @@ import {
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { Knex } from 'knex';
-import { DatabaseOperations } from '../database/databaseOperations';
+import { TimeSaverStore } from '../database/TimeSaverDatabase';
 import { ScaffolderClient } from '../api/scaffolderClient';
 
 export class TimeSaverHandler {
@@ -27,11 +26,8 @@ export class TimeSaverHandler {
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
     private readonly auth: AuthService,
-    knex: Knex,
-  ) {
-    this.db = new DatabaseOperations(knex, logger);
-  }
-  private readonly db: DatabaseOperations;
+    private readonly db: TimeSaverStore,
+  ) {}
   private readonly tsTableName = 'ts_template_time_savings';
 
   async fetchTemplates() {
