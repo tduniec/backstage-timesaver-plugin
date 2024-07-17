@@ -13,16 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DatabaseManager } from '@backstage/backend-defaults/database';
+import {
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
-import { LoggerService } from '@backstage/backend-plugin-api';
 
-export class ScaffolderDatabaseOperations {
+export interface ScaffolderStore {
+  collectSpecByTemplateId(templateTaskId: string): Promise<unknown | undefined>;
+  updateTemplateTaskById(
+    templateTaskId: string,
+    templateTaskSpecs: string,
+  ): Promise<unknown | undefined>;
+}
+
+export class ScaffolderDatabase implements ScaffolderStore {
   constructor(
     private readonly knex: Knex,
     private readonly logger: LoggerService,
   ) {}
+  static async create(config: RootConfigService, logger: LoggerService) {
+    // const knex = await database.getClient();
 
-  async collectSpecByTemplateId(templateTaskId: string) {
+    const db = DatabaseManager.fromConfig(config).forPlugin('scaffolder');
+    const knex = await db.getClient();
+
+    return new ScaffolderDatabase(knex, logger);
+  }
+  async collectSpecByTemplateId(
+    templateTaskId: string,
+  ): Promise<unknown | undefined> {
     try {
       const result = await this.knex('tasks')
         .select('spec')
@@ -38,15 +59,14 @@ export class ScaffolderDatabaseOperations {
       throw error;
     }
   }
-
   async updateTemplateTaskById(
     templateTaskId: string,
-    tenplateTaskSpecs: string,
-  ) {
+    templateTaskSpecs: string,
+  ): Promise<unknown | undefined> {
     try {
       const result = await this.knex('tasks')
         .where({ id: templateTaskId })
-        .update({ spec: tenplateTaskSpecs });
+        .update({ spec: templateTaskSpecs });
       this.logger.debug(
         `updateTemplateTaskById : Data selected successfully ${JSON.stringify(
           result,
