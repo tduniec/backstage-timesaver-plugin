@@ -22,9 +22,9 @@ import {
   DiscoveryService,
   UrlReaderService,
   HttpAuthService,
+  DatabaseService,
 } from '@backstage/backend-plugin-api';
 import {
-  PluginDatabaseManager,
   errorHandler,
   createLegacyAuthAdapters,
 } from '@backstage/backend-common';
@@ -37,7 +37,7 @@ export interface RouterOptions {
   logger: LoggerService;
   config: RootConfigService;
   discovery: DiscoveryService;
-  database: PluginDatabaseManager;
+  database: DatabaseService;
   scheduler: PluginTaskScheduler;
   urlReader: UrlReaderService;
   auth?: AuthService;
