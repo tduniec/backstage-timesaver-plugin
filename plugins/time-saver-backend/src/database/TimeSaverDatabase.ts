@@ -104,7 +104,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return rows;
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -117,7 +120,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data inserted successfully ${data}`);
       return insertedRow;
     } catch (error) {
-      this.logger.error('Error inserting data:', error);
+      this.logger.error(
+        'Error inserting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error; // Re-throw the error for handling further up the call stack
     }
   }
@@ -136,7 +142,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
         this.logger.debug('Data inserted successfully');
       })
       .catch(error => {
-        this.logger.error('Error inserting data:', error);
+        this.logger.error(
+          'Error inserting data:',
+          error ? (error as Error) : undefined,
+        );
       });
   }
 
@@ -153,7 +162,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
         this.logger.debug('Data updated successfully');
       })
       .catch(error => {
-        this.logger.error('Error updating data:', error);
+        this.logger.error(
+          'Error updating data:',
+          error ? (error as Error) : undefined,
+        );
       });
   }
 
@@ -169,7 +181,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
         return deletedRow;
       })
       .catch(error => {
-        this.logger.error('Error deleting data:', error);
+        this.logger.error(
+          'Error deleting data:',
+          error ? (error as Error) : undefined,
+        );
       });
   }
 
@@ -177,7 +192,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
     await this.db(tableName)
       .truncate()
       .catch(error => {
-        this.logger.error(`Error truncating table ${tableName}`, error);
+        this.logger.error(
+          `Error truncating table ${tableName}`,
+          error ? (error as Error) : undefined,
+        );
       });
   }
 
@@ -191,7 +209,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -205,7 +226,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -220,7 +244,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -235,7 +262,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -249,7 +279,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -274,7 +307,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -298,7 +334,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -322,7 +361,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -344,7 +386,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -366,7 +411,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -378,7 +426,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -392,7 +443,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -403,7 +457,10 @@ export class TimeSaverDatabase implements TimeSaverStore {
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }

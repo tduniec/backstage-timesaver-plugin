@@ -55,7 +55,10 @@ export class ScaffolderDatabase implements ScaffolderStore {
       );
       return result;
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }
@@ -74,7 +77,10 @@ export class ScaffolderDatabase implements ScaffolderStore {
       );
       return result;
     } catch (error) {
-      this.logger.error('Error selecting data:', error);
+      this.logger.error(
+        'Error selecting data:',
+        error ? (error as Error) : undefined,
+      );
       throw error;
     }
   }

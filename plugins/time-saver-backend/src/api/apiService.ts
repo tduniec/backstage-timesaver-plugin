@@ -246,7 +246,7 @@ export class TsApi {
         const msg = `Migration: Could not parse JSON object from POST call body "${JSON.stringify(
           requestData,
         )}", aborting...`;
-        this.logger.error(msg, error);
+        this.logger.error(msg, error ? (error as Error) : undefined);
         return {
           status: 'FAIL',
           message: `${msg} - ${error}`,
@@ -275,7 +275,7 @@ export class TsApi {
       } catch (error) {
         const msg =
           'Migration: Could not parse backward migration configuration as JSON object from app-config.x.yaml, aborting...';
-        this.logger.error(msg, error);
+        this.logger.error(msg, error ? (error as Error) : undefined);
         return {
           status: 'FAIL',
           message: `${msg} - ${error}`,
@@ -372,11 +372,11 @@ export class TsApi {
     } catch (error) {
       this.logger.error(
         `Could not continue with backward migration, aborting...`,
-        error,
+        error ? (error as Error) : undefined,
       );
       return {
         status: 'error',
-        error: error as Error,
+        error: error ? (error as Error) : undefined,
       };
     }
     return {
