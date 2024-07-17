@@ -13,19 +13,94 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {
+  DatabaseService,
+  LoggerService,
+  resolvePackagePath,
+} from '@backstage/backend-plugin-api';
 import { Knex } from 'knex';
-import { LoggerService } from '@backstage/backend-plugin-api';
 import { roundNumericValues } from '../utils';
 
-export class DatabaseOperations {
+export interface TimeSaverStore {
+  select(
+    tableName: string,
+    column: string,
+    key: Record<string, string>,
+  ): Promise<unknown> | undefined;
+  insert(
+    tableName: string,
+    data: NonNullable<unknown>,
+  ): Promise<unknown> | undefined;
+  insertOverride(
+    tableName: string,
+    data: NonNullable<unknown>,
+    conflictColumn: string,
+  ): Promise<unknown> | undefined;
+  update(
+    tableName: string,
+    data: NonNullable<unknown>,
+    key: Record<string, string>,
+  ): Promise<unknown> | undefined;
+  delete(
+    tableName: string,
+    key: Record<string, string>,
+  ): Promise<unknown> | undefined;
+  truncate(tableName: string): Promise<unknown> | undefined;
+  getTemplateNameByTsId(templateTaskId: string): Promise<unknown> | undefined;
+  getStatsByTemplateTaskId(
+    templateTaskId: string,
+  ): Promise<unknown> | undefined;
+  getStatsByTeam(team: string): Promise<unknown> | undefined;
+  getStatsByTemplate(template: string): Promise<unknown> | undefined;
+  getAllStats(): Promise<unknown> | undefined;
+  getGroupSavingsDivision(): Promise<unknown> | undefined;
+  getDailyTimeSummariesTeamWise(): Promise<unknown> | undefined;
+  getDailyTimeSummariesTemplateWise(): Promise<unknown> | undefined;
+  getTimeSummarySavedTeamWise(): Promise<unknown> | undefined;
+  getTimeSummarySavedTemplateWise(): Promise<unknown> | undefined;
+  getDistinctColumn(
+    tableName: string,
+    column: string,
+  ):
+    | Promise<
+        { team: string; template_name: string; template_task_id: string }[]
+      >
+    | undefined;
+  getTemplateCount(): Promise<{ count: string }[]> | undefined;
+  getTimeSavedSum(
+    tableName: string,
+    column: string,
+  ): Promise<{ sum: number }[]> | undefined;
+}
+
+const migrationsDir = resolvePackagePath(
+  '@tduniec/backstage-plugin-time-saver-backend',
+  'migrations',
+);
+
+export class TimeSaverDatabase implements TimeSaverStore {
   constructor(
-    private readonly knex: Knex,
+    private readonly db: Knex,
     private readonly logger: LoggerService,
   ) {}
+  static async create(
+    database: DatabaseService,
+    logger: LoggerService,
+  ): Promise<TimeSaverStore> {
+    const knex = await database.getClient();
+
+    if (!database.migrations?.skip) {
+      await knex.migrate.latest({
+        directory: migrationsDir,
+      });
+    }
+
+    return new TimeSaverDatabase(knex, logger);
+  }
 
   async select(tableName: string, column: string, key: Record<string, string>) {
     try {
-      const rows = await this.knex.select(column).from(tableName).where(key);
+      const rows = await this.db.select(column).from(tableName).where(key);
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return rows;
     } catch (error) {
@@ -37,9 +112,7 @@ export class DatabaseOperations {
   async insert(tableName: string, data: NonNullable<unknown>) {
     //  TODO : Verify data type
     try {
-      const insertedRow = await this.knex(tableName)
-        .insert(data)
-        .returning('*');
+      const insertedRow = await this.db(tableName).insert(data).returning('*');
 
       this.logger.debug(`Data inserted successfully ${data}`);
       return insertedRow;
@@ -55,7 +128,7 @@ export class DatabaseOperations {
     conflictColumn: string,
   ) {
     //  TODO : Verify data type
-    await this.knex(tableName)
+    return await this.db(tableName)
       .insert(data)
       .onConflict(conflictColumn)
       .merge()
@@ -73,7 +146,7 @@ export class DatabaseOperations {
     key: Record<string, string>,
   ) {
     //  TODO : Verify data type
-    await this.knex(tableName)
+    return await this.db(tableName)
       .where(key)
       .update(data)
       .then(() => {
@@ -85,7 +158,7 @@ export class DatabaseOperations {
   }
 
   async delete(tableName: string, key: Record<string, string>) {
-    await this.knex(tableName)
+    await this.db(tableName)
       .returning('*')
       .where(key)
       .del()
@@ -101,7 +174,7 @@ export class DatabaseOperations {
   }
 
   async truncate(tableName: string) {
-    await this.knex(tableName)
+    await this.db(tableName)
       .truncate()
       .catch(error => {
         this.logger.error(`Error truncating table ${tableName}`, error);
@@ -110,7 +183,7 @@ export class DatabaseOperations {
 
   async getTemplateNameByTsId(templateTaskId: string) {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         'SELECT template_name FROM ts_template_time_savings WHERE template_task_id = :templateTaskId LIMIT 1',
         { templateTaskId },
       );
@@ -124,11 +197,11 @@ export class DatabaseOperations {
   }
   async getStatsByTemplateTaskId(templateTaskId: string) {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         'SELECT sum(time_saved), team FROM ts_template_time_savings WHERE template_task_id = :templateTaskId GROUP BY team',
         { templateTaskId },
       );
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -139,11 +212,11 @@ export class DatabaseOperations {
 
   async getStatsByTeam(team: string) {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         'SELECT sum(time_saved), template_name from ts_template_time_savings where team = :team group by template_name, team;',
         { team },
       );
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -154,11 +227,11 @@ export class DatabaseOperations {
 
   async getStatsByTemplate(template: string) {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         'SELECT sum(time_saved), team from ts_template_time_savings where template_name = :template group by template_name, team;',
         { template },
       );
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -169,10 +242,10 @@ export class DatabaseOperations {
 
   async getAllStats() {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         'SELECT sum(time_saved), team, template_name from ts_template_time_savings group by team, template_name;',
       );
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -183,7 +256,7 @@ export class DatabaseOperations {
 
   async getGroupSavingsDivision() {
     try {
-      const result = await this.knex.raw(`
+      const result = await this.db.raw(`
             SELECT
             CAST(
                 ROUND(
@@ -197,7 +270,7 @@ export class DatabaseOperations {
         GROUP BY
             team;
             `);
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -208,7 +281,7 @@ export class DatabaseOperations {
 
   async getDailyTimeSummariesTeamWise() {
     try {
-      const result = await this.knex.raw(`
+      const result = await this.db.raw(`
             SELECT 
             TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD') AS date,
             team,
@@ -221,7 +294,7 @@ export class DatabaseOperations {
           ORDER BY 
             date;
             `);
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -232,7 +305,7 @@ export class DatabaseOperations {
 
   async getDailyTimeSummariesTemplateWise() {
     try {
-      const result = await this.knex.raw(`
+      const result = await this.db.raw(`
             SELECT 
             TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD') AS date,
             template_name,
@@ -245,7 +318,7 @@ export class DatabaseOperations {
             ORDER BY 
             date;             
             `);
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -256,7 +329,7 @@ export class DatabaseOperations {
 
   async getTimeSummarySavedTeamWise() {
     try {
-      const result = await this.knex.raw(`
+      const result = await this.db.raw(`
           SELECT
             DISTINCT ON (team, TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD')) -- Keep only the first row for each team and day
             TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD') AS date,
@@ -267,7 +340,7 @@ export class DatabaseOperations {
           ORDER BY
             team, TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD'), created_at;
             `);
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -278,7 +351,7 @@ export class DatabaseOperations {
 
   async getTimeSummarySavedTemplateWise() {
     try {
-      const result = await this.knex.raw(`
+      const result = await this.db.raw(`
             SELECT
             DISTINCT ON (template_name, TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD'))
             TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD') AS date,
@@ -289,7 +362,7 @@ export class DatabaseOperations {
             ORDER BY
             TO_CHAR(DATE_TRUNC('day', created_at), 'YYYY-MM-DD');            
             `);
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -300,7 +373,7 @@ export class DatabaseOperations {
 
   async getDistinctColumn(tableName: string, column: string) {
     try {
-      const result = await this.knex.table(tableName).distinct(column);
+      const result = await this.db.table(tableName).distinct(column);
       const rows = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
@@ -312,10 +385,10 @@ export class DatabaseOperations {
 
   async getTemplateCount() {
     try {
-      const result = await this.knex.raw(`
+      const result = await this.db.raw(`
         select count(*) from (select distinct(template_task_id) from ts_template_time_savings ) as unique_templates
         `);
-      const rows = result.rows;
+      const { rows } = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
     } catch (error) {
@@ -325,7 +398,7 @@ export class DatabaseOperations {
   }
   async getTimeSavedSum(tableName: string, column: string) {
     try {
-      const result = await this.knex.table(tableName).sum(column).as('sum');
+      const result = await this.db.table(tableName).sum(column).as('sum');
       const rows = result;
       this.logger.debug(`Data selected successfully ${JSON.stringify(rows)}`);
       return roundNumericValues(rows);
