@@ -1,5 +1,12 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 2.2.1
+
+### Patch Changes
+
+- Fixed DB lock when using plugins DB schemas.
+- Fixed use of deprecated Backstage database handlers.
+
 ## 2.2.0
 
 ### Minor Changes

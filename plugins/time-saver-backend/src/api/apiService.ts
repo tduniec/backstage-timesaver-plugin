@@ -18,10 +18,9 @@ import {
   LoggerService,
   RootConfigService,
 } from '@backstage/backend-plugin-api';
-import { Knex } from 'knex';
-import { DatabaseOperations } from '../database/databaseOperations';
 import { ScaffolderClient } from './scaffolderClient';
-import { ScaffolderDatabaseOperations } from '../database/scaffolderDatabaseOperations';
+import { ScaffolderStore } from '../database/ScaffolderDatabase';
+import { TimeSaverStore } from '../database/TimeSaverDatabase';
 
 export interface TemplateSpecs {
   specs: {
@@ -58,19 +57,18 @@ export class TsApi {
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
     private readonly auth: AuthService,
-    knex: Knex,
-    scaffoldKx: Knex,
-  ) {
-    this.db = new DatabaseOperations(knex, logger);
-    this.scaffolderDb = new ScaffolderDatabaseOperations(scaffoldKx, logger);
-  }
-  private readonly db: DatabaseOperations;
-  private readonly scaffolderDb: ScaffolderDatabaseOperations;
+    private readonly timeSaverDb: TimeSaverStore,
+    private readonly scaffolderDb: ScaffolderStore,
+  ) {}
   private readonly tsTableName = 'ts_template_time_savings';
 
   public async getStatsByTemplateTaskId(templateTaskId: string) {
-    const templateName = await this.db.getTemplateNameByTsId(templateTaskId);
-    const queryResult = await this.db.getStatsByTemplateTaskId(templateTaskId);
+    const templateName = await this.timeSaverDb.getTemplateNameByTsId(
+      templateTaskId,
+    );
+    const queryResult = await this.timeSaverDb.getStatsByTemplateTaskId(
+      templateTaskId,
+    );
     const outputBody = {
       templateTaskId: templateTaskId,
       templateName: templateName,
@@ -81,7 +79,7 @@ export class TsApi {
   }
 
   public async getStatsByTeam(team: string) {
-    const queryResult = await this.db.getStatsByTeam(team);
+    const queryResult = await this.timeSaverDb.getStatsByTeam(team);
     const outputBody = {
       team: team,
       stats: queryResult,
@@ -91,7 +89,7 @@ export class TsApi {
   }
 
   public async getStatsByTemplate(template: string) {
-    const queryResult = await this.db.getStatsByTemplate(template);
+    const queryResult = await this.timeSaverDb.getStatsByTemplate(template);
     const outputBody = {
       template_name: template,
       stats: queryResult,
@@ -101,7 +99,7 @@ export class TsApi {
   }
 
   public async getAllStats() {
-    const queryResult = await this.db.getAllStats();
+    const queryResult = await this.timeSaverDb.getAllStats();
     const outputBody = {
       stats: queryResult,
     };
@@ -110,7 +108,7 @@ export class TsApi {
   }
 
   public async getGroupDivisionStats() {
-    const queryResult = await this.db.getGroupSavingsDivision();
+    const queryResult = await this.timeSaverDb.getGroupSavingsDivision();
     const outputBody = {
       stats: queryResult,
     };
@@ -119,7 +117,7 @@ export class TsApi {
   }
 
   public async getDailyTimeSummariesTeamWise() {
-    const queryResult = await this.db.getDailyTimeSummariesTeamWise();
+    const queryResult = await this.timeSaverDb.getDailyTimeSummariesTeamWise();
     const outputBody = {
       stats: queryResult,
     };
@@ -127,7 +125,8 @@ export class TsApi {
     return outputBody;
   }
   public async getDailyTimeSummariesTemplateWise() {
-    const queryResult = await this.db.getDailyTimeSummariesTemplateWise();
+    const queryResult =
+      await this.timeSaverDb.getDailyTimeSummariesTemplateWise();
     const outputBody = {
       stats: queryResult,
     };
@@ -136,7 +135,7 @@ export class TsApi {
   }
 
   public async getTimeSummarySavedTeamWise() {
-    const queryResult = await this.db.getTimeSummarySavedTeamWise();
+    const queryResult = await this.timeSaverDb.getTimeSummarySavedTeamWise();
     const outputBody = {
       stats: queryResult,
     };
@@ -144,7 +143,8 @@ export class TsApi {
     return outputBody;
   }
   public async getTimeSummarySavedTemplateWise() {
-    const queryResult = await this.db.getTimeSummarySavedTemplateWise();
+    const queryResult =
+      await this.timeSaverDb.getTimeSummarySavedTemplateWise();
     const outputBody = {
       stats: queryResult,
     };
@@ -246,7 +246,7 @@ export class TsApi {
         const msg = `Migration: Could not parse JSON object from POST call body "${JSON.stringify(
           requestData,
         )}", aborting...`;
-        this.logger.error(msg, error);
+        this.logger.error(msg, error ? (error as Error) : undefined);
         return {
           status: 'FAIL',
           message: `${msg} - ${error}`,
@@ -275,7 +275,7 @@ export class TsApi {
       } catch (error) {
         const msg =
           'Migration: Could not parse backward migration configuration as JSON object from app-config.x.yaml, aborting...';
-        this.logger.error(msg, error);
+        this.logger.error(msg, error ? (error as Error) : undefined);
         return {
           status: 'FAIL',
           message: `${msg} - ${error}`,
@@ -372,11 +372,11 @@ export class TsApi {
     } catch (error) {
       this.logger.error(
         `Could not continue with backward migration, aborting...`,
-        error,
+        error ? (error as Error) : undefined,
       );
       return {
         status: 'error',
-        error: error as Error,
+        error: error ? (error as Error) : undefined,
       };
     }
     return {
@@ -386,63 +386,155 @@ export class TsApi {
   }
 
   public async getAllGroups() {
-    const queryResult = await this.db.getDistinctColumn(
+    let groups: string[];
+    let outputBody: {
+      groups: string[];
+      errorMessage: string;
+    } = {
+      groups: [],
+      errorMessage: '',
+    };
+
+    const queryResult = await this.timeSaverDb.getDistinctColumn(
       this.tsTableName,
       'team',
     );
-    const groupList: string[] = queryResult.map(row => row.team);
-    const outputBody = {
-      groups: groupList,
-    };
-    this.logger.debug(JSON.stringify(outputBody));
+
+    if (queryResult && queryResult.length > 0) {
+      groups = queryResult.map(row => row.team);
+      outputBody = {
+        ...outputBody,
+        groups,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getAllGroups - DB returned 0 rows';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
     return outputBody;
   }
 
   public async getAllTemplateNames() {
-    const queryResult = await this.db.getDistinctColumn(
+    let templates: string[];
+    let outputBody: {
+      templates: string[];
+      errorMessage: string;
+    } = {
+      templates: [],
+      errorMessage: '',
+    };
+
+    const queryResult = await this.timeSaverDb.getDistinctColumn(
       this.tsTableName,
       'template_name',
     );
-    const groupList: string[] = queryResult.map(row => row.template_name);
-    const outputBody = {
-      templates: groupList,
-    };
-    this.logger.debug(JSON.stringify(outputBody));
+
+    if (queryResult && queryResult.length > 0) {
+      templates = queryResult.map(row => row.template_name);
+      outputBody = {
+        ...outputBody,
+        templates,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getAllGroups - DB returned 0 rows';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
     return outputBody;
   }
 
   public async getAllTemplateTasks() {
-    const queryResult = await this.db.getDistinctColumn(
+    let templateTasks: string[];
+    let outputBody: {
+      templateTasks: string[];
+      errorMessage: string;
+    } = {
+      templateTasks: [],
+      errorMessage: '',
+    };
+
+    const queryResult = await this.timeSaverDb.getDistinctColumn(
       this.tsTableName,
       'template_task_id',
     );
-    const groupList: string[] = queryResult.map(row => row.template_task_id);
-    const outputBody = {
-      templateTasks: groupList,
-    };
-    this.logger.debug(JSON.stringify(outputBody));
+
+    if (queryResult && queryResult.length > 0) {
+      templateTasks = queryResult.map(row => row.template_task_id);
+      outputBody = {
+        ...outputBody,
+        templateTasks,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getAllGroups - DB returned 0 rows';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
     return outputBody;
   }
 
   public async getTemplateCount() {
-    const queryResult = (await this.db.getTemplateCount())[0];
+    let outputBody;
+    const queryResult = (await this.timeSaverDb.getTemplateCount()) as {
+      count: string;
+    }[];
 
-    const outputBody = {
-      templateTasks: parseInt(queryResult.count, 10),
-    };
-    this.logger.debug(JSON.stringify(outputBody));
+    if (queryResult && queryResult?.length > 0) {
+      outputBody = {
+        templateTasks: parseInt(queryResult[0].count, 10),
+      };
+      this.logger.debug(`getTemplateCount: ${JSON.stringify(outputBody)}`);
+    } else {
+      const errorMessage = 'getTemplateCount did not return any results';
+      outputBody = {
+        templateTasks: 0,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
+
     return outputBody;
   }
 
+  // public async getTimeSavedSum(divider?: number): Promise<{ timeSaved?: number | undefined; errorMessage?: string | undefined }> {
   public async getTimeSavedSum(divider?: number) {
-    const dividerInt = divider ?? 1;
-    const queryResult = (
-      await this.db.getTimeSavedSum(this.tsTableName, 'time_saved')
-    )[0];
-    const outputBody = {
-      timeSaved: queryResult.sum / dividerInt,
+    let outputBody: {
+      timeSaved?: number;
+      errorMessage?: string;
+    } = {
+      timeSaved: 0,
+      errorMessage: '',
     };
-    this.logger.debug(JSON.stringify(outputBody));
+
+    const dividerInt = divider ?? 1;
+    const queryResult = await this.timeSaverDb.getTimeSavedSum(
+      this.tsTableName,
+      'time_saved',
+    );
+
+    if (queryResult && queryResult.length > 0) {
+      outputBody = {
+        timeSaved: queryResult[0].sum / dividerInt,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getTimeSavedSum - DB returned 0 rows';
+      outputBody = {
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
     return outputBody;
   }
 }

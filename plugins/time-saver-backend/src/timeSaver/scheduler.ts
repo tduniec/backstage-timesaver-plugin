@@ -21,14 +21,14 @@ import {
 import { TaskRunner } from '@backstage/backend-tasks';
 import * as uuid from 'uuid';
 import { TimeSaverHandler } from './handler';
-import { Knex } from 'knex';
+import { TimeSaverStore } from '../database/TimeSaverDatabase';
 
 export class TsScheduler {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
     private readonly auth: AuthService,
-    private readonly knex: Knex,
+    private readonly db: TimeSaverStore,
   ) {}
 
   async schedule(taskRunner: TaskRunner) {
@@ -36,7 +36,7 @@ export class TsScheduler {
       this.logger,
       this.config,
       this.auth,
-      this.knex,
+      this.db,
     );
     await taskRunner.run({
       id: uuid.v4(),
