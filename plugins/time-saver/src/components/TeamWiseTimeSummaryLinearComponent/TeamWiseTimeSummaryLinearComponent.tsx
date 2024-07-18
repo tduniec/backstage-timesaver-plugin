@@ -25,8 +25,8 @@ import {
   ChartOptions,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
-import { fetchWithCredentials, getRandomColor } from '../utils';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
+import { getRandomColor } from '../utils';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -48,17 +48,19 @@ export function TeamWiseTimeSummaryLinearChart({
   team,
 }: TeamWiseTimeSummaryLinearProps): React.ReactElement {
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
 
   const [data, setData] = useState<TeamWiseTimeSummaryLinearResponse | null>(
     null,
   );
   const theme = useTheme();
   useEffect(() => {
-    fetchWithCredentials(
-      `${configApi.getString(
-        'backend.baseUrl',
-      )}/api/time-saver/getTimeSummary/team`,
-    )
+    fetchApi
+      .fetch(
+        `${configApi.getString(
+          'backend.baseUrl',
+        )}/api/time-saver/getTimeSummary/team`,
+      )
       .then(response => response.json())
       .then(dt => {
         dt.stats.sort(
@@ -70,7 +72,7 @@ export function TeamWiseTimeSummaryLinearChart({
         setData(dt);
       })
       .catch();
-  }, [configApi, team]);
+  }, [configApi, team, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;

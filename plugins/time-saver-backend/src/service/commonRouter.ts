@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 import express from 'express';
-import { Logger } from 'winston';
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { TimeSaverHandler } from '../timeSaver/handler';
 import { TsApi } from '../api/apiService';
 
 export function setupCommonRoutes(
   router: express.Router,
-  logger: Logger,
+  logger: LoggerService,
   tsHandler: TimeSaverHandler,
   apiHandler: TsApi,
 ) {
@@ -35,9 +35,7 @@ export function setupCommonRoutes(
   });
 
   router.get('/getStats/', async (request, response) => {
-    const templateId = request.query.templateTaskId;
-    const team = request.query.team;
-    const templateName = request.query.templateName;
+    const { templateId, team, templateName } = request.query;
     let result;
     if (templateId) {
       result = await apiHandler.getStatsByTemplateTaskId(String(templateId));
@@ -79,6 +77,33 @@ export function setupCommonRoutes(
   router.get('/migrate', async (_request, response) => {
     const result = await apiHandler.updateTemplatesWithSubstituteData();
     response.json(result);
+  });
+
+  router.post('/migrate', async (_request, response) => {
+    const template_classification = _request.body;
+    const result = await apiHandler.updateTemplatesWithSubstituteData(
+      template_classification,
+    );
+    response.json(result);
+  });
+
+  router.get('/generate-sample-classification', async (_request, response) => {
+    const { useScaffolderTasksEntries } = _request.query;
+    response.json(
+      await apiHandler.getSampleMigrationClassificationConfig(undefined, {
+        useScaffolderTasksEntries: !!(useScaffolderTasksEntries === 'true'),
+      }),
+    );
+  });
+
+  router.post('/generate-sample-classification', async (_request, response) => {
+    const { customClassificationRequest, options } = _request.body;
+    response.json(
+      await apiHandler.getSampleMigrationClassificationConfig(
+        customClassificationRequest,
+        options,
+      ),
+    );
   });
 
   router.get('/groups', async (_request, response) => {

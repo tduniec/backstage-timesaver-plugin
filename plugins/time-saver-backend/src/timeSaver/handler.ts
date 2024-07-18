@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Logger } from 'winston';
-import { Knex } from 'knex';
-import { DatabaseOperations } from '../database/databaseOperations';
+import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
+} from '@backstage/backend-plugin-api';
+import { TimeSaverStore } from '../database/TimeSaverDatabase';
 import { ScaffolderClient } from '../api/scaffolderClient';
-import { Config } from '@backstage/config';
 
 export class TimeSaverHandler {
   constructor(
-    private readonly logger: Logger,
-    private readonly config: Config,
-    knex: Knex,
-  ) {
-    this.db = new DatabaseOperations(knex, logger);
-  }
-  private readonly db: DatabaseOperations;
+    private readonly logger: LoggerService,
+    private readonly config: RootConfigService,
+    private readonly auth: AuthService,
+    private readonly db: TimeSaverStore,
+  ) {}
   private readonly tsTableName = 'ts_template_time_savings';
 
   async fetchTemplates() {
-    const scaffolderClient = new ScaffolderClient(this.logger, this.config);
+    const scaffolderClient = new ScaffolderClient(
+      this.logger,
+      this.config,
+      this.auth,
+    );
     this.logger.info(`START - Collecting Time Savings data from templates...}`);
 
     let templateTaskList = [];
@@ -41,7 +45,11 @@ export class TimeSaverHandler {
       return 'FAIL';
     }
 
+    this.logger.debug('Truncating database');
     await this.db.truncate(this.tsTableName); // cleaning table
+    this.logger.debug(
+      `Template task list: ${JSON.stringify(templateTaskList)}`,
+    );
     templateTaskList = templateTaskList.filter(
       (single: { status: string }) => single.status === 'completed',
     ); // filtering only completed

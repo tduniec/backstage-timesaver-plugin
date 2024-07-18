@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 import {
+  AuthService,
+  LoggerService,
+  RootConfigService,
   coreServices,
   createBackendPlugin,
+  DiscoveryService,
+  UrlReaderService,
+  HttpAuthService,
+  DatabaseService,
 } from '@backstage/backend-plugin-api';
 import {
-  PluginDatabaseManager,
   errorHandler,
-  loggerToWinstonLogger,
+  createLegacyAuthAdapters,
 } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import express from 'express';
 import Router from 'express-promise-router';
-import { Logger } from 'winston';
-import { Config } from '@backstage/config';
 import { PluginInitializer } from './pluginInitializer';
 
 export interface RouterOptions {
-  logger: Logger;
-  database: PluginDatabaseManager;
-  config: Config;
+  logger: LoggerService;
+  config: RootConfigService;
+  discovery: DiscoveryService;
+  database: DatabaseService;
   scheduler: PluginTaskScheduler;
+  urlReader: UrlReaderService;
+  auth?: AuthService;
+  httpAuth?: HttpAuthService;
 }
 
 function registerRouter() {
@@ -47,10 +55,12 @@ export async function createRouter(
 ): Promise<express.Router> {
   const { logger, config, database, scheduler } = options;
   const baseRouter = registerRouter();
+  const { auth } = createLegacyAuthAdapters(options);
   const plugin = await PluginInitializer.builder(
     baseRouter,
     logger,
     config,
+    auth,
     database,
     scheduler,
   );
@@ -66,22 +76,43 @@ export const timeSaverPlugin = createBackendPlugin({
       deps: {
         logger: coreServices.logger,
         config: coreServices.rootConfig,
+        auth: coreServices.auth,
         scheduler: coreServices.scheduler,
         database: coreServices.database,
         http: coreServices.httpRouter,
+        httpRouter: coreServices.httpRouter,
+        urlReader: coreServices.urlReader,
       },
-      async init({ config, logger, scheduler, database, http }) {
+      async init({
+        auth,
+        config,
+        logger,
+        scheduler,
+        database,
+        http,
+        httpRouter,
+      }) {
         const baseRouter = registerRouter();
-        const winstonLogger = loggerToWinstonLogger(logger);
         const plugin = await PluginInitializer.builder(
           baseRouter,
-          winstonLogger,
+          logger,
           config,
+          auth,
           database,
           scheduler,
         );
         const router = plugin.timeSaverRouter;
         http.use(router);
+
+        httpRouter.addAuthPolicy({
+          path: '/migrate',
+          allow: 'unauthenticated',
+        });
+
+        httpRouter.addAuthPolicy({
+          path: '/generate-sample-classification',
+          allow: 'unauthenticated',
+        });
       },
     });
   },

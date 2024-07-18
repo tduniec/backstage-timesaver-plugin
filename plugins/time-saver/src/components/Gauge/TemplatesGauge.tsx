@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 import React, { useEffect, useState } from 'react';
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
+import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Gauge from './Gauge';
-import { fetchWithCredentials } from '../utils';
 
 type TemplateResponse = {
   templates: string[];
@@ -25,6 +24,7 @@ type TemplateResponse = {
 
 export function TemplatesGauge(): React.ReactElement {
   const configApi = useApi(configApiRef);
+  const fetchApi = useApi(fetchApiRef);
   const [data, setData] = useState<TemplateResponse | null>(null);
 
   useEffect(() => {
@@ -32,11 +32,12 @@ export function TemplatesGauge(): React.ReactElement {
       'backend.baseUrl',
     )}/api/time-saver/templates`;
 
-    fetchWithCredentials(url)
+    fetchApi
+      .fetch(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi]);
+  }, [configApi, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
