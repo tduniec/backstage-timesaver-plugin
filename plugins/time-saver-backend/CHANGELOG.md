@@ -1,5 +1,11 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 2.3.0
+
+### Minor Changes
+
+- Implemented yarn 3.x
+
 ## 2.2.1
 
 ### Patch Changes
@@ -17,7 +23,7 @@
 
 ### Minor Changes
 
-- Fixed scaffolder DB corruption when trying to backward migrate. Opened up /migrate endpoint unautheticated. Improved DB querying trhough Knex.
+- Fixed scaffolder DB corruption when trying to backward migrate. Opened up /migrate endpoint unauthenticated. Improved DB querying through Knex.
 
 ## 2.0.0
 
