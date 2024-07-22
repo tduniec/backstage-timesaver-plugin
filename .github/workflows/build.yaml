@@ -12,13 +12,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-yarn-build-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+      # # Get the yarn cache path.
+      # - name: Get yarn cache directory path
+      #   id: yarn-cache-dir-path
+      #   run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      # - name: Restore yarn cache
+      #   uses: actions/cache@v2
+      #   id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      #   with:
+      #     path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+      #     key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+      #     restore-keys: |
+      #       yarn-cache-folder-
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -26,16 +32,17 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Run code quality checks
         run: |
-          yarn tsc
+          yarn tsc:full
           yarn lint:all
-          yarn prettier:check-all
+          yarn prettier:check
 
       - name: Run tests and build
         run: |
           yarn clean
-          yarn build
-          yarn test
+          yarn tsc:full
+          yarn build:all
+          yarn test:all

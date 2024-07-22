@@ -37,7 +37,7 @@ type GroupsResponse = {
 export default function TeamSelector({
   onTeamChange,
   onClearButtonClick,
-}: TeamSelectorProps) {
+}: TeamSelectorProps): React.ReactElement {
   const [team, setTeam] = React.useState('');
 
   const handleChange = (
@@ -68,28 +68,35 @@ export default function TeamSelector({
       .catch();
   }, [configApi, onTeamChange, fetchApi]);
 
-  if (!data) {
-    return <CircularProgress />;
-  }
-
-  const { groups } = data;
   return (
-    <Box style={{ minWidth: 360, display: 'flex', flexWrap: 'nowrap', gap: 6 }}>
-      <FormControl fullWidth variant="outlined">
-        <InputLabel>Team</InputLabel>
-        <Select value={team} label="Team" onChange={handleChange}>
-          {groups.map(group => (
-            <MenuItem key={group} value={group}>
-              {group}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      {onClearButtonClick && (
-        <Button variant="outlined" color="secondary" onClick={handleClearClick}>
-          Clear
-        </Button>
+    <>
+      {data?.groups ? (
+        <Box
+          style={{ minWidth: 360, display: 'flex', flexWrap: 'nowrap', gap: 6 }}
+        >
+          <FormControl fullWidth variant="outlined">
+            <InputLabel>Team</InputLabel>
+            <Select value={team} label="Team" onChange={handleChange}>
+              {data.groups.map(group => (
+                <MenuItem key={group} value={group}>
+                  {group}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {onClearButtonClick && (
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleClearClick}
+            >
+              Clear
+            </Button>
+          )}
+        </Box>
+      ) : (
+        <CircularProgress />
       )}
-    </Box>
+    </>
   );
 }

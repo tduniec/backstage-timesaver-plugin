@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 import * as React from 'react';
-import { Autocomplete } from '@material-ui/lab';
+//  TODO :: Fix the need to place this exception:
+// eslint-disable-next-line no-restricted-imports
+import { Autocomplete } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';

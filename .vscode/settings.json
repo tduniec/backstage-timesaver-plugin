@@ -1,0 +1,14 @@
+{
+  // Default (format when you paste)
+  "editor.formatOnPaste": true,
+  // Default (format when you save)
+  "editor.formatOnSave": true,
+  "cSpell.words": [
+    "codemods",
+    "CODEOWNERS",
+    "scaffolder",
+    "tduniec",
+    "techdocs"
+  ],
+  "git.alwaysSignOff": true,
+}

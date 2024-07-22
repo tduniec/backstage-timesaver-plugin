@@ -102,7 +102,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
         columns={columns}
         sortModel={sortModel}
         onSortModelChange={model => setSortModel(model)}
-        className="test"
+        // className="test" :: TODO : Check CSS correlation
         sx={{
           color: theme.palette.text.primary,
           '& .MuiDataGrid-cell:hover': { color: theme.palette.text.secondary },
