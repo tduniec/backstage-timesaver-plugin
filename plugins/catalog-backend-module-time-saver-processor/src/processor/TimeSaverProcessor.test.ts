@@ -1,15 +1,17 @@
 import { Entity } from '@backstage/catalog-model';
 import { TimeSaverProcessor } from './TimeSaverProcessor';
+import { mockServices } from '@backstage/backend-test-utils';
 
 function copy(entity: Entity): Entity {
   return JSON.parse(JSON.stringify(entity));
 }
 
 describe('TimeSaverProcessor', () => {
+  const logger = mockServices.logger.mock();
   let processorUnderTest: TimeSaverProcessor;
 
   beforeEach(() => {
-    processorUnderTest = new TimeSaverProcessor();
+    processorUnderTest = new TimeSaverProcessor(logger);
   });
 
   it('returns expected processor name', () => {

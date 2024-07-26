@@ -1,3 +1,4 @@
+import { LoggerService } from '@backstage/backend-plugin-api';
 import { Entity } from '@backstage/catalog-model';
 import { CatalogProcessor } from '@backstage/plugin-catalog-node';
 import { JsonValue } from '@backstage/types';
@@ -20,6 +21,8 @@ function isValidSubstitute(
 
 export class TimeSaverProcessor implements CatalogProcessor {
   #TimeSaved = 'backstage.io/time-saved';
+
+  constructor(private readonly logger: LoggerService) {}
 
   getProcessorName() {
     return 'TimeSaverProcessor';
@@ -53,6 +56,9 @@ export class TimeSaverProcessor implements CatalogProcessor {
         [this.#TimeSaved]: `PT${hoursSaved}H`,
       };
     }
+    this.logger.debug(
+      `Template Entity ${entity.metadata.name} has time-saved annotation ${hoursSaved}`,
+    );
 
     return entity;
   }
