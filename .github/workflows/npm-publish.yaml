@@ -9,7 +9,13 @@ jobs:
   publish-npm:
     strategy:
       matrix:
-        plugins: ['time-saver', 'time-saver-backend', 'time-saver-common', 'catalog-backend-module-time-saver-processor']
+        plugins:
+          [
+            'time-saver',
+            'time-saver-backend',
+            'time-saver-common',
+            'catalog-backend-module-time-saver-processor',
+          ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
