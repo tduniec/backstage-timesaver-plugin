@@ -31,7 +31,7 @@ which may be leveraged by the Analytics API.
      env: PluginEnvironment,
    ): Promise<Router> {
      const builder = CatalogBuilder.create(env);
-   + builder.addProcessor(new TimeSaverProcessor());
+   + builder.addProcessor(new TimeSaverProcessor(logger));
      // ...
      return router;
    }
