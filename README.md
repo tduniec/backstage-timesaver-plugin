@@ -7,6 +7,7 @@ This plugin provides an implementation of charts and statistics related to your 
 - [time-saver](./plugins/time-saver)
 - [time-saver-backend](./plugins/time-saver-backend)
 - [time-saver-common](./plugins/time-saver-common)
+- [time-saver-processor](./plugins/catalog-backend-module-time-saver-processor)
 
 ## Screens
 
