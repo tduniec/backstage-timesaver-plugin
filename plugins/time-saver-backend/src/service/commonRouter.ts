@@ -16,13 +16,13 @@
 import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { TimeSaverHandler } from '../timeSaver/handler';
-import { TsApi } from '../api/apiService';
+import { TimeSaverApi } from '../api/timeSaverApi';
 
 export function setupCommonRoutes(
   router: express.Router,
   logger: LoggerService,
   tsHandler: TimeSaverHandler,
-  apiHandler: TsApi,
+  apiHandler: TimeSaverApi,
 ) {
   router.get('/health', (_, response) => {
     logger.info('PONG!');
