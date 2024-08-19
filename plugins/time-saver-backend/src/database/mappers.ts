@@ -18,14 +18,7 @@ import {
 
 const DEFAULT_DB_CREATED_AT_VALUE = '';
 
-interface IMapper { }
-class Mapper<T> implements IMapper {
-  // toDomain(raw: any): <T>;
-  // toPersistence(o: T): any;
-  // toDTO(o: T): U;
-}
-
-export class TemplateTimeSavingsMap extends Mapper<TemplateTimeSavings> {
+export class TemplateTimeSavingsMap {
   static toPersistence(
     templateTimeSavings: TemplateTimeSavings,
   ): TemplateTimeSavingsDbRow {
@@ -60,7 +53,7 @@ export class TemplateTimeSavingsMap extends Mapper<TemplateTimeSavings> {
   }
 }
 
-export class TemplateTimeSavingsCollectionMap extends Mapper<TemplateTimeSavings> {
+export class TemplateTimeSavingsCollectionMap {
   static toDTO(
     templateTimeSavingsDbRows: TemplateTimeSavingsDbRow[],
   ): TemplateTimeSavingsCollection {
@@ -81,7 +74,7 @@ export class TemplateTimeSavingsCollectionMap extends Mapper<TemplateTimeSavings
   }
 }
 
-export class TimeSavedStatisticsMap extends Mapper<TimeSavedStatistics> {
+export class TimeSavedStatisticsMap {
   static toDTO(
     timeSavedStatisticsDbRow: TimeSavedStatisticsDbRow,
   ): TimeSavedStatistics {
@@ -93,7 +86,7 @@ export class TimeSavedStatisticsMap extends Mapper<TimeSavedStatistics> {
   }
 }
 
-export class GroupSavingsDivisionMap extends Mapper<GroupSavingsDivision> {
+export class GroupSavingsDivisionMap {
   static toDTO(
     groupSavingsDivisionDbRow: GroupSavingsDivisionDbRow,
   ): GroupSavingsDivision {
@@ -104,7 +97,7 @@ export class GroupSavingsDivisionMap extends Mapper<GroupSavingsDivision> {
   }
 }
 
-export class TimeSummaryMap extends Mapper<TimeSummary> {
+export class TimeSummaryMap {
   static toDTO(timeSummaryDbRow: RawDbTimeSummary): TimeSummary {
     return {
       team: timeSummaryDbRow?.team,
