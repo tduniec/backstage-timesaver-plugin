@@ -21,6 +21,10 @@ import {
 import { ScaffolderClient } from './scaffolderClient';
 import { ScaffolderStore } from '../database/ScaffolderDatabase';
 import { TimeSaverStore } from '../database/TimeSaverDatabase';
+import {
+  DEFAULT_SAMPLE_CLASSIFICATION,
+  DEFAULT_SAMPLE_TEMPLATES_TASKS,
+} from './defaultValues';
 
 export interface TemplateSpecs {
   specs: {
@@ -38,21 +42,7 @@ export interface SampleMigrationClassificationConfigOptions {
   useScaffolderTasksEntries?: boolean;
 }
 
-const DEFAULT_SAMPLE_CLASSIFICATION = {
-  engineering: {
-    devops: 8,
-    development_team: 8,
-    security: 3,
-  },
-};
-
-const DEFAULT_SAMPLE_TEMPLATES_TASKS = [
-  'template:default/create-github-project',
-  'template:default/create-nodejs-service',
-  'template:default/create-golang-service',
-];
-
-export class TsApi {
+export class TimeSaverApi {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: RootConfigService,
@@ -60,7 +50,6 @@ export class TsApi {
     private readonly timeSaverDb: TimeSaverStore,
     private readonly scaffolderDb: ScaffolderStore,
   ) {}
-  private readonly tsTableName = 'ts_template_time_savings';
 
   public async getStatsByTemplateTaskId(templateTaskId: string) {
     const templateName = await this.timeSaverDb.getTemplateNameByTsId(
@@ -189,6 +178,158 @@ export class TsApi {
         ...sampleClassification,
       })),
     };
+  }
+
+  public async getAllGroups() {
+    let groups: string[];
+    let outputBody: {
+      groups: string[];
+      errorMessage: string;
+    } = {
+      groups: [],
+      errorMessage: '',
+    };
+
+    const queryResult = await this.timeSaverDb.getDistinctColumn('team');
+    console.log(queryResult);
+
+    if (queryResult && queryResult.team.length > 0) {
+      groups = queryResult.team.map(e => e.toString());
+      outputBody = {
+        ...outputBody,
+        groups,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getAllGroups - DB returned 0 rows';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
+    return outputBody;
+  }
+
+  public async getAllTemplateNames() {
+    let templates: string[];
+    let outputBody: {
+      templates: string[];
+      errorMessage: string;
+    } = {
+      templates: [],
+      errorMessage: '',
+    };
+
+    const queryResult = await this.timeSaverDb.getDistinctColumn(
+      'template_name',
+    );
+
+    if (queryResult && queryResult.template_name.length > 0) {
+      templates = queryResult.template_name.map(e => e.toString());
+      outputBody = {
+        ...outputBody,
+        templates,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getAllGroups - DB returned 0 rows';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
+    return outputBody;
+  }
+
+  public async getAllTemplateTasks() {
+    let templateTasks: string[];
+    let outputBody: {
+      templateTasks: string[];
+      errorMessage: string;
+    } = {
+      templateTasks: [],
+      errorMessage: '',
+    };
+
+    const queryResult = await this.timeSaverDb.getDistinctColumn(
+      'template_task_id',
+    );
+    console.log(queryResult);
+
+    if (queryResult && queryResult.template_task_id.length > 0) {
+      templateTasks = queryResult.template_task_id.map(e => e.toString());
+      outputBody = {
+        ...outputBody,
+        templateTasks,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getAllGroups - DB returned 0 rows';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
+    return outputBody;
+  }
+
+  public async getTemplateCount() {
+    let outputBody: {
+      templateCount?: number;
+      errorMessage?: string;
+    } = {
+      templateCount: 0,
+      errorMessage: '',
+    };
+    const queryResult = await this.timeSaverDb.getTemplateCount();
+
+    if (typeof queryResult === 'number') {
+      outputBody = {
+        templateCount: queryResult,
+      };
+      this.logger.debug(`getTemplateCount: ${JSON.stringify(outputBody)}`);
+    } else {
+      const errorMessage = 'getTemplateCount did not return any results';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
+
+    return outputBody;
+  }
+
+  public async getTimeSavedSum(divider?: number) {
+    let outputBody: {
+      timeSaved?: number;
+      errorMessage?: string;
+    } = {
+      timeSaved: 0,
+      errorMessage: '',
+    };
+
+    const dividerInt = divider ?? 1;
+    const queryResult = await this.timeSaverDb.getTimeSavedSum();
+    console.log({ queryResult });
+
+    if (typeof queryResult === 'number') {
+      outputBody = {
+        timeSaved: queryResult ? queryResult / dividerInt : queryResult,
+      };
+      this.logger.debug(JSON.stringify(outputBody));
+    } else {
+      const errorMessage = 'getTimeSavedSum - DB returned 0 rows';
+      outputBody = {
+        ...outputBody,
+        errorMessage,
+      };
+      this.logger.warn(errorMessage);
+    }
+    return outputBody;
   }
 
   public async updateTemplatesWithSubstituteData(
@@ -383,158 +524,5 @@ export class TsApi {
       status: 'SUCCESS',
       migrationStatisticsReport,
     };
-  }
-
-  public async getAllGroups() {
-    let groups: string[];
-    let outputBody: {
-      groups: string[];
-      errorMessage: string;
-    } = {
-      groups: [],
-      errorMessage: '',
-    };
-
-    const queryResult = await this.timeSaverDb.getDistinctColumn(
-      this.tsTableName,
-      'team',
-    );
-
-    if (queryResult && queryResult.length > 0) {
-      groups = queryResult.map(row => row.team);
-      outputBody = {
-        ...outputBody,
-        groups,
-      };
-      this.logger.debug(JSON.stringify(outputBody));
-    } else {
-      const errorMessage = 'getAllGroups - DB returned 0 rows';
-      outputBody = {
-        ...outputBody,
-        errorMessage,
-      };
-      this.logger.warn(errorMessage);
-    }
-    return outputBody;
-  }
-
-  public async getAllTemplateNames() {
-    let templates: string[];
-    let outputBody: {
-      templates: string[];
-      errorMessage: string;
-    } = {
-      templates: [],
-      errorMessage: '',
-    };
-
-    const queryResult = await this.timeSaverDb.getDistinctColumn(
-      this.tsTableName,
-      'template_name',
-    );
-
-    if (queryResult && queryResult.length > 0) {
-      templates = queryResult.map(row => row.template_name);
-      outputBody = {
-        ...outputBody,
-        templates,
-      };
-      this.logger.debug(JSON.stringify(outputBody));
-    } else {
-      const errorMessage = 'getAllGroups - DB returned 0 rows';
-      outputBody = {
-        ...outputBody,
-        errorMessage,
-      };
-      this.logger.warn(errorMessage);
-    }
-    return outputBody;
-  }
-
-  public async getAllTemplateTasks() {
-    let templateTasks: string[];
-    let outputBody: {
-      templateTasks: string[];
-      errorMessage: string;
-    } = {
-      templateTasks: [],
-      errorMessage: '',
-    };
-
-    const queryResult = await this.timeSaverDb.getDistinctColumn(
-      this.tsTableName,
-      'template_task_id',
-    );
-
-    if (queryResult && queryResult.length > 0) {
-      templateTasks = queryResult.map(row => row.template_task_id);
-      outputBody = {
-        ...outputBody,
-        templateTasks,
-      };
-      this.logger.debug(JSON.stringify(outputBody));
-    } else {
-      const errorMessage = 'getAllGroups - DB returned 0 rows';
-      outputBody = {
-        ...outputBody,
-        errorMessage,
-      };
-      this.logger.warn(errorMessage);
-    }
-    return outputBody;
-  }
-
-  public async getTemplateCount() {
-    let outputBody;
-    const queryResult = (await this.timeSaverDb.getTemplateCount()) as {
-      count: string;
-    }[];
-
-    if (queryResult && queryResult?.length > 0) {
-      outputBody = {
-        templateTasks: parseInt(queryResult[0].count, 10),
-      };
-      this.logger.debug(`getTemplateCount: ${JSON.stringify(outputBody)}`);
-    } else {
-      const errorMessage = 'getTemplateCount did not return any results';
-      outputBody = {
-        templateTasks: 0,
-        errorMessage,
-      };
-      this.logger.warn(errorMessage);
-    }
-
-    return outputBody;
-  }
-
-  // public async getTimeSavedSum(divider?: number): Promise<{ timeSaved?: number | undefined; errorMessage?: string | undefined }> {
-  public async getTimeSavedSum(divider?: number) {
-    let outputBody: {
-      timeSaved?: number;
-      errorMessage?: string;
-    } = {
-      timeSaved: 0,
-      errorMessage: '',
-    };
-
-    const dividerInt = divider ?? 1;
-    const queryResult = await this.timeSaverDb.getTimeSavedSum(
-      this.tsTableName,
-      'time_saved',
-    );
-
-    if (queryResult && queryResult.length > 0) {
-      outputBody = {
-        timeSaved: queryResult[0].sum / dividerInt,
-      };
-      this.logger.debug(JSON.stringify(outputBody));
-    } else {
-      const errorMessage = 'getTimeSavedSum - DB returned 0 rows';
-      outputBody = {
-        errorMessage,
-      };
-      this.logger.warn(errorMessage);
-    }
-    return outputBody;
   }
 }
