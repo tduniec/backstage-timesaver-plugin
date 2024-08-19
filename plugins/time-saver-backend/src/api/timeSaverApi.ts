@@ -49,7 +49,7 @@ export class TimeSaverApi {
     private readonly auth: AuthService,
     private readonly timeSaverDb: TimeSaverStore,
     private readonly scaffolderDb: ScaffolderStore,
-  ) { }
+  ) {}
 
   public async getStatsByTemplateTaskId(templateTaskId: string) {
     const templateName = await this.timeSaverDb.getTemplateNameByTsId(
@@ -165,8 +165,10 @@ export class TimeSaverApi {
       ? (await this.getAllTemplateTasks()).templateTasks
       : DEFAULT_SAMPLE_TEMPLATES_TASKS;
     this.logger.debug(
-      `Generating sample classification configuration with ${options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
-      } templates tasks list and ${customClassificationRequest ? 'user-defined' : 'default'
+      `Generating sample classification configuration with ${
+        options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
+      } templates tasks list and ${
+        customClassificationRequest ? 'user-defined' : 'default'
       } classification`,
     );
     return {

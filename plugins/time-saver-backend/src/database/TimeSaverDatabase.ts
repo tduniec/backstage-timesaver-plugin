@@ -96,7 +96,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
   constructor(
     private readonly db: Knex,
     private readonly logger: LoggerService,
-  ) { }
+  ) {}
 
   /**
    * Creates a new instance of TimeSaverStore by initializing a database connection and running migrations if necessary.

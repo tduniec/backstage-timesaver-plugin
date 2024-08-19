@@ -42,8 +42,7 @@ export class TemplateTimeSavingsMap {
       id: templateTimeSavingsDbRow.id,
       team: templateTimeSavingsDbRow.team,
       role: templateTimeSavingsDbRow.role,
-      createdAt:
-        dateTimeFromIsoDate(templateTimeSavingsDbRow.created_at),
+      createdAt: dateTimeFromIsoDate(templateTimeSavingsDbRow.created_at),
       createdBy: templateTimeSavingsDbRow.created_by,
       timeSaved: roundNumericValues(templateTimeSavingsDbRow.time_saved),
       templateName: templateTimeSavingsDbRow.template_name,

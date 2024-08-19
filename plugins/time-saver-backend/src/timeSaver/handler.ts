@@ -28,7 +28,7 @@ export class TimeSaverHandler {
     private readonly config: RootConfigService,
     private readonly auth: AuthService,
     private readonly db: TimeSaverStore,
-  ) { }
+  ) {}
 
   async fetchTemplates() {
     const scaffolderClient = new ScaffolderClient(
