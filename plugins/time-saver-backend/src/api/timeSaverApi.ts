@@ -49,7 +49,7 @@ export class TimeSaverApi {
     private readonly auth: AuthService,
     private readonly timeSaverDb: TimeSaverStore,
     private readonly scaffolderDb: ScaffolderStore,
-  ) {}
+  ) { }
 
   public async getStatsByTemplateTaskId(templateTaskId: string) {
     const templateName = await this.timeSaverDb.getTemplateNameByTsId(
@@ -165,10 +165,8 @@ export class TimeSaverApi {
       ? (await this.getAllTemplateTasks()).templateTasks
       : DEFAULT_SAMPLE_TEMPLATES_TASKS;
     this.logger.debug(
-      `Generating sample classification configuration with ${
-        options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
-      } templates tasks list and ${
-        customClassificationRequest ? 'user-defined' : 'default'
+      `Generating sample classification configuration with ${options?.useScaffolderTasksEntries ? 'scaffolder DB' : 'user-defined'
+      } templates tasks list and ${customClassificationRequest ? 'user-defined' : 'default'
       } classification`,
     );
     return {
@@ -191,7 +189,6 @@ export class TimeSaverApi {
     };
 
     const queryResult = await this.timeSaverDb.getDistinctColumn('team');
-    console.log(queryResult);
 
     if (queryResult && queryResult.team.length > 0) {
       groups = queryResult.team.map(e => e.toString());
@@ -256,7 +253,6 @@ export class TimeSaverApi {
     const queryResult = await this.timeSaverDb.getDistinctColumn(
       'template_task_id',
     );
-    console.log(queryResult);
 
     if (queryResult && queryResult.template_task_id.length > 0) {
       templateTasks = queryResult.template_task_id.map(e => e.toString());
@@ -314,7 +310,6 @@ export class TimeSaverApi {
 
     const dividerInt = divider ?? 1;
     const queryResult = await this.timeSaverDb.getTimeSavedSum();
-    console.log({ queryResult });
 
     if (typeof queryResult === 'number') {
       outputBody = {

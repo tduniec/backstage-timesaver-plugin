@@ -66,7 +66,6 @@ exports.up = async function up(knex) {
           ...response,
           ts_template_time_savings: s,
         };
-        console.log('Created table ts_template_time_savings.');
       },
       reason => {
         response = {
