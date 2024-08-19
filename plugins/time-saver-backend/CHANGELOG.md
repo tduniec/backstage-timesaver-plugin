@@ -1,5 +1,15 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 3.0.0
+
+### Major Changes
+
+- Upgraded time saver DB client to use knex functions to build queries. Previously, raw queries were used that were only compatible with PostgreSQL. Users are now able to use other databases and even deploy locally using sqlite.
+
+### Minor Changes
+
+- Replaced native date functions for luxon.
+
 ## 2.4.0
 
 ### Minor Changes
