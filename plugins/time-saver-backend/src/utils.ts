@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DateTime, DateTimeMaybeValid } from 'luxon';
+
 export function roundNumericValues<T>(obj: T): T {
   const roundValue = (value: number): number => {
     const rounded = Math.round(value * 100) / 100;
@@ -40,4 +42,14 @@ export function roundNumericValues<T>(obj: T): T {
   };
 
   return roundObject(obj) as T;
+}
+
+export function dateTimeFromIsoDate(
+  isoDate: string | undefined = '',
+): DateTimeMaybeValid {
+  return DateTime.fromISO(isoDate);
+}
+
+export function isoDateFromDateTime(dateTime: DateTime): string | null {
+  return dateTime.toISO();
 }
