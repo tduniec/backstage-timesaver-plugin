@@ -20,6 +20,7 @@ import {
 } from '@backstage/backend-plugin-api';
 import { TimeSaverStore } from '../database/TimeSaverDatabase';
 import { ScaffolderClient } from '../api/scaffolderClient';
+import { dateTimeFromIsoDate } from '../utils';
 
 export class TimeSaverHandler {
   constructor(
@@ -27,8 +28,7 @@ export class TimeSaverHandler {
     private readonly config: RootConfigService,
     private readonly auth: AuthService,
     private readonly db: TimeSaverStore,
-  ) {}
-  private readonly tsTableName = 'ts_template_time_savings';
+  ) { }
 
   async fetchTemplates() {
     const scaffolderClient = new ScaffolderClient(
@@ -46,7 +46,7 @@ export class TimeSaverHandler {
     }
 
     this.logger.debug('Truncating database');
-    await this.db.truncate(this.tsTableName); // cleaning table
+    await this.db.truncate(); // cleaning table
     this.logger.debug(
       `Template task list: ${JSON.stringify(templateTaskList)}`,
     );
@@ -55,10 +55,6 @@ export class TimeSaverHandler {
     ); // filtering only completed
     for (let i = 0; i < templateTaskList.length; i++) {
       const singleTemplate = templateTaskList[i];
-      const createdAtForPostgres = new Date(singleTemplate.createdAt)
-        .toISOString()
-        .replace('T', ' ')
-        .replace('Z', ' UTC');
       this.logger.debug(`Parsing template task ${singleTemplate.id}`);
       const templateSubstituteData =
         singleTemplate.spec.templateInfo.entity.metadata.substitute ||
@@ -72,14 +68,25 @@ export class TimeSaverHandler {
             )
           ) {
             const value = templateSubstituteData.engineering[key];
-            await this.db.insert(this.tsTableName, {
-              template_task_id: singleTemplate.id,
-              created_at: createdAtForPostgres,
-              template_name: singleTemplate.spec.templateInfo.entityRef,
+            const createdAt = dateTimeFromIsoDate(singleTemplate.createdAt);
+
+            if (!createdAt) {
+              this.logger.error(
+                `Found invalid date when parsing catalog DB. ${JSON.stringify(
+                  singleTemplate,
+                )}`,
+              );
+            }
+
+            await this.db.insert({
               team: key,
-              time_saved: value,
-              template_task_status: singleTemplate.status,
-              created_by: singleTemplate.createdBy,
+              role: '',
+              timeSaved: value,
+              createdAt,
+              createdBy: singleTemplate.createdBy,
+              templateName: singleTemplate.spec.templateInfo.entityRef,
+              templateTaskStatus: singleTemplate.status,
+              templateTaskId: singleTemplate.id,
             });
           }
         }
