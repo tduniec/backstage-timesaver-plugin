@@ -20,7 +20,7 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { TimeSaverHandler } from '../timeSaver/handler';
-import { TsApi } from '../api/apiService';
+import { TimeSaverApi } from '../api/timeSaverApi';
 import { ScaffolderDatabase } from '../database/ScaffolderDatabase';
 import { TimeSaverDatabase } from '../database/TimeSaverDatabase';
 import { TsScheduler } from '../timeSaver/scheduler';
@@ -56,7 +56,7 @@ export class PluginInitializer {
   private scheduler!: PluginTaskScheduler;
   private database!: DatabaseService;
   private tsHandler!: TimeSaverHandler;
-  private apiHandler!: TsApi;
+  private apiHandler!: TimeSaverApi;
   private tsScheduler!: TsScheduler;
   private router!: Router;
 
@@ -122,7 +122,7 @@ export class PluginInitializer {
       this.auth,
       timeSaverDbInstance,
     );
-    this.apiHandler = new TsApi(
+    this.apiHandler = new TimeSaverApi(
       this.logger,
       this.config,
       this.auth,
@@ -176,7 +176,7 @@ export class PluginInitializer {
     return this.tsHandler;
   }
 
-  get tsApi(): TsApi {
+  get tsApi(): TimeSaverApi {
     return this.apiHandler;
   }
 

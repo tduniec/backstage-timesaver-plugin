@@ -20,52 +20,7 @@
  * @param {import('knex').Knex} knex
  */
 exports.up = async function up(knex) {
-  let namespace = '';
   let response = {};
-  const isPostgreSQL = knex.client.config.client === 'pg';
-
-  // create extension only for postgreSQL
-  if (isPostgreSQL) {
-    await knex.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"').then(
-      () => {
-        response = {
-          ...response,
-          pg_extension: 'enabled',
-        };
-        console.log('uuid-ossp extension enabled');
-      },
-      reason => {
-        response = {
-          ...response,
-          pg_extension: `disabled: ${reason}}`,
-        };
-        console.log(`Could not create uuid-ossp extension: ${reason}`);
-      },
-    );
-
-    await knex
-      .raw(
-        `SELECT (select nspname from pg_catalog.pg_namespace where oid=extnamespace)
-      FROM pg_extension where extname='uuid-ossp';`,
-      )
-      .then(
-        s => {
-          namespace = s.rows[0].nspname;
-          response = {
-            ...response,
-            namespace,
-          };
-          console.log(`uuid-ossp extension created in ${namespace} schema`);
-        },
-        reason => {
-          response = {
-            ...response,
-            namespace: `undefined: ${reason}`,
-          };
-          console.log('uuid-ossp extension was not found.');
-        },
-      );
-  }
 
   await knex.schema
     .createTable('ts_template_time_savings', table => {
@@ -75,11 +30,8 @@ exports.up = async function up(knex) {
       table
         .uuid('id')
         .primary()
-        .defaultTo(
-          isPostgreSQL
-            ? knex.raw(`${namespace}.uuid_generate_v4()::uuid`)
-            : knex.fn.uuid(),
-        )
+        .notNullable()
+        .defaultTo(knex.fn.uuid())
         .comment('UUID');
 
       table
@@ -95,6 +47,8 @@ exports.up = async function up(knex) {
         .comment('Template name as template entity_reference');
 
       table.string('team').comment('Team name of saved time');
+
+      table.string('role').comment('Role name of saved time');
 
       table
         .float('time_saved', 2)
@@ -112,7 +66,6 @@ exports.up = async function up(knex) {
           ...response,
           ts_template_time_savings: s,
         };
-        console.log('Created table ts_template_time_savings.');
       },
       reason => {
         response = {
