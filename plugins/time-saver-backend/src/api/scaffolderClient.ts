@@ -16,26 +16,25 @@
 import {
   AuthService,
   LoggerService,
-  RootConfigService,
+  DiscoveryService,
 } from '@backstage/backend-plugin-api';
 
 export class ScaffolderClient {
   constructor(
-    private readonly logger: LoggerService,
-    private readonly config: RootConfigService,
     private readonly auth: AuthService,
+    private readonly logger: LoggerService,
+    private readonly discovery: DiscoveryService,
   ) {}
 
   async fetchTemplatesFromScaffolder() {
-    let backendUrl =
-      this.config.getOptionalString('ts.backendUrl') ?? 'http://127.0.0.1:7007';
-    backendUrl = backendUrl.replace(
-      /(http:\/\/)localhost(:\d+)/g,
-      '$1127.0.0.1$2',
-    ); // This changes relates to local setup since there is ERRCONREFUSSED using localhost
-    const templatePath = '/api/scaffolder/v2/tasks';
-    const callUrl = `${backendUrl}${templatePath}`;
-    const token = await this.generateBackendToken();
+    const baseUrl = await this.discovery.getBaseUrl('scaffolder');
+    const scaffolderUri = '/v2/tasks';
+    const callUrl = `${baseUrl}${scaffolderUri}`;
+
+    const { token } = await this.auth.getPluginRequestToken({
+      onBehalfOf: await this.auth.getOwnServiceCredentials(),
+      targetPluginId: 'scaffolder',
+    });
 
     let templateTaskList = [];
     try {
@@ -65,13 +64,5 @@ export class ScaffolderClient {
       return [];
     }
     return templateTaskList;
-  }
-
-  async generateBackendToken() {
-    const { token } = await this.auth.getPluginRequestToken({
-      onBehalfOf: await this.auth.getOwnServiceCredentials(),
-      targetPluginId: 'scaffolder',
-    });
-    return token;
   }
 }

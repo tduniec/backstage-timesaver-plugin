@@ -16,7 +16,7 @@
 import {
   AuthService,
   LoggerService,
-  RootConfigService,
+  DiscoveryService,
 } from '@backstage/backend-plugin-api';
 import { TaskRunner } from '@backstage/backend-tasks';
 import * as uuid from 'uuid';
@@ -25,17 +25,17 @@ import { TimeSaverStore } from '../database/TimeSaverDatabase';
 
 export class TsScheduler {
   constructor(
-    private readonly logger: LoggerService,
-    private readonly config: RootConfigService,
     private readonly auth: AuthService,
+    private readonly logger: LoggerService,
+    private readonly discovery: DiscoveryService,
     private readonly db: TimeSaverStore,
   ) {}
 
   async schedule(taskRunner: TaskRunner) {
     const tsHandler = new TimeSaverHandler(
-      this.logger,
-      this.config,
       this.auth,
+      this.logger,
+      this.discovery,
       this.db,
     );
     await taskRunner.run({

@@ -34,13 +34,13 @@ import Router from 'express-promise-router';
 import { PluginInitializer } from './pluginInitializer';
 
 export interface RouterOptions {
+  auth?: AuthService;
   logger: LoggerService;
   config: RootConfigService;
-  discovery: DiscoveryService;
   database: DatabaseService;
+  discovery: DiscoveryService;
   scheduler: PluginTaskScheduler;
   urlReader: UrlReaderService;
-  auth?: AuthService;
   httpAuth?: HttpAuthService;
 }
 
@@ -53,15 +53,16 @@ function registerRouter() {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, database, scheduler } = options;
+  const { logger, config, database, discovery, scheduler } = options;
   const baseRouter = registerRouter();
   const { auth } = createLegacyAuthAdapters(options);
   const plugin = await PluginInitializer.builder(
+    auth,
     baseRouter,
     logger,
     config,
-    auth,
     database,
+    discovery,
     scheduler,
   );
   const router = plugin.timeSaverRouter;
@@ -74,11 +75,12 @@ export const timeSaverPlugin = createBackendPlugin({
   register(env) {
     env.registerInit({
       deps: {
+        auth: coreServices.auth,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
-        auth: coreServices.auth,
-        scheduler: coreServices.scheduler,
         database: coreServices.database,
+        discovery: coreServices.discovery,
+        scheduler: coreServices.scheduler,
         http: coreServices.httpRouter,
         httpRouter: coreServices.httpRouter,
         urlReader: coreServices.urlReader,
@@ -87,18 +89,20 @@ export const timeSaverPlugin = createBackendPlugin({
         auth,
         config,
         logger,
-        scheduler,
         database,
+        discovery,
+        scheduler,
         http,
         httpRouter,
       }) {
         const baseRouter = registerRouter();
         const plugin = await PluginInitializer.builder(
+          auth,
           baseRouter,
           logger,
           config,
-          auth,
           database,
+          discovery,
           scheduler,
         );
         const router = plugin.timeSaverRouter;

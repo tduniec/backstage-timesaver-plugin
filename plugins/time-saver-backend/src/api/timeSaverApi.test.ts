@@ -4,14 +4,16 @@ import {
   LoggerService,
   RootConfigService,
   AuthService,
+  DiscoveryService,
 } from '@backstage/backend-plugin-api';
 import { ScaffolderStore } from '../database/ScaffolderDatabase';
 import { TimeSaverStore } from '../database/TimeSaverDatabase';
 
 describe('TimeSaverApi', () => {
+  let auth: AuthService;
   let logger: LoggerService;
   let config: RootConfigService;
-  let auth: AuthService;
+  let discovery: DiscoveryService;
   let timeSaverDb: TimeSaverStore;
   let scaffolderDb: ScaffolderStore;
   let tsApi: TimeSaverApi;
@@ -25,6 +27,7 @@ describe('TimeSaverApi', () => {
     } as unknown as LoggerService;
     config = { getOptionalString: jest.fn() } as unknown as RootConfigService;
     auth = {} as AuthService;
+    discovery = {} as DiscoveryService;
     timeSaverDb = {
       getTemplateNameByTsId: jest.fn(),
       getStatsByTemplateTaskId: jest.fn(),
@@ -43,7 +46,14 @@ describe('TimeSaverApi', () => {
     scaffolderDb = {
       updateTemplateTaskById: jest.fn(),
     } as unknown as ScaffolderStore;
-    tsApi = new TimeSaverApi(logger, config, auth, timeSaverDb, scaffolderDb);
+    tsApi = new TimeSaverApi(
+      auth,
+      logger,
+      config,
+      discovery,
+      timeSaverDb,
+      scaffolderDb,
+    );
   });
 
   describe('getTemplateNameByTsId', () => {
