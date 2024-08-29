@@ -1,5 +1,11 @@
 # @tduniec/backstage-plugin-catalog-backend-module-time-saver-processor
 
+## 1.2.0
+
+### Minor Changes
+
+- Updated backstage to version 1.30.4
+
 ## 1.1.0
 
 ### Minor Changes
