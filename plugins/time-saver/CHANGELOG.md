@@ -1,5 +1,11 @@
 # @tduniec/backstage-plugin-time-saver
 
+## 1.4.0
+
+### Minor Changes
+
+- Updated backstage to version 1.30.4
+
 ## 1.3.0
 
 ### Minor Changes
