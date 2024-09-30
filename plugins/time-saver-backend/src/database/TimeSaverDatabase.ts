@@ -48,6 +48,7 @@ import {
 } from './mappers';
 
 const TIME_SAVINGS_TABLE = 'ts_template_time_savings';
+const EXCLUDED_TASKS_TABLE = 'ts_excluded_tasks_everywhere';
 
 export interface TimeSaverStore {
   insert(
@@ -80,6 +81,7 @@ export interface TimeSaverStore {
   ): Promise<{ [x: string]: (string | number)[] } | undefined | void>;
   getTemplateCount(): Promise<number | void>;
   getTimeSavedSum(): Promise<number | void>;
+  getTasksToExclude(): Promise<string[] | undefined | void>;
 }
 
 const migrationsDir = resolvePackagePath(
@@ -743,6 +745,28 @@ export class TimeSaverDatabase implements TimeSaverStore {
         .first();
 
       return this.ok<number>(result?.sum || 0, 'Data selected successfully');
+    } catch (error) {
+      return this.fail(error);
+    }
+  }
+
+  /**
+   * @description Retrieves tasks ids from the EXCLUDED_TASKS_TABLE. These tasks are not used for Timesaver calculations.
+   *
+   * @returns {Promise<string[] | undefined>} A promise resolves executions ids, which should be filtered out in timesavings
+   */
+  async getTasksToExclude(): Promise<string[] | undefined | void> {
+    try {
+      const result = await this.db<string[]>(EXCLUDED_TASKS_TABLE).select(
+        'task_id',
+      );
+
+      const output: string[] | undefined =
+        result && result.length > 0
+          ? result.map(item => item.task_id)
+          : undefined;
+
+      return this.ok(output, 'Data selected successfully');
     } catch (error) {
       return this.fail(error);
     }

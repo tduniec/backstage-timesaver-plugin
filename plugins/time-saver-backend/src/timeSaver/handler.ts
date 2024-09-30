@@ -39,8 +39,13 @@ export class TimeSaverHandler {
     this.logger.info(`START - Collecting Time Savings data from templates...}`);
 
     let templateTaskList = [];
+    let excludedTaskList: string[] = [];
     try {
       templateTaskList = await scaffolderClient.fetchTemplatesFromScaffolder();
+      const excludedTasks = await this.db.getTasksToExclude();
+      if (Array.isArray(excludedTasks)) {
+        excludedTaskList = [...excludedTasks];
+      }
     } catch (error) {
       return 'FAIL';
     }
@@ -51,8 +56,10 @@ export class TimeSaverHandler {
       `Template task list: ${JSON.stringify(templateTaskList)}`,
     );
     templateTaskList = templateTaskList.filter(
-      (single: { status: string }) => single.status === 'completed',
-    ); // filtering only completed
+      (single: { status: string; id: string }) =>
+        single.status === 'completed' && !excludedTaskList.includes(single.id),
+    ); // filtering only completed and not excluded tasks
+
     for (let i = 0; i < templateTaskList.length; i++) {
       const singleTemplate = templateTaskList[i];
       this.logger.debug(`Parsing template task ${singleTemplate.id}`);
