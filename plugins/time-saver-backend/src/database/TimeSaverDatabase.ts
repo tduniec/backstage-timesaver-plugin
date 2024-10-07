@@ -174,12 +174,12 @@ export class TimeSaverDatabase implements TimeSaverStore {
     if (client === 'better-sqlite3') {
       return knex.raw(`strftime('%Y-%m-%d', ${column}) as ${alias}`);
     } else if (client === 'mysql') {
-      return knex.raw(`DATE_FORMAT(${column}, '%Y-%m-%d')`);
+      return knex.raw(`DATE_FORMAT(${column}, '%Y-%m-%d') as ${alias}`);
     } else if (client === 'mssql') {
-      return knex.raw(`FORMAT(${column}, 'yyyy-MM-dd')`);
+      return knex.raw(`FORMAT(${column}, 'yyyy-MM-dd') as ${alias}`);
     }
     // PostgreSQL or other databases
-    return knex.raw(`TO_CHAR(${column}, 'YYYY-MM-DD')`);
+    return knex.raw(`TO_CHAR(${column}, 'YYYY-MM-DD') as ${alias}`);
   }
 
   /**
@@ -491,16 +491,25 @@ export class TimeSaverDatabase implements TimeSaverStore {
         .sum('time_saved as total_team_time_saved')
         .groupBy('team');
 
+      const total = await this.db<{ sum: string | null }>(
+        'ts_template_time_savings as total',
+      )
+        .sumDistinct('time_saved')
+        .first()
+        .then(data => (data as unknown as { sum: string | null })?.sum ?? 0);
+
       const result = await this.db<GroupSavingsDivisionDbRow>(
         'ts_template_time_savings as main',
       )
+        .select('main.team')
+        .innerJoin(subquery.as('sub'), 'main.team', 'sub.team')
         .select(
           'main.team',
+          // TODO: ROUND(...) function fails, temporary replaced with linear calculation
           this.db.raw(
-            'ROUND((SUM(main.time_saved) / sub.total_team_time_saved) * 100, 2) as percentage',
+            `(${total} / sub.total_team_time_saved) * 100 as percentage`,
           ),
         )
-        .innerJoin(subquery.as('sub'), 'main.team', 'sub.team')
         .groupBy('main.team', 'sub.total_team_time_saved');
 
       return this.ok<GroupSavingsDivision[] | undefined>(
@@ -536,7 +545,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
         .sum({ total_time_saved: 'time_saved' })
         .select(formattedDate, 'team')
         .groupByRaw('date, team')
-        .orderBy('date');
+        .orderByRaw('date');
 
       return this.ok<TimeSummary[] | undefined>(
         result && result.length
@@ -605,7 +614,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
           this.db.raw(`DATE(created_at) as date`),
           this.db.raw('SUM(time_saved) as total_time_saved'),
         )
-        .groupBy('template_name', 'date');
+        .groupBy('template_name', 'date', 'team');
 
       const result = await this.db<RawDbTimeSummary>(subquery.as('temp'))
         .select(
@@ -714,13 +723,17 @@ export class TimeSaverDatabase implements TimeSaverStore {
    */
   async getTemplateCount(): Promise<number | void> {
     try {
-      const result = await this.db<{ count: number }>(TIME_SAVINGS_TABLE)
-        .distinct('template_task_id')
-        .as('unique_templates')
-        .count('* as count')
+      const result = await this.db(TIME_SAVINGS_TABLE)
+        .countDistinct('template_task_id as count')
         .first();
 
-      return this.ok<number>(result?.count || 0, 'Data selected successfully');
+      let count = 0;
+
+      if (result?.count && !isNaN(1 * (result.count as number))) {
+        count = 1 * (result.count as number);
+      }
+
+      return this.ok<number>(count, 'Data selected successfully');
     } catch (error) {
       return this.fail(error);
     }
