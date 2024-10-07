@@ -494,9 +494,11 @@ export class TimeSaverDatabase implements TimeSaverStore {
       const total = await this.db<{ sum: string | null }>(
         'ts_template_time_savings as total',
       )
-        .sumDistinct('time_saved')
+        .sum('time_saved as sum')
         .first()
-        .then(data => (data as unknown as { sum: string | null })?.sum ?? 0);
+        .then(data => {
+          return (data as unknown as { sum: string | null })?.sum ?? 0;
+        });
 
       const result = await this.db<GroupSavingsDivisionDbRow>(
         'ts_template_time_savings as main',
@@ -507,7 +509,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
           'main.team',
           // TODO: ROUND(...) function fails, temporary replaced with linear calculation
           this.db.raw(
-            `(${total} / sub.total_team_time_saved) * 100 as percentage`,
+            `(sub.total_team_time_saved / ${total}) * 100 as percentage`,
           ),
         )
         .groupBy('main.team', 'sub.total_team_time_saved');
