@@ -1,5 +1,14 @@
 # @tduniec/backstage-plugin-time-saver
 
+## 1.4.0
+
+### Minor Changes
+
+- Provided fixes to components accroding timesaver-backend 3.0.0 changes
+- Changes provided by @stanislavec
+
+## 3.0.0
+
 ## 1.3.0
 
 ### Minor Changes

@@ -275,3 +275,7 @@ curl --header "Content-Type: application/json" \
   --data '{"customClassificationRequest":{"engineering":{"architecture":1}},"options":{"useScaffolderTasksEntries":true}}' \
   http://localhost:7007/api/time-saver/generate-sample-classification
 ```
+
+### Excluding template executions from TS calculations
+
+if there is a need to exclude some of the template tasks in calculations there is a table **'ts_exclude_tasks_everywhere'** which conatins a list of **task_id**'s that need to be excluded. You can exclude tasks by appending the table in DB.

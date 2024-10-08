@@ -1,5 +1,13 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 3.1.0
+
+### Minor Changes
+
+- Added option to exclude some of the templates in "ts_exclude_tasks_everywhere" for the handler to filterout the excluded changes from calulations
+- fixes the components
+- changes provided by @stanislavec
+
 ## 3.0.0
 
 ### Major Changes
