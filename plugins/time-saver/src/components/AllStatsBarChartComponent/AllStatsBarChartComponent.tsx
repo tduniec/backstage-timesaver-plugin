@@ -33,9 +33,9 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 type AllStatsChartResponse = {
   stats: {
-    sum: number;
+    timeSaved: number;
     team: string;
-    template_name: string;
+    templateName: string;
   }[];
 };
 
@@ -103,7 +103,7 @@ export function AllStatsBarChart(): React.ReactElement {
 
   const labels = Array.from(new Set(data.stats.map(stat => stat.team)));
   const datasets = Array.from(
-    new Set(data.stats.map(stat => stat.template_name)),
+    new Set(data.stats.map(stat => stat.templateName)),
   );
 
   const backgroundColors = datasets.map(() => getRandomColor());
@@ -115,9 +115,9 @@ export function AllStatsBarChart(): React.ReactElement {
       data: labels.map(team =>
         data.stats
           .filter(
-            stat => stat.team === team && stat.template_name === templateName,
+            stat => stat.team === team && stat.templateName === templateName,
           )
-          .reduce((sum, stat) => sum + stat.sum, 0),
+          .reduce((sum, stat) => sum + stat.timeSaved, 0),
       ),
       backgroundColor: backgroundColors[index],
     })),

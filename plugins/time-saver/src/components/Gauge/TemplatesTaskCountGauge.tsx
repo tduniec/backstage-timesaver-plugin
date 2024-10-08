@@ -19,7 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Gauge from './Gauge';
 
 type TemplateTaskCountResponse = {
-  templateTasks: number;
+  templateCount: number;
 };
 
 export function TemplateCountGauge(): React.ReactElement {
@@ -43,5 +43,5 @@ export function TemplateCountGauge(): React.ReactElement {
     return <CircularProgress />;
   }
 
-  return <Gauge number={data.templateTasks} heading="Template executions" />;
+  return <Gauge number={data.templateCount} heading="Template executions" />;
 }

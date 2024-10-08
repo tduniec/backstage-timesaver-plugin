@@ -34,17 +34,17 @@ ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 type TemplateWiseTimeSummaryLinearResponse = {
   stats: {
     date: string;
-    template_name: string;
-    total_time_saved: number;
+    templateName: string;
+    totalTimeSaved: number;
   }[];
 };
 
 interface TemplateWiseTimeSummaryLinearProps {
-  template_name?: string;
+  templateName?: string;
 }
 
 export function TemplateWiseTimeSummaryLinearChart({
-  template_name,
+  templateName,
 }: TemplateWiseTimeSummaryLinearProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -66,18 +66,17 @@ export function TemplateWiseTimeSummaryLinearChart({
         setData(dt);
       })
       .catch();
-  }, [configApi, template_name, fetchApi]);
+  }, [configApi, templateName, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
   }
 
   let filteredData: TemplateWiseTimeSummaryLinearResponse;
-  if (template_name) {
+  if (templateName) {
     filteredData = {
       stats: data.stats.filter(
-        (stat: { template_name: string }) =>
-          stat.template_name === template_name,
+        (stat: { templateName: string }) => stat.templateName === templateName,
       ),
     };
   } else {
@@ -87,7 +86,7 @@ export function TemplateWiseTimeSummaryLinearChart({
   const uniqueTemplates = Array.from(
     new Set(
       filteredData.stats.map(
-        (stat: { template_name: string }) => stat.template_name,
+        (stat: { templateName: string }) => stat.templateName,
       ),
     ),
   );
@@ -138,14 +137,14 @@ export function TemplateWiseTimeSummaryLinearChart({
     labels: uniqueDates,
     datasets: uniqueTemplates.map(tn => {
       const templateData = filteredData.stats
-        .filter((stat: { template_name: string }) => stat.template_name === tn)
+        .filter((stat: { templateName: string }) => stat.templateName === tn)
         .map(
           (stat: {
             date: string | undefined;
-            total_time_saved: number | undefined;
+            totalTimeSaved: number | undefined;
           }) => ({
             x: stat.date,
-            y: stat.total_time_saved,
+            y: stat.totalTimeSaved,
           }),
         );
       // TODO : verify that date and total_time_saved types.

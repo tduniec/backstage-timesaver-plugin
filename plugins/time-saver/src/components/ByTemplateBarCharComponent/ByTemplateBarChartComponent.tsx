@@ -32,19 +32,19 @@ import { useTheme } from '@material-ui/core';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
 type TemplateChartResponse = {
-  template_name: string;
+  templateName: string;
   stats: {
-    sum: number;
+    timeSaved: number;
     team: string;
   }[];
 };
 
 interface ByTemplateBarChartProps {
-  template_name: string;
+  templateName: string;
 }
 
 export function ByTemplateBarChart({
-  template_name,
+  templateName,
 }: ByTemplateBarChartProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -56,12 +56,12 @@ export function ByTemplateBarChart({
       .fetch(
         `${configApi.getString(
           'backend.baseUrl',
-        )}/api/time-saver/getStats?templateName=${template_name} `,
+        )}/api/time-saver/getStats?templateName=${templateName} `,
       )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, template_name, fetchApi]);
+  }, [configApi, templateName, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
@@ -71,7 +71,7 @@ export function ByTemplateBarChart({
     plugins: {
       title: {
         display: true,
-        text: data.template_name || '',
+        text: data.templateName || '',
         color: theme.palette.text.primary,
       },
       legend: {
@@ -109,7 +109,7 @@ export function ByTemplateBarChart({
   };
 
   const labels = Array.from(new Set(data.stats.map(stat => stat.team)));
-  const datasets = data.stats.map(stat => stat.sum);
+  const datasets = data.stats.map(stat => stat.timeSaved);
 
   const backgroundColors = Array.from({ length: datasets.length }, () =>
     getRandomColor(),

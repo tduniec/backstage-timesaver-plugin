@@ -35,17 +35,17 @@ ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 type DailyTimeSummaryResponse = {
   stats: {
     date: string;
-    template_name: string;
-    total_time_saved: number;
+    templateName: string;
+    totalTimeSaved: number;
   }[];
 };
 
 interface DailyTimeSummaryLineProps {
-  template_name?: string;
+  templateName?: string;
 }
 
 export function DailyTimeSummaryLineChartTemplateWise({
-  template_name,
+  templateName,
 }: DailyTimeSummaryLineProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -69,23 +69,23 @@ export function DailyTimeSummaryLineChartTemplateWise({
         setData(dt);
       })
       .catch();
-  }, [configApi, template_name, fetchApi]);
+  }, [configApi, templateName, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
   }
 
   let filteredData: DailyTimeSummaryResponse;
-  if (template_name) {
+  if (templateName) {
     filteredData = {
-      stats: data.stats.filter(stat => stat.template_name === template_name),
+      stats: data.stats.filter(stat => stat.templateName === templateName),
     };
   } else {
     filteredData = data;
   }
 
   const uniqueTemplates = Array.from(
-    new Set(filteredData.stats.map(stat => stat.template_name)),
+    new Set(filteredData.stats.map(stat => stat.templateName)),
   );
 
   const options: ChartOptions<'line'> = {
@@ -136,8 +136,8 @@ export function DailyTimeSummaryLineChartTemplateWise({
     labels: uniqueDates,
     datasets: uniqueTemplates.map(tn => {
       const templateData = filteredData.stats
-        .filter(stat => stat.template_name === tn)
-        .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
+        .filter(stat => stat.templateName === tn)
+        .map(stat => ({ x: stat.date, y: stat.totalTimeSaved }));
 
       return {
         label: tn,
