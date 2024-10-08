@@ -34,8 +34,8 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 type TeamChartResponse = {
   team: string;
   stats: {
-    sum: number;
-    template_name: string;
+    timeSaved: number;
+    templateName: string;
   }[];
 };
 
@@ -110,10 +110,8 @@ export function ByTeamBarChart({
     },
   };
 
-  const labels = Array.from(
-    new Set(data.stats.map(stat => stat.template_name)),
-  );
-  const datasets = data.stats.map(stat => stat.sum);
+  const labels = Array.from(new Set(data.stats.map(stat => stat.templateName)));
+  const datasets = data.stats.map(stat => stat.timeSaved);
 
   const backgroundColors = Array.from({ length: datasets.length }, () =>
     getRandomColor(),

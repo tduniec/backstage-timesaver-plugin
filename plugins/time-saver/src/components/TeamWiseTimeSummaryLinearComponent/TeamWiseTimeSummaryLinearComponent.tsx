@@ -36,7 +36,7 @@ type TeamWiseTimeSummaryLinearResponse = {
   stats: {
     date: string;
     team: string;
-    total_time_saved: number;
+    totalTimeSaved: number;
   }[];
 };
 
@@ -138,7 +138,7 @@ export function TeamWiseTimeSummaryLinearChart({
     datasets: uniqueTeams.map(tm => {
       const templateData = filteredData.stats
         .filter(stat => stat.team === tm)
-        .map(stat => ({ x: stat.date, y: stat.total_time_saved }));
+        .map(stat => ({ x: stat.date, y: stat.totalTimeSaved }));
 
       return {
         label: tm,

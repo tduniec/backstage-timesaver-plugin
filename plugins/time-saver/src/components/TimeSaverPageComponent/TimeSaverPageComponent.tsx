@@ -189,19 +189,19 @@ export const TimeSaverPageComponent = () => {
                           </Grid>
                         </Grid>
                         <Grid xs={6}>
-                          <ByTemplateBarChart template_name={template} />
+                          <ByTemplateBarChart templateName={template} />
                         </Grid>
                         <Grid xs={6}>
-                          <StatsTable template_name={template} />
+                          <StatsTable templateName={template} />
                         </Grid>
                         <Grid xs={6}>
                           <DailyTimeSummaryLineChartTemplateWise
-                            template_name={template}
+                            templateName={template}
                           />
                         </Grid>
                         <Grid xs={6}>
                           <TemplateWiseTimeSummaryLinearChart
-                            template_name={template}
+                            templateName={template}
                           />
                         </Grid>
                       </Grid>
