@@ -22,27 +22,33 @@
 exports.up = async function up(knex) {
   let response = {};
 
-  await knex.schema
-    .table('ts_template_time_savings', table => {
-      table.string('role').comment('Developer`s role within the team');
-    })
-    .then(
-      s => {
-        response = {
-          ...response,
-          ts_template_time_savings: s,
-        };
-      },
-      reason => {
-        response = {
-          ...response,
-          ts_template_time_savings: `Column ROLE was not created: ${reason}`,
-        };
-        console.log(
-          'Failed to create ROLE column in ts_template_time_savings.',
-        );
-      },
-    );
+  const noColumn = await knex.schema
+    .hasColumn('ts_template_time_savings', 'role')
+    .then(exists => !exists);
+
+  if (noColumn) {
+    await knex.schema
+      .table('ts_template_time_savings', table => {
+        table.string('role').comment('Developer`s role within the team');
+      })
+      .then(
+        s => {
+          response = {
+            ...response,
+            ts_template_time_savings: s,
+          };
+        },
+        reason => {
+          response = {
+            ...response,
+            ts_template_time_savings: `Column ROLE was not created: ${reason}`,
+          };
+          console.log(
+            'Failed to create ROLE column in ts_template_time_savings.',
+          );
+        },
+      );
+  }
 
   return response;
 };
@@ -51,5 +57,5 @@ exports.up = async function up(knex) {
  * @param {import('knex').Knex} knex
  */
 exports.down = async function down(knex) {
-  return knex.schema.dropTable('ts_excluded_tasks_everywhere');
+  return knex.schema.dropTable('ts_template_time_savings');
 };
