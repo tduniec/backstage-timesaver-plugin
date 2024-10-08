@@ -48,8 +48,6 @@ exports.up = async function up(knex) {
 
       table.string('team').comment('Team name of saved time');
 
-      table.string('role').comment('Role name of saved time');
-
       table
         .float('time_saved', 2)
         .comment('time saved by the team within template task ID, in hours');
