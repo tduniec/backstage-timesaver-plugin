@@ -90,7 +90,7 @@ export class TimeSaverApi {
   public async getAllStats() {
     const queryResult = await this.timeSaverDb.getAllStats();
     const outputBody = {
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
@@ -99,7 +99,7 @@ export class TimeSaverApi {
   public async getGroupDivisionStats() {
     const queryResult = await this.timeSaverDb.getGroupSavingsDivision();
     const outputBody = {
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
@@ -108,7 +108,7 @@ export class TimeSaverApi {
   public async getDailyTimeSummariesTeamWise() {
     const queryResult = await this.timeSaverDb.getDailyTimeSummariesTeamWise();
     const outputBody = {
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
@@ -117,7 +117,7 @@ export class TimeSaverApi {
     const queryResult =
       await this.timeSaverDb.getDailyTimeSummariesTemplateWise();
     const outputBody = {
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
@@ -126,7 +126,7 @@ export class TimeSaverApi {
   public async getTimeSummarySavedTeamWise() {
     const queryResult = await this.timeSaverDb.getTimeSummarySavedTeamWise();
     const outputBody = {
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
@@ -135,7 +135,7 @@ export class TimeSaverApi {
     const queryResult =
       await this.timeSaverDb.getTimeSummarySavedTemplateWise();
     const outputBody = {
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
