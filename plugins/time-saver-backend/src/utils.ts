@@ -47,7 +47,7 @@ export function roundNumericValues<T>(obj: T): T {
 export function dateTimeFromIsoDate(
   isoDate: string | undefined = '',
 ): DateTimeMaybeValid {
-  return DateTime.fromISO(isoDate);
+  return DateTime.fromJSDate(new Date(isoDate));
 }
 
 export function isoDateFromDateTime(dateTime: DateTime): string | null {

@@ -35,7 +35,7 @@ type SingleTemplateChartResponse = {
   templateTaskId: string;
   templateName: string;
   stats: {
-    sum: number;
+    timeSaved: number;
     team: string;
   }[];
 };
@@ -114,7 +114,7 @@ export function BarChart({
   };
 
   const labels = Array.from(new Set(data.stats.map(stat => stat.team)));
-  const datasets = data.stats.map(stat => stat.sum);
+  const datasets = data.stats.map(stat => stat.timeSaved);
 
   const backgroundColors = Array.from({ length: datasets.length }, () =>
     getRandomColor(),

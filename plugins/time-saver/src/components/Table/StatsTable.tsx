@@ -22,9 +22,9 @@ import { useTheme, Paper } from '@material-ui/core';
 
 type Stat = {
   id: string;
-  sum: number;
+  timeSaved: number;
   team: string;
-  template_name: string;
+  templateName: string;
   [key: string]: string | number;
 };
 
@@ -34,10 +34,10 @@ type AllStatsChartResponse = {
 
 interface StatsTableProps {
   team?: string;
-  template_name?: string;
+  templateName?: string;
 }
 
-const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
+const StatsTable: React.FC<StatsTableProps> = ({ team, templateName }) => {
   const [data, setData] = useState<Stat[] | null>(null);
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: 'sum', sort: 'asc' },
@@ -54,8 +54,8 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
     )}/api/time-saver/getStats`;
     if (team) {
       url = `${url}?team=${team}`;
-    } else if (template_name) {
-      url = `${url}?templateName=${template_name}`;
+    } else if (templateName) {
+      url = `${url}?templateName=${templateName}`;
     }
 
     fetchApi
@@ -70,7 +70,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
         setSortModel([{ field: 'sum', sort: 'desc' }]);
       })
       .catch();
-  }, [configApi, team, template_name, fetchApi]);
+  }, [configApi, team, templateName, fetchApi]);
 
   if (!data) {
     return <CircularProgress />;
@@ -79,12 +79,12 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, template_name }) => {
   const columns: GridColDef[] = [
     { field: 'team', headerName: 'Team', flex: 1, sortable: true },
     {
-      field: 'template_name',
+      field: 'templateName',
       headerName: 'Template Name',
       flex: 1,
       sortable: true,
     },
-    { field: 'sum', headerName: 'Sum', flex: 1, sortable: true },
+    { field: 'timeSaved', headerName: 'Saved Time', flex: 1, sortable: true },
   ].filter(col => data.some(row => !!row[col.field]));
 
   return (

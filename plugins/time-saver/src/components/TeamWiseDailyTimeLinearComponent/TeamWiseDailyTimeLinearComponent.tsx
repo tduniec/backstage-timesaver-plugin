@@ -36,7 +36,7 @@ type DailyTimeSummaryResponse = {
   stats: {
     date: string;
     team: string;
-    total_time_saved: number;
+    totalTimeSaved: number;
   }[];
 };
 
@@ -136,10 +136,10 @@ export function DailyTimeSummaryLineChartTeamWise({
         .map(
           (stat: {
             date: string | undefined;
-            total_time_saved: number | undefined;
+            totalTimeSaved: number | undefined;
           }) => ({
             x: stat.date,
-            y: stat.total_time_saved,
+            y: stat.totalTimeSaved,
           }),
         );
 
