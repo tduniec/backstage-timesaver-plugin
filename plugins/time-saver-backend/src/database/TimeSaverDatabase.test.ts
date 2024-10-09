@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-commented-out-tests */
 import { DatabaseManager } from '@backstage/backend-defaults/database';
 import { mockServices } from '@backstage/backend-test-utils';
 import { ConfigReader } from '@backstage/config';
@@ -453,94 +452,93 @@ describe('TimeSaverDatabase', () => {
     });
   });
 
-  // TODO: need to disable the tests for 2 queries because the original logic has changed and we would like to revoke it. But this will work only for postgres so below need to be disabled
-  // describe('getTimeSummarySavedTeamWise', () => {
-  //   beforeAll(async () => {
-  //     templateTimeSavings.forEach(async e => await database.insert(e));
-  //   });
+  describe('getTimeSummarySavedTeamWise', () => {
+    beforeAll(async () => {
+      templateTimeSavings.forEach(async e => await database.insert(e));
+    });
 
-  //   afterAll(async () => {
-  //     await database.truncate();
-  //   });
+    afterAll(async () => {
+      await database.truncate();
+    });
 
-  //   it('returns the total time saved per team per date', async () => {
-  //     const result = await database.getTimeSummarySavedTeamWise();
-  //     // Only take the year into account to re-create date values
-  //     expect(result).toStrictEqual([
-  //       {
-  //         date: DateTime.fromISO('2024-07-17T00:00:00'),
-  //         team: 'engineering',
-  //         templateName: undefined,
-  //         totalTimeSaved: 30,
-  //       },
-  //       {
-  //         date: DateTime.fromISO('2024-07-18T00:00:00'),
-  //         team: 'engineering',
-  //         templateName: undefined,
-  //         totalTimeSaved: 10,
-  //       },
-  //       {
-  //         date: DateTime.fromISO('2024-07-19T00:00:00'),
-  //         team: 'architecture',
-  //         templateName: undefined,
-  //         totalTimeSaved: 10,
-  //       },
-  //     ]);
-  //   });
+    it('returns the total time saved per team per date', async () => {
+      const result = await database.getTimeSummarySavedTeamWise();
+      // Only take the year into account to re-create date values
+      expect(result).toStrictEqual([
+        {
+          date: DateTime.fromISO('2024-07-17T00:00:00'),
+          team: 'engineering',
+          templateName: undefined,
+          totalTimeSaved: 30,
+        },
+        {
+          date: DateTime.fromISO('2024-07-18T00:00:00'),
+          team: 'engineering',
+          templateName: undefined,
+          totalTimeSaved: 10,
+        },
+        {
+          date: DateTime.fromISO('2024-07-19T00:00:00'),
+          team: 'architecture',
+          templateName: undefined,
+          totalTimeSaved: 10,
+        },
+      ]);
+    });
 
-  //   it('returns undefined when database is empty', async () => {
-  //     await database.truncate();
-  //     const result = await database.getTimeSummarySavedTeamWise();
-  //     expect(result).toEqual(undefined);
-  //   });
-  // });
+    it('returns undefined when database is empty', async () => {
+      await database.truncate();
+      const result = await database.getTimeSummarySavedTeamWise();
+      expect(result).toEqual(undefined);
+    });
+  });
 
-  // describe('getTimeSummarySavedTemplateWise', () => {
-  //   beforeAll(async () => {
-  //     templateTimeSavings.forEach(async e => await database.insert(e));
-  //   });
+  describe('getTimeSummarySavedTemplateWise', () => {
+    beforeAll(async () => {
+      templateTimeSavings.forEach(async e => await database.insert(e));
+    });
 
-  //   afterAll(async () => {
-  //     await database.truncate();
-  //   });
+    afterAll(async () => {
+      await database.truncate();
+    });
 
-  //   it('...', async () => {
-  //     const result = await database.getTimeSummarySavedTemplateWise();
-  //     // Only take the year into account to re-create date values
-  //     expect(result).toStrictEqual([
-  //       {
-  //         date: DateTime.fromISO('2024-07-17T00:00:00'),
-  //         team: undefined,
-  //         templateName: 'template:default/create-normal-world',
-  //         totalTimeSaved: 10,
-  //       },
-  //       {
-  //         date: DateTime.fromISO('2024-07-17T00:00:00'),
-  //         team: undefined,
-  //         templateName: 'template:default/create-perfect-world',
-  //         totalTimeSaved: 20,
-  //       },
-  //       {
-  //         date: DateTime.fromISO('2024-07-18T00:00:00'),
-  //         team: undefined,
-  //         templateName: 'template:default/create-perfect-world',
-  //         totalTimeSaved: 10,
-  //       },
-  //       {
-  //         date: DateTime.fromISO('2024-07-19T00:00:00'),
-  //         team: undefined,
-  //         templateName: 'template:default/create-normal-world',
-  //         totalTimeSaved: 10,
-  //       },
-  //     ]);
-  //   });
+    it('...', async () => {
+      const result = await database.getTimeSummarySavedTemplateWise();
+      // Only take the year into account to re-create date values
+      expect(result).toStrictEqual([
+        {
+          date: DateTime.fromISO('2024-07-17T00:00:00'),
+          team: undefined,
+          templateName: 'template:default/create-normal-world',
+          totalTimeSaved: 10,
+        },
+        {
+          date: DateTime.fromISO('2024-07-17T00:00:00'),
+          team: undefined,
+          templateName: 'template:default/create-perfect-world',
+          totalTimeSaved: 20,
+        },
+        {
+          date: DateTime.fromISO('2024-07-18T00:00:00'),
+          team: undefined,
+          templateName: 'template:default/create-perfect-world',
+          totalTimeSaved: 10,
+        },
+        {
+          date: DateTime.fromISO('2024-07-19T00:00:00'),
+          team: undefined,
+          templateName: 'template:default/create-normal-world',
+          totalTimeSaved: 10,
+        },
+      ]);
+    });
 
-  //   it('returns undefined when database is empty', async () => {
-  //     await database.truncate();
-  //     const result = await database.getTimeSummarySavedTemplateWise();
-  //     expect(result).toEqual(undefined);
-  //   });
-  // });
+    it('returns undefined when database is empty', async () => {
+      await database.truncate();
+      const result = await database.getTimeSummarySavedTemplateWise();
+      expect(result).toEqual(undefined);
+    });
+  });
 
   describe('getDistinctColumn', () => {
     beforeAll(async () => {
