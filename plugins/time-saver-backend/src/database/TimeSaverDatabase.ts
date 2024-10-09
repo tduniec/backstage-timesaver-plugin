@@ -596,6 +596,8 @@ export class TimeSaverDatabase implements TimeSaverStore {
   }
 
   /**
+   * POSTGRES COMPATIBLE TODO:fix to work on SQLite
+   *
    * Retrieves time summaries of total time saved by each team, grouped by date.
    *
    * This asynchronous method performs a subquery to calculate the total time saved by each team for each date,
@@ -610,22 +612,20 @@ export class TimeSaverDatabase implements TimeSaverStore {
     TimeSummary[] | undefined | void
   > {
     try {
-      const subquery = this.db('ts_template_time_savings as sub')
+      const result = await this.db<RawDbTimeSummary>('ts_template_time_savings')
         .select(
+          this.db.raw(
+            'DISTINCT ON (team, DATE(created_at)) DATE(created_at) AS formatted_date',
+          ),
+          this.db.raw('DATE(created_at) AS date'),
           'team',
-          this.db.raw(`DATE(created_at) as date`),
-          this.db.raw('SUM(time_saved) as total_time_saved'),
+          this.db.raw(
+            'SUM(time_saved) OVER (PARTITION BY team ORDER BY DATE(created_at)) AS total_time_saved',
+          ),
         )
-        .groupBy('template_name', 'date', 'team');
-
-      const result = await this.db<RawDbTimeSummary>(subquery.as('temp'))
-        .select(
-          'date',
-          'team',
-          this.db.raw('SUM(total_time_saved) as total_time_saved'),
-        )
-        .groupBy('team', 'date')
-        .orderBy('date');
+        .orderBy('team')
+        .orderByRaw('DATE(created_at)')
+        .orderBy('created_at');
 
       return this.ok<TimeSummary[] | undefined>(
         result && result.length
@@ -639,6 +639,8 @@ export class TimeSaverDatabase implements TimeSaverStore {
   }
 
   /**
+   * POSTGRES COMPATIBLE TODO:fix to work on SQLite
+   *
    * Retrieves time summaries of total time saved by each template, grouped by date.
    *
    * This asynchronous method performs a subquery to calculate the total time saved for each template on each date,
@@ -653,25 +655,20 @@ export class TimeSaverDatabase implements TimeSaverStore {
     TimeSummary[] | undefined | void
   > {
     try {
-      const subquery = this.db<RawDbTimeSummary>(
-        'ts_template_time_savings as sub',
-      )
+      const result = await this.db<RawDbTimeSummary>('ts_template_time_savings')
         .select(
+          this.db.raw(
+            'DISTINCT ON (template_name, DATE(created_at)) DATE(created_at) AS formatted_date',
+          ),
+          this.db.raw('DATE(created_at) AS date'),
           'template_name',
-          this.db.raw(`DATE(created_at) as date`),
-          this.db.raw('SUM(time_saved) as total_time_saved'),
+          this.db.raw(
+            'SUM(time_saved) OVER (PARTITION BY template_name ORDER BY DATE(created_at)) AS total_time_saved',
+          ),
         )
-        .groupBy('template_name', 'date');
-
-      const result = await this.db
-        .select(
-          'date',
-          'template_name',
-          this.db.raw('SUM(total_time_saved) as total_time_saved'),
-        )
-        .from(subquery.as('temp'))
-        .groupBy('template_name', 'date')
-        .orderBy('date');
+        .orderBy('template_name')
+        .orderByRaw('DATE(created_at)')
+        .orderBy('created_at');
 
       return this.ok<TimeSummary[] | undefined>(
         result && result.length
