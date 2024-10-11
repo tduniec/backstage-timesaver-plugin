@@ -26,9 +26,10 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { createUrlWithDates, getRandomColor } from '../utils';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTheme } from '@material-ui/core';
+import { IFilterDates } from '../DateFiltersComponent/DateFiltersComponent';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -42,10 +43,12 @@ type DailyTimeSummaryResponse = {
 
 interface DailyTimeSummaryLineProps {
   team?: string;
+  dates: IFilterDates;
 }
 
 export function DailyTimeSummaryLineChartTeamWise({
   team,
+  dates,
 }: DailyTimeSummaryLineProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -55,9 +58,12 @@ export function DailyTimeSummaryLineChartTeamWise({
   useEffect(() => {
     fetchApi
       .fetch(
-        `${configApi.getString(
-          'backend.baseUrl',
-        )}/api/time-saver/getDailyTimeSummary/team`,
+        createUrlWithDates(
+          `${configApi.getString(
+            'backend.baseUrl',
+          )}/api/time-saver/getDailyTimeSummary/team`,
+          dates,
+        ),
       )
       .then(response => response.json())
       .then(dt => {
@@ -70,7 +76,7 @@ export function DailyTimeSummaryLineChartTeamWise({
         setData(dt);
       })
       .catch();
-  }, [configApi, team, fetchApi]);
+  }, [configApi, team, fetchApi, dates]);
 
   if (!data) {
     return <CircularProgress />;

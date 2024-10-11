@@ -1,5 +1,13 @@
 # @tduniec/backstage-plugin-time-saver
 
+## 2.0.0
+
+### Major Changes
+
+- Added date filters component with "from-to" date fields and pre-defined period selection options.
+
+- changes provided by [@stanislavec](https://github.com/stanislavec)
+
 ## 1.4.0
 
 ### Minor Changes

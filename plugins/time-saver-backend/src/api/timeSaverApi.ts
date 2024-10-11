@@ -25,6 +25,7 @@ import {
   DEFAULT_SAMPLE_CLASSIFICATION,
   DEFAULT_SAMPLE_TEMPLATES_TASKS,
 } from './defaultValues';
+import { IQuery } from '../database/types';
 
 export interface TemplateSpecs {
   specs: {
@@ -51,12 +52,14 @@ export class TimeSaverApi {
     private readonly scaffolderDb: ScaffolderStore,
   ) {}
 
-  public async getStatsByTemplateTaskId(templateTaskId: string) {
+  public async getStatsByTemplateTaskId(templateTaskId: string, query: IQuery) {
     const templateName = await this.timeSaverDb.getTemplateNameByTsId(
       templateTaskId,
+      query,
     );
     const queryResult = await this.timeSaverDb.getStatsByTemplateTaskId(
       templateTaskId,
+      query,
     );
     const outputBody = {
       templateTaskId: templateTaskId,
@@ -67,28 +70,31 @@ export class TimeSaverApi {
     return outputBody;
   }
 
-  public async getStatsByTeam(team: string) {
-    const queryResult = await this.timeSaverDb.getStatsByTeam(team);
+  public async getStatsByTeam(team: string, query: IQuery) {
+    const queryResult = await this.timeSaverDb.getStatsByTeam(team, query);
     const outputBody = {
       team: team,
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
-  public async getStatsByTemplate(template: string) {
-    const queryResult = await this.timeSaverDb.getStatsByTemplate(template);
+  public async getStatsByTemplate(template: string, query: IQuery) {
+    const queryResult = await this.timeSaverDb.getStatsByTemplate(
+      template,
+      query,
+    );
     const outputBody = {
       template_name: template,
-      stats: queryResult,
+      stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
 
-  public async getAllStats() {
-    const queryResult = await this.timeSaverDb.getAllStats();
+  public async getAllStats(query: IQuery) {
+    const queryResult = await this.timeSaverDb.getAllStats(query);
     const outputBody = {
       stats: queryResult || [],
     };
@@ -96,8 +102,8 @@ export class TimeSaverApi {
     return outputBody;
   }
 
-  public async getGroupDivisionStats() {
-    const queryResult = await this.timeSaverDb.getGroupSavingsDivision();
+  public async getGroupDivisionStats(query: IQuery) {
+    const queryResult = await this.timeSaverDb.getGroupSavingsDivision(query);
     const outputBody = {
       stats: queryResult || [],
     };
@@ -105,17 +111,19 @@ export class TimeSaverApi {
     return outputBody;
   }
 
-  public async getDailyTimeSummariesTeamWise() {
-    const queryResult = await this.timeSaverDb.getDailyTimeSummariesTeamWise();
+  public async getDailyTimeSummariesTeamWise(query: IQuery) {
+    const queryResult = await this.timeSaverDb.getDailyTimeSummariesTeamWise(
+      query,
+    );
     const outputBody = {
       stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
-  public async getDailyTimeSummariesTemplateWise() {
+  public async getDailyTimeSummariesTemplateWise(query: IQuery) {
     const queryResult =
-      await this.timeSaverDb.getDailyTimeSummariesTemplateWise();
+      await this.timeSaverDb.getDailyTimeSummariesTemplateWise(query);
     const outputBody = {
       stats: queryResult || [],
     };
@@ -123,17 +131,20 @@ export class TimeSaverApi {
     return outputBody;
   }
 
-  public async getTimeSummarySavedTeamWise() {
-    const queryResult = await this.timeSaverDb.getTimeSummarySavedTeamWise();
+  public async getTimeSummarySavedTeamWise(query: IQuery) {
+    const queryResult = await this.timeSaverDb.getTimeSummarySavedTeamWise(
+      query,
+    );
     const outputBody = {
       stats: queryResult || [],
     };
     this.logger.debug(JSON.stringify(outputBody));
     return outputBody;
   }
-  public async getTimeSummarySavedTemplateWise() {
-    const queryResult =
-      await this.timeSaverDb.getTimeSummarySavedTemplateWise();
+  public async getTimeSummarySavedTemplateWise(query: IQuery) {
+    const queryResult = await this.timeSaverDb.getTimeSummarySavedTemplateWise(
+      query,
+    );
     const outputBody = {
       stats: queryResult || [],
     };
@@ -180,7 +191,7 @@ export class TimeSaverApi {
     };
   }
 
-  public async getAllGroups() {
+  public async getAllGroups(query: IQuery) {
     let groups: string[];
     let outputBody: {
       groups: string[];
@@ -190,7 +201,7 @@ export class TimeSaverApi {
       errorMessage: '',
     };
 
-    const queryResult = await this.timeSaverDb.getDistinctColumn('team');
+    const queryResult = await this.timeSaverDb.getDistinctColumn('team', query);
 
     if (queryResult && queryResult.team.length > 0) {
       groups = queryResult.team.map(e => e.toString());
@@ -210,7 +221,7 @@ export class TimeSaverApi {
     return outputBody;
   }
 
-  public async getAllTemplateNames() {
+  public async getAllTemplateNames(query: IQuery) {
     let templates: string[];
     let outputBody: {
       templates: string[];
@@ -222,6 +233,7 @@ export class TimeSaverApi {
 
     const queryResult = await this.timeSaverDb.getDistinctColumn(
       'template_name',
+      query,
     );
 
     if (queryResult && queryResult.template_name.length > 0) {
@@ -254,6 +266,7 @@ export class TimeSaverApi {
 
     const queryResult = await this.timeSaverDb.getDistinctColumn(
       'template_task_id',
+      {},
     );
 
     if (queryResult && queryResult.template_task_id.length > 0) {
@@ -274,7 +287,7 @@ export class TimeSaverApi {
     return outputBody;
   }
 
-  public async getTemplateCount() {
+  public async getTemplateCount(query: IQuery) {
     let outputBody: {
       templateCount?: number;
       errorMessage?: string;
@@ -282,7 +295,8 @@ export class TimeSaverApi {
       templateCount: 0,
       errorMessage: '',
     };
-    const queryResult = await this.timeSaverDb.getTemplateCount();
+
+    const queryResult = await this.timeSaverDb.getTemplateCount(query);
 
     if (typeof queryResult === 'number') {
       outputBody = {
@@ -301,7 +315,7 @@ export class TimeSaverApi {
     return outputBody;
   }
 
-  public async getTimeSavedSum(divider?: number) {
+  public async getTimeSavedSum(divider: number | undefined, query: IQuery) {
     let outputBody: {
       timeSaved?: number;
       errorMessage?: string;
@@ -311,7 +325,7 @@ export class TimeSaverApi {
     };
 
     const dividerInt = divider ?? 1;
-    const queryResult = await this.timeSaverDb.getTimeSavedSum();
+    const queryResult = await this.timeSaverDb.getTimeSavedSum(query);
 
     if (typeof queryResult === 'number') {
       outputBody = {

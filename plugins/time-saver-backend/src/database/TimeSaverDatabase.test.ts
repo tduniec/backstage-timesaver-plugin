@@ -157,6 +157,7 @@ describe('TimeSaverDatabase', () => {
     it('returns template name string from row matching TemplateTaskId', async () => {
       const result = await database.getTemplateNameByTsId(
         templateTimeSavings[0].templateTaskId,
+        {},
       );
       expect(result).toEqual(templateTimeSavings[0].templateName);
     });
@@ -164,6 +165,7 @@ describe('TimeSaverDatabase', () => {
     it('returns undefined when no matching TemplateTaskId is found', async () => {
       const result = await database.getTemplateNameByTsId(
         'template:default/this-does-not-exists',
+        {},
       );
       expect(result).toEqual(undefined);
     });
@@ -172,6 +174,7 @@ describe('TimeSaverDatabase', () => {
       await database.truncate();
       const result = await database.getTemplateNameByTsId(
         'template:default/this-does-not-exists',
+        {},
       );
       expect(result).toEqual(undefined);
     });
@@ -189,6 +192,7 @@ describe('TimeSaverDatabase', () => {
     it('returns statistics from row matching TemplateTaskId', async () => {
       const result = await database.getStatsByTemplateTaskId(
         templateTimeSavings[0].templateTaskId,
+        {},
       );
       expect(result).toStrictEqual([
         {
@@ -202,6 +206,7 @@ describe('TimeSaverDatabase', () => {
     it('returns undefined when no matching template task id is found', async () => {
       const result = await database.getStatsByTemplateTaskId(
         '41d99439-c377-4aa5-87aa-7e350004d950',
+        {},
       );
       expect(result).toEqual(undefined);
     });
@@ -210,6 +215,7 @@ describe('TimeSaverDatabase', () => {
       await database.truncate();
       const result = await database.getStatsByTemplateTaskId(
         '41d99439-c377-4aa5-87aa-7e350004d950',
+        {},
       );
       expect(result).toEqual(undefined);
     });
@@ -225,7 +231,10 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns statistics from row matching team', async () => {
-      const result = await database.getStatsByTeam(templateTimeSavings[0].team);
+      const result = await database.getStatsByTeam(
+        templateTimeSavings[0].team,
+        {},
+      );
       expect(result).toStrictEqual([
         {
           timeSaved: 10,
@@ -241,13 +250,13 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns undefined when no matching team is found', async () => {
-      const result = await database.getStatsByTeam('business');
+      const result = await database.getStatsByTeam('business', {});
       expect(result).toEqual(undefined);
     });
 
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getStatsByTeam('business');
+      const result = await database.getStatsByTeam('business', {});
       expect(result).toEqual(undefined);
     });
   });
@@ -264,6 +273,7 @@ describe('TimeSaverDatabase', () => {
     it('returns statistics from row matching template name', async () => {
       const result = await database.getStatsByTemplate(
         templateTimeSavings[0].templateName,
+        {},
       );
       expect(result).toStrictEqual([
         {
@@ -277,6 +287,7 @@ describe('TimeSaverDatabase', () => {
     it('returns undefined when no matching template name is found', async () => {
       const result = await database.getStatsByTemplate(
         'template:default/this-does-not-exists',
+        {},
       );
       expect(result).toEqual(undefined);
     });
@@ -285,6 +296,7 @@ describe('TimeSaverDatabase', () => {
       await database.truncate();
       const result = await database.getStatsByTemplate(
         'template:default/this-does-not-exists',
+        {},
       );
       expect(result).toEqual(undefined);
     });
@@ -300,7 +312,7 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns statistics from row matching template name', async () => {
-      const result = await database.getAllStats();
+      const result = await database.getAllStats({});
       expect(result).toStrictEqual([
         {
           timeSaved: 10,
@@ -322,7 +334,7 @@ describe('TimeSaverDatabase', () => {
 
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getAllStats();
+      const result = await database.getAllStats({});
       expect(result).toEqual(undefined);
     });
   });
@@ -337,7 +349,7 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns statistics from row matching template name', async () => {
-      const result = await database.getGroupSavingsDivision();
+      const result = await database.getGroupSavingsDivision({});
       expect(result).toStrictEqual([
         {
           team: 'architecture',
@@ -353,13 +365,14 @@ describe('TimeSaverDatabase', () => {
     it('returns undefined when no matching template name is found', async () => {
       const result = await database.getStatsByTemplate(
         'template:default/this-does-not-exists',
+        {},
       );
       expect(result).toEqual(undefined);
     });
 
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getGroupSavingsDivision();
+      const result = await database.getGroupSavingsDivision({});
       expect(result).toEqual(undefined);
     });
   });
@@ -374,7 +387,7 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns total time saved by each team each year, in date ascending order', async () => {
-      const result = await database.getDailyTimeSummariesTeamWise();
+      const result = await database.getDailyTimeSummariesTeamWise({});
       // Only take the year into account to re-create date values
       expect(result).toStrictEqual([
         {
@@ -400,7 +413,7 @@ describe('TimeSaverDatabase', () => {
 
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getDailyTimeSummariesTeamWise();
+      const result = await database.getDailyTimeSummariesTeamWise({});
       expect(result).toEqual(undefined);
     });
   });
@@ -415,7 +428,7 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns total time saved by each template each year, in date ascending order', async () => {
-      const result = await database.getDailyTimeSummariesTemplateWise();
+      const result = await database.getDailyTimeSummariesTemplateWise({});
       // Only take the year into account to re-create date values
       expect(result).toStrictEqual([
         {
@@ -447,7 +460,7 @@ describe('TimeSaverDatabase', () => {
 
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getDailyTimeSummariesTemplateWise();
+      const result = await database.getDailyTimeSummariesTemplateWise({});
       expect(result).toEqual(undefined);
     });
   });
@@ -462,7 +475,7 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns the total time saved per team per date', async () => {
-      const result = await database.getTimeSummarySavedTeamWise();
+      const result = await database.getTimeSummarySavedTeamWise({});
       // Only take the year into account to re-create date values
       expect(result).toStrictEqual([
         {
@@ -486,9 +499,41 @@ describe('TimeSaverDatabase', () => {
       ]);
     });
 
+    it('returns the limited by date filters total time saved per team per date', async () => {
+      const result = await database.getTimeSummarySavedTeamWise({
+        start: '2024-07-17',
+        end: '2024-07-17',
+      });
+      // Only take the year into account to re-create date values
+      expect(result).toStrictEqual([
+        {
+          date: DateTime.fromISO('2024-07-17T00:00:00'),
+          team: 'engineering',
+          templateName: undefined,
+          totalTimeSaved: 30,
+        },
+      ]);
+    });
+
+    it('returns the limited by date filter total time saved per team per date', async () => {
+      const result = await database.getTimeSummarySavedTeamWise({
+        start: '2024-07-17',
+        end: '2024-07-17',
+      });
+      // Only take the year into account to re-create date values
+      expect(result).toStrictEqual([
+        {
+          date: DateTime.fromISO('2024-07-17T00:00:00'),
+          team: 'engineering',
+          templateName: undefined,
+          totalTimeSaved: 30,
+        },
+      ]);
+    });
+
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getTimeSummarySavedTeamWise();
+      const result = await database.getTimeSummarySavedTeamWise({});
       expect(result).toEqual(undefined);
     });
   });
@@ -503,7 +548,7 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('...', async () => {
-      const result = await database.getTimeSummarySavedTemplateWise();
+      const result = await database.getTimeSummarySavedTemplateWise({});
       // Only take the year into account to re-create date values
       expect(result).toStrictEqual([
         {
@@ -533,9 +578,31 @@ describe('TimeSaverDatabase', () => {
       ]);
     });
 
+    it('returns limited list due to date filter', async () => {
+      const result = await database.getTimeSummarySavedTemplateWise({
+        start: '2024-07-16',
+        end: '2024-07-17',
+      });
+      // Only take the year into account to re-create date values
+      expect(result).toStrictEqual([
+        {
+          date: DateTime.fromISO('2024-07-17T00:00:00'),
+          team: undefined,
+          templateName: 'template:default/create-normal-world',
+          totalTimeSaved: 10,
+        },
+        {
+          date: DateTime.fromISO('2024-07-17T00:00:00'),
+          team: undefined,
+          templateName: 'template:default/create-perfect-world',
+          totalTimeSaved: 20,
+        },
+      ]);
+    });
+
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getTimeSummarySavedTemplateWise();
+      const result = await database.getTimeSummarySavedTemplateWise({});
       expect(result).toEqual(undefined);
     });
   });
@@ -550,16 +617,25 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns distinct teams', async () => {
-      const result = await database.getDistinctColumn('team');
+      const result = await database.getDistinctColumn('team', {});
 
       expect(result).toStrictEqual({
         team: ['engineering', 'architecture'],
       });
     });
 
+    it('returns no distinct teams due to date filter', async () => {
+      const result = await database.getDistinctColumn('team', {
+        start: '2024-07-10',
+        end: '2024-07-11',
+      });
+
+      expect(result).toEqual(undefined);
+    });
+
     it('returns undefined when database is empty', async () => {
       await database.truncate();
-      const result = await database.getDistinctColumn('team');
+      const result = await database.getDistinctColumn('team', {});
       expect(result).toEqual(undefined);
     });
   });
@@ -574,9 +650,27 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns number of templates', async () => {
-      const result = await database.getTemplateCount();
+      const result = await database.getTemplateCount({});
 
       expect(result).toBe(5);
+    });
+
+    it('returns number of templates = 0 due to date filter', async () => {
+      const result = await database.getTemplateCount({
+        start: '2024-07-10',
+        end: '2024-07-11',
+      });
+
+      expect(result).toBe(0);
+    });
+
+    it('returns number of templates by date filter', async () => {
+      const result = await database.getTemplateCount({
+        start: '2024-07-17',
+        end: '2024-07-18',
+      });
+
+      expect(result).toBe(4);
     });
   });
 
@@ -590,9 +684,27 @@ describe('TimeSaverDatabase', () => {
     });
 
     it('returns total time saved', async () => {
-      const result = await database.getTimeSavedSum();
+      const result = await database.getTimeSavedSum({});
 
       expect(result).toBe(50);
+    });
+
+    it('returns no total time saved due to date filter', async () => {
+      const result = await database.getTimeSavedSum({
+        start: '2024-07-10',
+        end: '2024-07-11',
+      });
+
+      expect(result).toBe(0);
+    });
+
+    it('returns total time saved by date filter', async () => {
+      const result = await database.getTimeSavedSum({
+        start: '2024-07-17',
+        end: '2024-07-18',
+      });
+
+      expect(result).toBe(40);
     });
   });
 });

@@ -25,9 +25,10 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { createUrlWithDates, getRandomColor } from '../utils';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTheme } from '@material-ui/core';
+import { IFilterDates } from '../DateFiltersComponent/DateFiltersComponent';
 
 ChartJS.register(LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -41,20 +42,27 @@ type TemplateWiseTimeSummaryLinearResponse = {
 
 interface TemplateWiseTimeSummaryLinearProps {
   templateName?: string;
+  dates: IFilterDates;
 }
 
 export function TemplateWiseTimeSummaryLinearChart({
   templateName,
+  dates,
 }: TemplateWiseTimeSummaryLinearProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
   const [data, setData] =
     useState<TemplateWiseTimeSummaryLinearResponse | null>(null);
   const theme = useTheme();
+
   useEffect(() => {
-    const url = `${configApi.getString(
-      'backend.baseUrl',
-    )}/api/time-saver/getTimeSummary/template`;
+    const url = createUrlWithDates(
+      `${configApi.getString(
+        'backend.baseUrl',
+      )}/api/time-saver/getTimeSummary/template`,
+      dates,
+    );
+
     fetchApi
       .fetch(url)
       .then(response => response.json())
@@ -66,7 +74,7 @@ export function TemplateWiseTimeSummaryLinearChart({
         setData(dt);
       })
       .catch();
-  }, [configApi, templateName, fetchApi]);
+  }, [configApi, templateName, fetchApi, dates]);
 
   if (!data) {
     return <CircularProgress />;

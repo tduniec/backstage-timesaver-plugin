@@ -17,6 +17,7 @@ import express from 'express';
 import { LoggerService } from '@backstage/backend-plugin-api';
 import { TimeSaverHandler } from '../timeSaver/handler';
 import { TimeSaverApi } from '../api/timeSaverApi';
+import { IQuery } from '../database/types';
 
 export function setupCommonRoutes(
   router: express.Router,
@@ -36,41 +37,63 @@ export function setupCommonRoutes(
 
   router.get('/getStats/', async (request, response) => {
     const { templateId, team, templateName } = request.query;
+
     let result;
     if (templateId) {
-      result = await apiHandler.getStatsByTemplateTaskId(String(templateId));
+      result = await apiHandler.getStatsByTemplateTaskId(
+        String(templateId),
+        request.query,
+      );
     } else if (team) {
-      result = await apiHandler.getStatsByTeam(String(team));
+      result = await apiHandler.getStatsByTeam(String(team), request.query);
     } else if (templateName) {
-      result = await apiHandler.getStatsByTemplate(String(templateName));
+      result = await apiHandler.getStatsByTemplate(
+        String(templateName),
+        request.query,
+      );
     } else {
-      result = await apiHandler.getAllStats();
+      result = await apiHandler.getAllStats(request.query);
     }
     response.json(result);
   });
 
-  router.get('/getStats/group', async (_request, response) => {
-    const result = await apiHandler.getGroupDivisionStats();
+  router.get('/getStats/group', async (request, response) => {
+    const { query } = request;
+    const result = await apiHandler.getGroupDivisionStats(query as IQuery);
     response.json(result);
   });
 
-  router.get('/getDailyTimeSummary/team', async (_request, response) => {
-    const result = await apiHandler.getDailyTimeSummariesTeamWise();
+  router.get('/getDailyTimeSummary/team', async (request, response) => {
+    const { query } = request;
+    const result = await apiHandler.getDailyTimeSummariesTeamWise(
+      query as IQuery,
+    );
     response.json(result);
   });
 
-  router.get('/getDailyTimeSummary/template', async (_request, response) => {
-    const result = await apiHandler.getDailyTimeSummariesTemplateWise();
+  router.get('/getDailyTimeSummary/template', async (request, response) => {
+    const { query } = request;
+    const result = await apiHandler.getDailyTimeSummariesTemplateWise(
+      query as IQuery,
+    );
     response.json(result);
   });
 
-  router.get('/getTimeSummary/team', async (_request, response) => {
-    const result = await apiHandler.getTimeSummarySavedTeamWise();
+  router.get('/getTimeSummary/team', async (request, response) => {
+    const { query } = request;
+
+    const result = await apiHandler.getTimeSummarySavedTeamWise(
+      query as IQuery,
+    );
     response.json(result);
   });
 
-  router.get('/getTimeSummary/template', async (_request, response) => {
-    const result = await apiHandler.getTimeSummarySavedTemplateWise();
+  router.get('/getTimeSummary/template', async (request, response) => {
+    const { query } = request;
+
+    const result = await apiHandler.getTimeSummarySavedTemplateWise(
+      query as IQuery,
+    );
     response.json(result);
   });
 
@@ -106,13 +129,15 @@ export function setupCommonRoutes(
     );
   });
 
-  router.get('/groups', async (_request, response) => {
-    const result = await apiHandler.getAllGroups();
+  router.get('/groups', async (request, response) => {
+    const { query } = request;
+    const result = await apiHandler.getAllGroups(query as IQuery);
     response.json(result);
   });
 
-  router.get('/templates', async (_request, response) => {
-    const result = await apiHandler.getAllTemplateNames();
+  router.get('/templates', async (request, response) => {
+    const { query } = request;
+    const result = await apiHandler.getAllTemplateNames(query as IQuery);
     response.json(result);
   });
 
@@ -121,22 +146,25 @@ export function setupCommonRoutes(
     response.json(result);
   });
 
-  router.get('/getTemplateCount', async (_request, response) => {
-    const result = await apiHandler.getTemplateCount();
+  router.get('/getTemplateCount', async (request, response) => {
+    const { query } = request;
+    const result = await apiHandler.getTemplateCount(query as IQuery);
     response.json(result);
   });
 
   router.get('/getTimeSavedSum', async (request, response) => {
-    const divider: number = Number(request.query.divider);
+    const { query } = request;
+
+    const divider =
+      typeof query.divider !== 'undefined' ? Number(query.divider) : undefined;
     if (divider !== undefined && divider <= 0) {
       response
         .status(400)
         .json({ error: 'Divider should be a positive number' });
       return;
     }
-    const result = divider
-      ? await apiHandler.getTimeSavedSum(divider)
-      : await apiHandler.getTimeSavedSum();
+
+    const result = await apiHandler.getTimeSavedSum(divider, query);
     response.json(result);
   });
 

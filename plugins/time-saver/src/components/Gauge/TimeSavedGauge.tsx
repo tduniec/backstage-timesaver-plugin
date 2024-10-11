@@ -17,6 +17,8 @@ import React, { useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Gauge from './Gauge';
+import { IFilterDates } from '../DateFiltersComponent/DateFiltersComponent';
+import { createUrlWithDates } from '../utils';
 
 type TimeSavedResponse = {
   timeSaved: number;
@@ -25,11 +27,13 @@ type TimeSavedResponse = {
 interface TimeSavedGaugeProps {
   number?: number;
   heading: string;
+  dates: IFilterDates;
 }
 
 export function TimeSavedGauge({
   number,
   heading,
+  dates,
 }: TimeSavedGaugeProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -43,12 +47,14 @@ export function TimeSavedGauge({
       url = `${url}?divider=${number}`;
     }
 
+    url = createUrlWithDates(url, dates);
+
     fetchApi
       .fetch(url)
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, number, fetchApi]);
+  }, [configApi, number, fetchApi, dates]);
 
   if (!data) {
     return <CircularProgress />;

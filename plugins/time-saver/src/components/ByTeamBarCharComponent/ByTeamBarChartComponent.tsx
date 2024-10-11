@@ -25,9 +25,10 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { createUrlWithDates, getRandomColor } from '../utils';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTheme } from '@material-ui/core';
+import { IFilterDates } from '../DateFiltersComponent/DateFiltersComponent';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -41,10 +42,12 @@ type TeamChartResponse = {
 
 interface ByTeamBarChartProps {
   team: string;
+  dates: IFilterDates;
 }
 
 export function ByTeamBarChart({
   team,
+  dates,
 }: ByTeamBarChartProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -56,14 +59,17 @@ export function ByTeamBarChart({
   useEffect(() => {
     fetchApi
       .fetch(
-        `${configApi.getString(
-          'backend.baseUrl',
-        )}/api/time-saver/getStats?team=${team} `,
+        createUrlWithDates(
+          `${configApi.getString(
+            'backend.baseUrl',
+          )}/api/time-saver/getStats?team=${team} `,
+          dates,
+        ),
       )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, team, fetchApi]);
+  }, [configApi, team, fetchApi, dates]);
 
   if (!data) {
     return <CircularProgress />;

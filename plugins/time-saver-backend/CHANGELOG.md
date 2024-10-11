@@ -1,5 +1,13 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 4.0.0
+
+### Major Changes
+
+- Implemented filtering by `start` and `end` properties for the `created_at` column in the Timesaver API and DB client (`createBuilderWhereDates` private method). Example request: `/api/time-saver/groups?start=2024-07-01&end=2024-10-11`
+
+- changes provided by [@stanislavec](https://github.com/stanislavec)
+
 ## 3.1.0
 
 ### Minor Changes
