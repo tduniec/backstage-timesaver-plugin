@@ -24,6 +24,8 @@ import {
   HeaderLabel,
   SupportButton,
 } from '@backstage/core-components';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { AllStatsBarChart } from '../AllStatsBarChartComponent/AllStatsBarChartComponent';
 import { ByTeamBarChart } from '../ByTeamBarCharComponent/ByTeamBarChartComponent';
 import { GroupDivisionPieChart } from '../GroupDivisionPieChartComponent/GroupDivisionPieChartComponent';
@@ -40,6 +42,50 @@ import { TimeSavedGauge } from '../Gauge/TimeSavedGauge';
 import { TeamsGauge } from '../Gauge/TeamsGauge';
 import { TemplatesGauge } from '../Gauge/TemplatesGauge';
 import { EmptyTimeSaver } from '../Gauge/EmptyDbContent';
+import {
+  DateFiltersComponent,
+  IFilterDates,
+} from '../DateFiltersComponent/DateFiltersComponent';
+
+const GaugesContainer = ({ dates }: { dates: IFilterDates }) => (
+  <Grid
+    container
+    spacing={4}
+    direction="row"
+    justifyContent="space-between"
+    alignItems="center"
+    style={{
+      marginTop: '12px',
+      marginBottom: '12px',
+    }}
+  >
+    <Grid item xs={6} sm={6} md={2}>
+      <Paper elevation={0}>
+        <TemplateCountGauge dates={dates} />
+      </Paper>
+    </Grid>
+    <Grid item xs={6} sm={6} md={2}>
+      <Paper elevation={0}>
+        <TimeSavedGauge heading="Time Saved [hours]" dates={dates} />
+      </Paper>
+    </Grid>
+    <Grid item xs={6} sm={6} md={2}>
+      <Paper elevation={0}>
+        <TimeSavedGauge number={8} heading="Time Saved [days]" dates={dates} />
+      </Paper>
+    </Grid>
+    <Grid item xs={6} sm={6} md={2}>
+      <Paper elevation={0}>
+        <TeamsGauge dates={dates} />
+      </Paper>
+    </Grid>
+    <Grid item xs={6} sm={6} md={2}>
+      <Paper elevation={0}>
+        <TemplatesGauge dates={dates} />
+      </Paper>
+    </Grid>
+  </Grid>
+);
 
 export const TimeSaverPageComponent = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -66,153 +112,148 @@ export const TimeSaverPageComponent = () => {
     setSelectedTeam('');
   };
 
-  const GaugesContainer = (
-    <Grid
-      container
-      spacing={4}
-      direction="row"
-      justifyContent="space-between"
-      alignItems="center"
-    >
-      <Grid item xs={2}>
-        <Paper elevation={0}>
-          <TemplateCountGauge />
-        </Paper>
-      </Grid>
-      <Grid item xs={2}>
-        <Paper elevation={0}>
-          <TimeSavedGauge heading="Time Saved [hours]" />
-        </Paper>
-      </Grid>
-      <Grid item xs={2}>
-        <Paper elevation={0}>
-          <TimeSavedGauge number={8} heading="Time Saved [days]" />
-        </Paper>
-      </Grid>
-      <Grid item xs={2}>
-        <Paper elevation={0}>
-          <TeamsGauge />
-        </Paper>
-      </Grid>
-      <Grid item xs={2}>
-        <Paper elevation={0}>
-          <TemplatesGauge />
-        </Paper>
-      </Grid>
-    </Grid>
-  );
-
   return (
-    <Page themeId="tool">
-      <Header
-        title="Backstage TS plugin!"
-        subtitle="Check saved time with TS plugin!"
-      >
-        <HeaderLabel label="Owner" value="Rackspace" />
-        <HeaderLabel label="Lifecycle" value="experimental" />
-      </Header>
-      <Content>
-        <ContentHeader title="Time Saver">
-          <Tabs value={selectedTab} onChange={handleChange} centered={false}>
-            <Tab label="All Stats" />
-            <Tab label="By Team" />
-            <Tab label="By Template" />
-          </Tabs>
-          <SupportButton>
-            Time Saver plugin retrieves its config from template.metadata and
-            groups it in a dedicated table, then it has a bunch of APIs for data
-            queries
-          </SupportButton>
-        </ContentHeader>
-        <EmptyTimeSaver />
-        <Grid container spacing={3} direction="column">
-          <Grid item>
-            <InfoCard title="Time statistics that you have saved using Backstage Templates">
-              <Typography variant="body1">
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    {selectedTab === 0 && (
-                      <Grid container spacing={2}>
-                        {GaugesContainer}
-                        <Divider variant="fullWidth" />
-                        <Grid xs={6}>
-                          <AllStatsBarChart />
-                        </Grid>
-                        <Grid xs={6}>
-                          <StatsTable />
-                        </Grid>
-                        <Grid xs={6}>
-                          <DailyTimeSummaryLineChartTeamWise />
-                        </Grid>
-                        <Grid xs={6}>
-                          <TeamWiseTimeSummaryLinearChart />
-                        </Grid>
-                        <Grid xs={6}>
-                          <GroupDivisionPieChart />
-                        </Grid>
-                      </Grid>
-                    )}
-                    {selectedTab === 1 && (
-                      <Grid container spacing={3}>
-                        <Grid xs={12}>
-                          <Grid xs={6}>
-                            <TeamSelector
-                              onTeamChange={handleTeamChange}
-                              onClearButtonClick={handleClearTeam}
-                            />
-                            <Divider orientation="vertical" />
-                          </Grid>
-                        </Grid>
-                        <Grid xs={6}>
-                          <ByTeamBarChart team={selectedTeam} />
-                        </Grid>{' '}
-                        <Grid xs={6}>
-                          <StatsTable team={selectedTeam} />
-                        </Grid>
-                        <Grid xs={6}>
-                          <DailyTimeSummaryLineChartTeamWise
-                            team={selectedTeam}
-                          />
-                        </Grid>
-                        <Grid xs={6}>
-                          <TeamWiseTimeSummaryLinearChart team={selectedTeam} />
-                        </Grid>
-                      </Grid>
-                    )}
-                    {selectedTab === 2 && (
-                      <Grid container spacing={3}>
-                        <Grid xs={12}>
-                          <Grid xs={6}>
-                            <TemplateAutocomplete
-                              onTemplateChange={handleTemplateChange}
-                            />
-                          </Grid>
-                        </Grid>
-                        <Grid xs={6}>
-                          <ByTemplateBarChart templateName={template} />
-                        </Grid>
-                        <Grid xs={6}>
-                          <StatsTable templateName={template} />
-                        </Grid>
-                        <Grid xs={6}>
-                          <DailyTimeSummaryLineChartTemplateWise
-                            templateName={template}
-                          />
-                        </Grid>
-                        <Grid xs={6}>
-                          <TemplateWiseTimeSummaryLinearChart
-                            templateName={template}
-                          />
-                        </Grid>
-                      </Grid>
-                    )}
+    <LocalizationProvider dateAdapter={AdapterLuxon}>
+      <Page themeId="tool">
+        <Header
+          title="Backstage TS plugin!"
+          subtitle="Check saved time with TS plugin!"
+        >
+          <HeaderLabel label="Owner" value="Rackspace" />
+          <HeaderLabel label="Lifecycle" value="experimental" />
+        </Header>
+        <Content>
+          <ContentHeader title="Time Saver">
+            <Tabs value={selectedTab} onChange={handleChange} centered={false}>
+              <Tab label="All Stats" />
+              <Tab label="By Team" />
+              <Tab label="By Template" />
+            </Tabs>
+            <SupportButton>
+              Time Saver plugin retrieves its config from template.metadata and
+              groups it in a dedicated table, then it has a bunch of APIs for
+              data queries
+            </SupportButton>
+          </ContentHeader>
+          <EmptyTimeSaver />
+
+          <Grid container spacing={3} direction="column">
+            <Grid item>
+              <InfoCard title="Time statistics that you have saved using Backstage Templates">
+                <Typography variant="body1">
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <DateFiltersComponent>
+                        {dates => (
+                          <>
+                            {selectedTab === 0 && (
+                              <Grid container spacing={2}>
+                                <GaugesContainer dates={dates} />
+                                <Divider variant="fullWidth" />
+                                <Grid xs={6}>
+                                  <AllStatsBarChart dates={dates} />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <StatsTable dates={dates} />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <DailyTimeSummaryLineChartTeamWise
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <TeamWiseTimeSummaryLinearChart
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <GroupDivisionPieChart dates={dates} />
+                                </Grid>
+                              </Grid>
+                            )}
+                            {selectedTab === 1 && (
+                              <Grid container spacing={3}>
+                                <Grid xs={12}>
+                                  <Grid xs={6}>
+                                    <TeamSelector
+                                      onTeamChange={handleTeamChange}
+                                      onClearButtonClick={handleClearTeam}
+                                    />
+                                    <Divider orientation="vertical" />
+                                  </Grid>
+                                </Grid>
+                                <Grid xs={6}>
+                                  <ByTeamBarChart
+                                    team={selectedTeam}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <StatsTable
+                                    team={selectedTeam}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <DailyTimeSummaryLineChartTeamWise
+                                    team={selectedTeam}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <TeamWiseTimeSummaryLinearChart
+                                    team={selectedTeam}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                              </Grid>
+                            )}
+                            {selectedTab === 2 && (
+                              <Grid container spacing={3}>
+                                <Grid xs={12}>
+                                  <Grid xs={6}>
+                                    <TemplateAutocomplete
+                                      onTemplateChange={handleTemplateChange}
+                                    />
+                                  </Grid>
+                                </Grid>
+                                <Grid xs={6}>
+                                  <ByTemplateBarChart
+                                    templateName={template}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <StatsTable
+                                    templateName={template}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <DailyTimeSummaryLineChartTemplateWise
+                                    templateName={template}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                                <Grid xs={6}>
+                                  <TemplateWiseTimeSummaryLinearChart
+                                    templateName={template}
+                                    dates={dates}
+                                  />
+                                </Grid>
+                              </Grid>
+                            )}
+                          </>
+                        )}
+                      </DateFiltersComponent>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Typography>
-            </InfoCard>
+                </Typography>
+              </InfoCard>
+            </Grid>
           </Grid>
-        </Grid>
-      </Content>
-    </Page>
+        </Content>
+      </Page>
+    </LocalizationProvider>
   );
 };

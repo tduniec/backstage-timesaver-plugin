@@ -38,6 +38,7 @@ import {
   TimeSummary,
   RawDbTimeSummary,
   TemplateTimeSavingsDistinctRbRow,
+  IQuery,
 } from './types';
 import {
   TemplateTimeSavingsCollectionMap,
@@ -64,23 +65,36 @@ export interface TimeSaverStore {
   truncate(): Promise<boolean | void>;
   getTemplateNameByTsId(
     templateTaskId: string,
+    query: IQuery,
   ): Promise<string | undefined | void>;
   getStatsByTemplateTaskId(
     templateTaskId: string,
+    query: IQuery,
   ): Promise<TimeSavedStatistics[] | void>;
-  getStatsByTeam(team: string): Promise<TimeSavedStatistics[] | void>;
-  getStatsByTemplate(template: string): Promise<TimeSavedStatistics[] | void>;
-  getAllStats(): Promise<TimeSavedStatistics[] | void>;
-  getGroupSavingsDivision(): Promise<GroupSavingsDivision[] | void>;
-  getDailyTimeSummariesTeamWise(): Promise<TimeSummary[] | void>;
-  getDailyTimeSummariesTemplateWise(): Promise<TimeSummary[] | void>;
-  getTimeSummarySavedTeamWise(): Promise<TimeSummary[] | void>;
-  getTimeSummarySavedTemplateWise(): Promise<TimeSummary[] | void>;
+  getStatsByTeam(
+    team: string,
+    query: IQuery,
+  ): Promise<TimeSavedStatistics[] | void>;
+  getStatsByTemplate(
+    template: string,
+    query: IQuery,
+  ): Promise<TimeSavedStatistics[] | void>;
+  getAllStats(query: IQuery): Promise<TimeSavedStatistics[] | void>;
+  getGroupSavingsDivision(
+    query: IQuery,
+  ): Promise<GroupSavingsDivision[] | void>;
+  getDailyTimeSummariesTeamWise(query: IQuery): Promise<TimeSummary[] | void>;
+  getDailyTimeSummariesTemplateWise(
+    query: IQuery,
+  ): Promise<TimeSummary[] | void>;
+  getTimeSummarySavedTeamWise(query: IQuery): Promise<TimeSummary[] | void>;
+  getTimeSummarySavedTemplateWise(query: IQuery): Promise<TimeSummary[] | void>;
   getDistinctColumn(
     column: string,
+    query: IQuery,
   ): Promise<{ [x: string]: (string | number)[] } | undefined | void>;
-  getTemplateCount(): Promise<number | void>;
-  getTimeSavedSum(): Promise<number | void>;
+  getTemplateCount(query: IQuery): Promise<number | void>;
+  getTimeSavedSum(query: IQuery): Promise<number | void>;
   getTasksToExclude(): Promise<string[] | undefined | void>;
 }
 
@@ -153,6 +167,23 @@ export class TimeSaverDatabase implements TimeSaverStore {
   fail(error: Error | unknown, errorMessage: string = 'Error selecting data:') {
     this.logger.error(errorMessage, error ? (error as Error) : undefined);
     throw error;
+  }
+
+  private createBuilderWhereDates(builder: Knex.QueryBuilder, query: IQuery) {
+    const { start, end } = query || {};
+
+    if (start && end) {
+      builder.whereBetween('created_at', [
+        `${start}T00:00:00`,
+        `${end}T23:59:59`,
+      ]);
+    } else if (start) {
+      builder.where('created_at', '>=', `${start}T00:00:00`);
+    } else if (end) {
+      builder.where('created_at', '<=', `${end}T23:59:59`);
+    }
+
+    return builder;
   }
 
   /**
@@ -323,11 +354,15 @@ export class TimeSaverDatabase implements TimeSaverStore {
    */
   async getTemplateNameByTsId(
     templateTaskId: string,
+    query: IQuery,
   ): Promise<string | undefined | void> {
     try {
-      const result = await this.db<{ template_name: string }>(
-        TIME_SAVINGS_TABLE,
-      )
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<{ template_name: string }>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise
         .select('template_name')
         .where('template_task_id', templateTaskId)
         .limit(1)
@@ -355,17 +390,26 @@ export class TimeSaverDatabase implements TimeSaverStore {
    */
   async getStatsByTemplateTaskId(
     templateTaskId: string,
+    query: IQuery,
   ): Promise<TimeSavedStatistics[] | undefined | void> {
     //  Get time saved by each team corresponding to a specific template task id
     try {
-      const result = await this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE)
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise
         .sum({ time_saved: 'time_saved' })
         .select('team')
         .where('template_task_id', templateTaskId)
         .groupBy('team');
+
       return this.ok<TimeSavedStatistics[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSavedStatisticsMap.toDTO(e))
+          ? result.map((e: TimeSavedStatisticsDbRow) =>
+              TimeSavedStatisticsMap.toDTO(e),
+            )
           : undefined,
         'Data selected successfully',
       );
@@ -388,18 +432,27 @@ export class TimeSaverDatabase implements TimeSaverStore {
    */
   async getStatsByTeam(
     team: string,
+    query: IQuery,
   ): Promise<TimeSavedStatistics[] | undefined | void> {
     //  Get time saved by each template corresponding to a specific team name
     try {
-      const result = await this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE)
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise
         .sum({ time_saved: 'time_saved' })
         .select('template_name', 'team')
         .where('team', team)
         .groupBy('template_name')
         .groupBy('team');
+
       return this.ok<TimeSavedStatistics[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSavedStatisticsMap.toDTO(e))
+          ? result.map((e: TimeSavedStatisticsDbRow) =>
+              TimeSavedStatisticsMap.toDTO(e),
+            )
           : undefined,
         'Data selected successfully',
       );
@@ -422,18 +475,27 @@ export class TimeSaverDatabase implements TimeSaverStore {
    */
   async getStatsByTemplate(
     template: string,
+    query: IQuery,
   ): Promise<TimeSavedStatistics[] | undefined | void> {
     // Get time saved by each team corresponding to a specific template name
     try {
-      const result = await this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE)
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise
         .sum({ time_saved: 'time_saved' })
         .select('team')
         .where('template_name', template)
         .groupBy('team')
         .groupBy('template_name');
+
       return this.ok<TimeSavedStatistics[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSavedStatisticsMap.toDTO(e))
+          ? result.map((e: TimeSavedStatisticsDbRow) =>
+              TimeSavedStatisticsMap.toDTO(e),
+            )
           : undefined,
         'Data selected successfully',
       );
@@ -453,16 +515,25 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * as DTOs if records are found, or undefined if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the retrieval process fails.
    */
-  async getAllStats(): Promise<TimeSavedStatistics[] | undefined | void> {
+  async getAllStats(
+    query: IQuery,
+  ): Promise<TimeSavedStatistics[] | undefined | void> {
     // Get time saved by each team and template
     try {
-      const result = await this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE)
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<TimeSavedStatisticsDbRow>(TIME_SAVINGS_TABLE),
+        query,
+      );
+      const result = await dbPromise
         .sum({ time_saved: 'time_saved' })
         .select('team', 'template_name')
         .groupBy('team', 'template_name');
+
       return this.ok<TimeSavedStatistics[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSavedStatisticsMap.toDTO(e))
+          ? result.map((e: TimeSavedStatisticsDbRow) =>
+              TimeSavedStatisticsMap.toDTO(e),
+            )
           : undefined,
         'Data selected successfully',
       );
@@ -482,26 +553,34 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * as DTOs if records are found, or undefined if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the calculation process fails.
    */
-  async getGroupSavingsDivision(): Promise<
-    GroupSavingsDivision[] | undefined | void
-  > {
+  async getGroupSavingsDivision(
+    query: IQuery,
+  ): Promise<GroupSavingsDivision[] | undefined | void> {
     try {
-      const subquery = this.db('ts_template_time_savings as sub')
+      const subquery = this.createBuilderWhereDates(
+        this.db(`${TIME_SAVINGS_TABLE} as sub`),
+        query,
+      )
         .select('team')
         .sum('time_saved as total_team_time_saved')
         .groupBy('team');
 
-      const total = await this.db<{ sum: string | null }>(
-        'ts_template_time_savings as total',
-      )
+      const dbPromise = this.createBuilderWhereDates(
+        this.db(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const total = await dbPromise
+        .as('total')
         .sum('time_saved as sum')
         .first()
         .then(data => {
           return (data as unknown as { sum: string | null })?.sum ?? 0;
         });
 
-      const result = await this.db<GroupSavingsDivisionDbRow>(
-        'ts_template_time_savings as main',
+      const result = await this.createBuilderWhereDates(
+        this.db(`${TIME_SAVINGS_TABLE} as main`),
+        query,
       )
         .select('main.team')
         .innerJoin(subquery.as('sub'), 'main.team', 'sub.team')
@@ -516,7 +595,9 @@ export class TimeSaverDatabase implements TimeSaverStore {
 
       return this.ok<GroupSavingsDivision[] | undefined>(
         result && result.length
-          ? result.map(e => GroupSavingsDivisionMap.toDTO(e))
+          ? result.map((e: GroupSavingsDivisionDbRow) =>
+              GroupSavingsDivisionMap.toDTO(e),
+            )
           : undefined,
         'Data selected successfully',
       );
@@ -536,14 +617,19 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * as DTOs if records are found, or undefined if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the retrieval process fails.
    */
-  async getDailyTimeSummariesTeamWise(): Promise<
-    TimeSummary[] | undefined | void
-  > {
+  async getDailyTimeSummariesTeamWise(
+    query: IQuery,
+  ): Promise<TimeSummary[] | undefined | void> {
     //  Get total time saved by each team, grouped by year and team, in date descending order
     try {
       const formattedDate = this.formatDate(this.db, 'created_at', 'date');
 
-      const result = await this.db<RawDbTimeSummary>('ts_template_time_savings')
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<RawDbTimeSummary>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise
         .sum({ total_time_saved: 'time_saved' })
         .select(formattedDate, 'team')
         .groupByRaw('date, team')
@@ -551,7 +637,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
 
       return this.ok<TimeSummary[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSummaryMap.toDTO(e))
+          ? result.map((e: RawDbTimeSummary) => TimeSummaryMap.toDTO(e))
           : undefined,
         'Data selected successfully',
       );
@@ -571,14 +657,19 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * as DTOs if records are found, or undefined if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the retrieval process fails.
    */
-  async getDailyTimeSummariesTemplateWise(): Promise<
-    TimeSummary[] | undefined | void
-  > {
+  async getDailyTimeSummariesTemplateWise(
+    query: IQuery,
+  ): Promise<TimeSummary[] | undefined | void> {
     //  Get total time saved by each template, grouped by year and template, in date descending order
     try {
       const formattedDate = this.formatDate(this.db, 'created_at', 'date');
 
-      const result = await this.db<RawDbTimeSummary>('ts_template_time_savings')
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<RawDbTimeSummary>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise
         .sum('time_saved as total_time_saved')
         .select(formattedDate, 'template_name')
         .groupByRaw('date, template_name')
@@ -586,7 +677,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
 
       return this.ok<TimeSummary[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSummaryMap.toDTO(e))
+          ? result.map((e: RawDbTimeSummary) => TimeSummaryMap.toDTO(e))
           : undefined,
         'Data selected successfully',
       );
@@ -608,14 +699,19 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * as DTOs if records are found, or undefined if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the retrieval process fails.
    */
-  async getTimeSummarySavedTeamWise(): Promise<
-    TimeSummary[] | undefined | void
-  > {
+  async getTimeSummarySavedTeamWise(
+    query: IQuery,
+  ): Promise<TimeSummary[] | undefined | void> {
     const { client } = this.db.client.config;
     try {
       let result;
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<RawDbTimeSummary>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
       if (client === 'pg') {
-        result = await this.db<RawDbTimeSummary>('ts_template_time_savings')
+        result = await dbPromise
           .select(
             this.db.raw(
               'DISTINCT ON (team, DATE(created_at)) DATE(created_at) AS formatted_date',
@@ -630,7 +726,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
           .orderByRaw('DATE(created_at)')
           .orderBy('created_at');
       } else {
-        const subquery = this.db('ts_template_time_savings as sub')
+        const subquery = dbPromise
           .select(
             'team',
             this.db.raw(`DATE(created_at) as date`),
@@ -650,7 +746,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
 
       return this.ok<TimeSummary[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSummaryMap.toDTO(e))
+          ? result.map((e: RawDbTimeSummary) => TimeSummaryMap.toDTO(e))
           : undefined,
         'Data selected successfully',
       );
@@ -672,14 +768,20 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * as DTOs if records are found, or undefined if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the retrieval process fails.
    */
-  async getTimeSummarySavedTemplateWise(): Promise<
-    TimeSummary[] | undefined | void
-  > {
+  async getTimeSummarySavedTemplateWise(
+    query: IQuery,
+  ): Promise<TimeSummary[] | undefined | void> {
     const { client } = this.db.client.config;
     let result;
+
     try {
       if (client === 'pg') {
-        result = await this.db<RawDbTimeSummary>('ts_template_time_savings')
+        const dbPromise = this.createBuilderWhereDates(
+          this.db<RawDbTimeSummary>(TIME_SAVINGS_TABLE),
+          query,
+        );
+
+        result = await dbPromise
           .select(
             this.db.raw(
               'DISTINCT ON (template_name, DATE(created_at)) DATE(created_at) AS formatted_date',
@@ -694,9 +796,12 @@ export class TimeSaverDatabase implements TimeSaverStore {
           .orderByRaw('DATE(created_at)')
           .orderBy('created_at');
       } else {
-        const subquery = this.db<RawDbTimeSummary>(
-          'ts_template_time_savings as sub',
-        )
+        const dbPromise = this.createBuilderWhereDates(
+          this.db<RawDbTimeSummary>(`${TIME_SAVINGS_TABLE} as sub`),
+          query,
+        );
+
+        const subquery = dbPromise
           .select(
             'template_name',
             this.db.raw(`DATE(created_at) as date`),
@@ -716,7 +821,7 @@ export class TimeSaverDatabase implements TimeSaverStore {
       }
       return this.ok<TimeSummary[] | undefined>(
         result && result.length
-          ? result.map(e => TimeSummaryMap.toDTO(e))
+          ? result.map((e: RawDbTimeSummary) => TimeSummaryMap.toDTO(e))
           : undefined,
         'Data selected successfully',
       );
@@ -739,11 +844,16 @@ export class TimeSaverDatabase implements TimeSaverStore {
    */
   async getDistinctColumn(
     column: string,
+    query: IQuery,
   ): Promise<{ [x: string]: (string | number)[] } | undefined | void> {
     try {
-      const result: TemplateTimeSavingsDistinctRbRow[] = await this.db(
-        TIME_SAVINGS_TABLE,
-      ).distinct(column);
+      const dbPromise = this.createBuilderWhereDates(
+        this.db(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result: TemplateTimeSavingsDistinctRbRow[] =
+        await dbPromise.distinct(column);
 
       return this.ok<{ [x: string]: (string | number)[] } | undefined>(
         TemplateTimeSavingsCollectionMap.distinctToDTO(result),
@@ -764,9 +874,14 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * or zero if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the retrieval process fails.
    */
-  async getTemplateCount(): Promise<number | void> {
+  async getTemplateCount(query: IQuery): Promise<number | void> {
     try {
-      const result = await this.db(TIME_SAVINGS_TABLE)
+      const dbPromise = this.createBuilderWhereDates(
+        this.db(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise
         .countDistinct('template_task_id as count')
         .first();
 
@@ -794,11 +909,14 @@ export class TimeSaverDatabase implements TimeSaverStore {
    * or zero if no records exist. Returns void if an error occurs during the operation.
    * @throws {Error} Throws an error if the retrieval process fails.
    */
-  async getTimeSavedSum(): Promise<number | void> {
+  async getTimeSavedSum(query: IQuery): Promise<number | void> {
     try {
-      const result = await this.db<{ sum: number }>(TIME_SAVINGS_TABLE)
-        .sum({ sum: 'time_saved' })
-        .first();
+      const dbPromise = this.createBuilderWhereDates(
+        this.db<{ sum: number }>(TIME_SAVINGS_TABLE),
+        query,
+      );
+
+      const result = await dbPromise.sum({ sum: 'time_saved' }).first();
 
       return this.ok<number>(result?.sum || 0, 'Data selected successfully');
     } catch (error) {

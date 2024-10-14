@@ -25,9 +25,10 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { createUrlWithDates, getRandomColor } from '../utils';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTheme } from '@material-ui/core';
+import { IFilterDates } from '../DateFiltersComponent/DateFiltersComponent';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip);
 
@@ -41,10 +42,12 @@ type TemplateChartResponse = {
 
 interface ByTemplateBarChartProps {
   templateName: string;
+  dates: IFilterDates;
 }
 
 export function ByTemplateBarChart({
   templateName,
+  dates,
 }: ByTemplateBarChartProps): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -54,14 +57,17 @@ export function ByTemplateBarChart({
   useEffect(() => {
     fetchApi
       .fetch(
-        `${configApi.getString(
-          'backend.baseUrl',
-        )}/api/time-saver/getStats?templateName=${templateName} `,
+        createUrlWithDates(
+          `${configApi.getString(
+            'backend.baseUrl',
+          )}/api/time-saver/getStats?templateName=${templateName}`,
+          dates,
+        ),
       )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, templateName, fetchApi]);
+  }, [configApi, templateName, fetchApi, dates]);
 
   if (!data) {
     return <CircularProgress />;

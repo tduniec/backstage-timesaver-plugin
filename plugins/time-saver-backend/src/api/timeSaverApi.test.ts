@@ -58,7 +58,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getStatsByTemplateTaskId = jest.fn().mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getStatsByTemplateTaskId(templateTaskId);
+      const result = await tsApi.getStatsByTemplateTaskId(templateTaskId, {});
 
       // Assert
       expect(result).toEqual({ templateTaskId, templateName, stats });
@@ -73,7 +73,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getStatsByTeam = jest.fn().mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getStatsByTeam(team);
+      const result = await tsApi.getStatsByTeam(team, {});
 
       // Assert
       expect(result).toEqual({ team, stats });
@@ -88,7 +88,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getStatsByTemplate = jest.fn().mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getStatsByTemplate(template);
+      const result = await tsApi.getStatsByTemplate(template, {});
 
       // Assert
       expect(result).toEqual({ template_name: template, stats });
@@ -102,7 +102,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getAllStats = jest.fn().mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getAllStats();
+      const result = await tsApi.getAllStats({});
 
       // Assert
       expect(result).toEqual({ stats });
@@ -116,7 +116,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getGroupSavingsDivision = jest.fn().mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getGroupDivisionStats();
+      const result = await tsApi.getGroupDivisionStats({});
 
       // Assert
       expect(result).toEqual({ stats });
@@ -132,7 +132,7 @@ describe('TimeSaverApi', () => {
         .mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getDailyTimeSummariesTemplateWise();
+      const result = await tsApi.getDailyTimeSummariesTemplateWise({});
 
       // Assert
       expect(result).toEqual({ stats });
@@ -148,7 +148,7 @@ describe('TimeSaverApi', () => {
         .mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getTimeSummarySavedTeamWise();
+      const result = await tsApi.getTimeSummarySavedTeamWise({});
 
       // Assert
       expect(result).toEqual({ stats });
@@ -164,7 +164,7 @@ describe('TimeSaverApi', () => {
         .mockResolvedValue(stats);
 
       // Act
-      const result = await tsApi.getTimeSummarySavedTemplateWise();
+      const result = await tsApi.getTimeSummarySavedTemplateWise({});
 
       // Assert
       expect(result).toEqual({ stats });
@@ -239,7 +239,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getDistinctColumn = jest.fn().mockResolvedValue(groups);
 
       // Act
-      const result = await tsApi.getAllGroups();
+      const result = await tsApi.getAllGroups({});
 
       // Assert
       expect(result.groups).toEqual(['team1']);
@@ -251,7 +251,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getDistinctColumn = jest.fn().mockResolvedValue(undefined);
 
       // Act
-      const result = await tsApi.getAllGroups();
+      const result = await tsApi.getAllGroups({});
 
       // Assert
       expect(result.groups).toEqual([]);
@@ -268,7 +268,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getDistinctColumn = jest.fn().mockResolvedValue(templates);
 
       // Act
-      const result = await tsApi.getAllTemplateNames();
+      const result = await tsApi.getAllTemplateNames({});
 
       // Assert
       expect(result.templates).toEqual(['template1']);
@@ -280,7 +280,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getDistinctColumn = jest.fn().mockResolvedValue(undefined);
 
       // Act
-      const result = await tsApi.getAllTemplateNames();
+      const result = await tsApi.getAllTemplateNames({});
 
       // Assert
       expect(result.templates).toEqual([]);
@@ -330,7 +330,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getTemplateCount = jest.fn().mockResolvedValue(templateCount);
 
       // Act
-      const result = await tsApi.getTemplateCount();
+      const result = await tsApi.getTemplateCount({});
 
       // Assert
       expect(result.templateCount).toBe(5);
@@ -344,7 +344,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getTemplateCount = jest.fn().mockResolvedValue(undefined);
 
       // Act
-      const result = await tsApi.getTemplateCount();
+      const result = await tsApi.getTemplateCount({});
 
       // Assert
       expect(result.templateCount).toBe(0);
@@ -364,7 +364,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getTimeSavedSum = jest.fn().mockResolvedValue(sum);
 
       // Act
-      const result = await tsApi.getTimeSavedSum(2);
+      const result = await tsApi.getTimeSavedSum(2, {});
 
       // Assert
       expect(result.timeSaved).toBe(500);
@@ -376,7 +376,7 @@ describe('TimeSaverApi', () => {
       timeSaverDb.getTimeSavedSum = jest.fn().mockResolvedValue(undefined);
 
       // Act
-      const result = await tsApi.getTimeSavedSum();
+      const result = await tsApi.getTimeSavedSum(undefined, {});
 
       // Assert
       expect(result.timeSaved).toBe(0);

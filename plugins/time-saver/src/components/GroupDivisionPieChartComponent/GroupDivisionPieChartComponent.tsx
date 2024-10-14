@@ -23,9 +23,10 @@ import {
 } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
-import { getRandomColor } from '../utils';
+import { createUrlWithDates, getRandomColor } from '../utils';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useTheme } from '@material-ui/core';
+import { IFilterDates } from '../DateFiltersComponent/DateFiltersComponent';
 
 ChartJS.register(Title, Tooltip, ArcElement);
 
@@ -36,7 +37,11 @@ type GroupDivisionPieChartResponse = {
   }[];
 };
 
-export function GroupDivisionPieChart(): React.ReactElement {
+export function GroupDivisionPieChart({
+  dates,
+}: {
+  dates: IFilterDates;
+}): React.ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
 
@@ -46,14 +51,17 @@ export function GroupDivisionPieChart(): React.ReactElement {
   useEffect(() => {
     fetchApi
       .fetch(
-        `${configApi.getString(
-          'backend.baseUrl',
-        )}/api/time-saver/getStats/group`,
+        createUrlWithDates(
+          `${configApi.getString(
+            'backend.baseUrl',
+          )}/api/time-saver/getStats/group`,
+          dates,
+        ),
       )
       .then(response => response.json())
       .then(dt => setData(dt))
       .catch();
-  }, [configApi, fetchApi]);
+  }, [configApi, fetchApi, dates]);
 
   if (!data) {
     return <CircularProgress />;

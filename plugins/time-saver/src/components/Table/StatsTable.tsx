@@ -19,6 +19,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import { DataGrid, GridColDef, GridSortModel } from '@mui/x-data-grid';
 import { useTheme, Paper } from '@material-ui/core';
+import { IFilterDates } from '../DateFiltersComponent/DateFiltersComponent';
+import { createUrlWithDates } from '../utils';
 
 type Stat = {
   id: string;
@@ -35,9 +37,14 @@ type AllStatsChartResponse = {
 interface StatsTableProps {
   team?: string;
   templateName?: string;
+  dates: IFilterDates;
 }
 
-const StatsTable: React.FC<StatsTableProps> = ({ team, templateName }) => {
+const StatsTable: React.FC<StatsTableProps> = ({
+  team,
+  templateName,
+  dates,
+}) => {
   const [data, setData] = useState<Stat[] | null>(null);
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: 'sum', sort: 'asc' },
@@ -59,7 +66,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, templateName }) => {
     }
 
     fetchApi
-      .fetch(url)
+      .fetch(createUrlWithDates(url, dates))
       .then(response => response.json())
       .then((dt: AllStatsChartResponse) => {
         const statsWithIds = dt.stats.map((stat, index) => ({
@@ -70,7 +77,7 @@ const StatsTable: React.FC<StatsTableProps> = ({ team, templateName }) => {
         setSortModel([{ field: 'sum', sort: 'desc' }]);
       })
       .catch();
-  }, [configApi, team, templateName, fetchApi]);
+  }, [configApi, team, templateName, fetchApi, dates]);
 
   if (!data) {
     return <CircularProgress />;

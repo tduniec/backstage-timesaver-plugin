@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { IFilterDates } from './DateFiltersComponent/DateFiltersComponent';
+
 export function getRandomColor() {
   const letters = '0123456789ABCDEF';
   let color = '#';
@@ -21,4 +23,16 @@ export function getRandomColor() {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
+}
+
+export function createUrlWithDates(url: string, dates: IFilterDates) {
+  if (!dates) return url;
+
+  const [start, end] = dates;
+  const parsedUrl = new URL(url);
+
+  if (start) parsedUrl.searchParams.append('start', start!.toISODate());
+  if (end) parsedUrl.searchParams.set('end', end!.toISODate());
+
+  return parsedUrl.toString();
 }

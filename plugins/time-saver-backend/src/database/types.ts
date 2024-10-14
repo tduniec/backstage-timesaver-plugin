@@ -82,3 +82,8 @@ export type TemplateCountDbRow = {
 export type TotalTimeSavedDbRow = {
   sum: number;
 };
+
+export type IQuery = {
+  start?: string;
+  end?: string;
+};
