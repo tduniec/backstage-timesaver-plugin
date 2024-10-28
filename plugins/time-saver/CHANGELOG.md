@@ -1,5 +1,11 @@
 # @tduniec/backstage-plugin-time-saver
 
+## 2.0.1
+
+### Patch Changes
+
+- Adding table units to table view
+
 ## 2.0.0
 
 ### Major Changes

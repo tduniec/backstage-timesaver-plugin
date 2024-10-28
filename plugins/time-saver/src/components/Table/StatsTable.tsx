@@ -91,7 +91,12 @@ const StatsTable: React.FC<StatsTableProps> = ({
       flex: 1,
       sortable: true,
     },
-    { field: 'timeSaved', headerName: 'Saved Time', flex: 1, sortable: true },
+    {
+      field: 'timeSaved',
+      headerName: 'Saved Time [hours]',
+      flex: 1,
+      sortable: true,
+    },
   ].filter(col => data.some(row => !!row[col.field]));
 
   return (
