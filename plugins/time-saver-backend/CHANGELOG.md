@@ -1,5 +1,12 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 4.1.0
+
+### Minor Changes
+
+- Adding optional configuration for scheduler that can be passed to `tsHandler`.
+- Adding global scope for scheduler that should help in attempt to ensure that only one worker machine runs the task at a time
+
 ## 4.0.0
 
 ### Major Changes
