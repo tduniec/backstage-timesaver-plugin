@@ -24,6 +24,11 @@ backend:
       - host: localhost
 
 ts:
+  scheduler:
+    handler:
+      frequency: 'PT1H' # Frequency in ISO 8601 duration format
+      timeout: 'PT5M' # Timeout in ISO 8601 duration format
+      initialDelay: 'PT1M' # Initial delay in ISO 8601 duration format
   backward:
     config: |
       [

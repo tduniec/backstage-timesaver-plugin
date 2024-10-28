@@ -18,6 +18,9 @@ import {
   LoggerService,
   DatabaseService,
   RootConfigService,
+  SchedulerService,
+  SchedulerServiceTaskScheduleDefinition,
+  readSchedulerServiceTaskScheduleDefinitionFromConfig,
 } from '@backstage/backend-plugin-api';
 import { TimeSaverHandler } from '../timeSaver/handler';
 import { TimeSaverApi } from '../api/timeSaverApi';
@@ -26,7 +29,6 @@ import { TimeSaverDatabase } from '../database/TimeSaverDatabase';
 import { TsScheduler } from '../timeSaver/scheduler';
 import { setupCommonRoutes } from './commonRouter';
 import { Router } from 'express';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
 
 interface PluginDependencies {
   router: Router;
@@ -34,10 +36,10 @@ interface PluginDependencies {
   config: RootConfigService;
   auth: AuthService;
   database: DatabaseService;
-  scheduler: PluginTaskScheduler;
+  scheduler: SchedulerService;
 }
 
-const TS_PLUGIN_DEFAULT_SCHEDULE = {
+const TS_PLUGIN_DEFAULT_SCHEDULE: SchedulerServiceTaskScheduleDefinition = {
   frequency: {
     minutes: 5,
   },
@@ -53,7 +55,7 @@ export class PluginInitializer {
   private logger!: LoggerService;
   private config!: RootConfigService;
   private auth!: AuthService;
-  private scheduler!: PluginTaskScheduler;
+  private scheduler!: SchedulerService;
   private database!: DatabaseService;
   private tsHandler!: TimeSaverHandler;
   private apiHandler!: TimeSaverApi;
@@ -66,7 +68,7 @@ export class PluginInitializer {
     config: RootConfigService,
     auth: AuthService,
     database: DatabaseService,
-    scheduler: PluginTaskScheduler,
+    scheduler: SchedulerService,
   ) {
     this.router = router;
     this.logger = logger;
@@ -82,7 +84,7 @@ export class PluginInitializer {
     config: RootConfigService,
     auth: AuthService,
     database: DatabaseService,
-    scheduler: PluginTaskScheduler,
+    scheduler: SchedulerService,
   ): Promise<PluginInitializer> {
     const instance = new PluginInitializer(
       router,
@@ -137,9 +139,24 @@ export class PluginInitializer {
     );
 
     // Scheduler
-    const taskRunner = this.scheduler.createScheduledTaskRunner(
-      TS_PLUGIN_DEFAULT_SCHEDULE,
+    let taskDefinition: SchedulerServiceTaskScheduleDefinition =
+      TS_PLUGIN_DEFAULT_SCHEDULE;
+    const configurableSchedule = this.config.getOptionalConfig(
+      'ts.scheduler.handler',
     );
+    if (configurableSchedule) {
+      taskDefinition =
+        readSchedulerServiceTaskScheduleDefinitionFromConfig(
+          configurableSchedule,
+        );
+    }
+
+    taskDefinition = {
+      ...taskDefinition,
+      scope: taskDefinition.scope || 'global', // setting global flag on scope - scheduler will attempt to ensure that only one worker machine runs the task at a time,
+    };
+
+    const taskRunner = this.scheduler.createScheduledTaskRunner(taskDefinition);
     this.tsScheduler.schedule(taskRunner);
 
     // registering routes

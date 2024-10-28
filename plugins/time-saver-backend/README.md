@@ -100,6 +100,19 @@ ts:
   backendUrl: https://my-awesome-backstage.com
 ```
 
+If you want to use configurable **scheduler** [Optional]:
+
+```yaml
+ts:
+  scheduler:
+    handler:
+      frequency: 'PT1H' # Frequency in ISO 8601 duration format
+      timeout: 'PT10M' # Timeout in ISO 8601 duration format
+      initialDelay: 'PT1M' # Initial delay in ISO 8601 duration format
+```
+
+Default scheduler config: (frequency: 5M, timeout: 30M, initialDelay: 30S) can be overwritten by the above optional config.
+
 ## Migration
 
 This plugins supports backward compatibility with migration. You can specify your Time Saver metadata for each template name. Then the migration will be performed once executing the API request to `/migrate` endpoint of the plugin.
