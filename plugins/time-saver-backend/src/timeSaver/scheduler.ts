@@ -19,7 +19,6 @@ import {
   RootConfigService,
 } from '@backstage/backend-plugin-api';
 import { TaskRunner } from '@backstage/backend-tasks';
-import * as uuid from 'uuid';
 import { TimeSaverHandler } from './handler';
 import { TimeSaverStore } from '../database/TimeSaverDatabase';
 
