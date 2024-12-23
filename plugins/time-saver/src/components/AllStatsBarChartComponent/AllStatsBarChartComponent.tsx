@@ -119,7 +119,7 @@ export function AllStatsBarChart({
   const dataAll = {
     labels,
     datasets: datasets.map((templateName, index) => ({
-      label: `Time Saved - ${templateName}`,
+      label: `${templateName}`,
       data: labels.map(team =>
         data.stats
           .filter(
