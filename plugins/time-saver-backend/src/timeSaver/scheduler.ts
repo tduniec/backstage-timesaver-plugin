@@ -39,7 +39,7 @@ export class TsScheduler {
       this.db,
     );
     await taskRunner.run({
-      id: uuid.v4(),
+      id: 'collect-templates-time-savings',
       fn: async () => {
         this.logger.info(
           'START - Scheduler executed - fetching templates for TS plugin',
