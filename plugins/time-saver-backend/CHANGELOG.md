@@ -1,5 +1,11 @@
 # @tduniec/backstage-plugin-time-saver-backend
 
+## 4.1.1
+
+### Patch Changes
+
+- tsScheduler task name change - fixing concurent executions of ts collection
+
 ## 4.1.0
 
 ### Minor Changes
