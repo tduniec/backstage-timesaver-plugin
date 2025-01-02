@@ -17,11 +17,9 @@ import React, { useState } from 'react';
 import { Typography, Grid, Tabs, Tab, Divider, Paper } from '@material-ui/core';
 import {
   InfoCard,
-  Header,
   Page,
   Content,
   ContentHeader,
-  HeaderLabel,
   SupportButton,
 } from '@backstage/core-components';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -46,6 +44,9 @@ import {
   DateFiltersComponent,
   IFilterDates,
 } from '../DateFiltersComponent/DateFiltersComponent';
+import CustomHeader, {
+  HeaderProps,
+} from '../TimeSaverHeader/TimeSaverHeaderComponent';
 
 const GaugesContainer = ({ dates }: { dates: IFilterDates }) => (
   <Grid
@@ -87,7 +88,7 @@ const GaugesContainer = ({ dates }: { dates: IFilterDates }) => (
   </Grid>
 );
 
-export const TimeSaverPageComponent = () => {
+export const TimeSaverPageComponent = (props: HeaderProps) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedTeam, setSelectedTeam] = useState('');
   const [template, setTemplate] = useState('');
@@ -115,13 +116,11 @@ export const TimeSaverPageComponent = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <Page themeId="tool">
-        <Header
-          title="Backstage TS plugin!"
-          subtitle="Check saved time with TS plugin!"
-        >
-          <HeaderLabel label="Owner" value="Rackspace" />
-          <HeaderLabel label="Lifecycle" value="experimental" />
-        </Header>
+        <CustomHeader
+          title={props.title}
+          subtitle={props.subtitle}
+          headerLabel={props.headerLabel}
+        />
         <Content>
           <ContentHeader title="Time Saver">
             <Tabs value={selectedTab} onChange={handleChange} centered={false}>
