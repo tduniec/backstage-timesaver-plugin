@@ -4,7 +4,7 @@
 
 ### Minor Changes
 
-- Adding customizable headers
+- Adding customizable headers for TimeSaverPage
 - remove `Time Saved - %` prefix from All Charts Bar
 
 ## 2.0.1
