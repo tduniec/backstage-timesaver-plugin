@@ -1,5 +1,12 @@
 # @tduniec/backstage-plugin-time-saver
 
+## 2.1.0
+
+### Minor Changes
+
+- Adding customizable headers
+- remove `Time Saved - %` prefix from All Charts Bar
+
 ## 2.0.1
 
 ### Patch Changes
