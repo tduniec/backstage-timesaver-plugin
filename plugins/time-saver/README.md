@@ -30,26 +30,26 @@ yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
 2. Now open the `packages/app/src/App.tsx` file
 3. Then after all the import statements add the following line:
 
-   ```ts
+   ```tsx
    import { TimeSaverPage } from '@tduniec/backstage-plugin-time-saver';
    ```
 
 4. In this same file just before the closing `</ FlatRoutes>`, this will be near the bottom of the file, add this line:
 
-   ```ts
+   ```tsx
    <Route path="/time-saver" element={<TimeSaverPage />} />
    ```
 
 5. Next open the `packages/app/src/components/Root/Root.tsx` file
 6. We want to add this icon import after all the existing import statements:
 
-   ```ts
+   ```tsx
    import Timelapse from '@material-ui/icons/Timelapse';
    ```
 
 7. Then add this line just after the `<SidebarSettings />` line:
 
-   ```ts
+   ```tsx
    <SidebarItem icon={Timelapse} to="time-saver" text="timeSaver" />
    ```
 
@@ -103,4 +103,28 @@ ts:
         } 
       ]
     # extend this list if needed
+```
+
+## TimeSaverPage optional customization
+
+1. TimeSaverPage has now exported props that can help you customize your page headers. By default it is an empty header
+
+```tsx
+<TimeSaverPage
+  title="Backstage TS plugin!"
+  subtitle="Check saved time with TS plugin!"
+  headerLabel={{ Owner: 'Sample Company', Lifecycle: 'production' }}
+/>
+```
+
+2. Stats table config:
+
+By default Table stats Time Summaries are provided in hours, below you can find optional config that can change it to days.
+
+```yaml
+ts:
+  frontend:
+    table:
+      showInDays: true # if true, the table shows days [boolean]
+      hoursPerDay: 8 # how many hours count as a day [number]
 ```

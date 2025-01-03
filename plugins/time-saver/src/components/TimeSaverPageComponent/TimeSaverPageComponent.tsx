@@ -47,8 +47,15 @@ import {
 import CustomHeader, {
   HeaderProps,
 } from '../TimeSaverHeader/TimeSaverHeaderComponent';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
-const GaugesContainer = ({ dates }: { dates: IFilterDates }) => (
+const GaugesContainer = ({
+  dates,
+  hoursPerDay,
+}: {
+  dates: IFilterDates;
+  hoursPerDay: number;
+}) => (
   <Grid
     container
     spacing={4}
@@ -72,7 +79,11 @@ const GaugesContainer = ({ dates }: { dates: IFilterDates }) => (
     </Grid>
     <Grid item xs={6} sm={6} md={2}>
       <Paper elevation={0}>
-        <TimeSavedGauge number={8} heading="Time Saved [days]" dates={dates} />
+        <TimeSavedGauge
+          number={hoursPerDay}
+          heading="Time Saved [days]"
+          dates={dates}
+        />
       </Paper>
     </Grid>
     <Grid item xs={6} sm={6} md={2}>
@@ -89,6 +100,10 @@ const GaugesContainer = ({ dates }: { dates: IFilterDates }) => (
 );
 
 export const TimeSaverPageComponent = (props: HeaderProps) => {
+  const configApi = useApi(configApiRef);
+  const hoursPerDay =
+    configApi.getOptionalNumber('ts.frontend.table.hoursPerDay') ?? 8;
+
   const [selectedTab, setSelectedTab] = useState(0);
   const [selectedTeam, setSelectedTeam] = useState('');
   const [template, setTemplate] = useState('');
@@ -147,7 +162,10 @@ export const TimeSaverPageComponent = (props: HeaderProps) => {
                           <>
                             {selectedTab === 0 && (
                               <Grid container spacing={2}>
-                                <GaugesContainer dates={dates} />
+                                <GaugesContainer
+                                  dates={dates}
+                                  hoursPerDay={hoursPerDay}
+                                />
                                 <Divider variant="fullWidth" />
                                 <Grid xs={6}>
                                   <AllStatsBarChart dates={dates} />
