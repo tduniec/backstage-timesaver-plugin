@@ -24,6 +24,10 @@ backend:
       - host: localhost
 
 ts:
+  frontend:
+    table:
+      showInDays: true # if true, the table shows days [boolean]
+      hoursPerDay: 8 # how many hours count as a day [number]
   scheduler:
     handler:
       frequency: 'PT1H' # Frequency in ISO 8601 duration format

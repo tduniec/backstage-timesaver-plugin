@@ -53,6 +53,11 @@ const StatsTable: React.FC<StatsTableProps> = ({
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
 
+  const showTimeInDays =
+    configApi.getOptionalBoolean('ts.frontend.table.showInDays') ?? false;
+  const hoursPerDay =
+    configApi.getOptionalNumber('ts.frontend.table.hoursPerDay') ?? 8;
+
   const theme = useTheme();
 
   useEffect(() => {
@@ -93,9 +98,16 @@ const StatsTable: React.FC<StatsTableProps> = ({
     },
     {
       field: 'timeSaved',
-      headerName: 'Saved Time [hours]',
+      headerName: showTimeInDays ? 'Saved Time [days]' : 'Saved Time [hours]',
       flex: 1,
       sortable: true,
+      valueGetter: (params: { row: { timeSaved: number } }) => {
+        const timeInHours = params.row.timeSaved as number;
+        if (showTimeInDays) {
+          return (timeInHours / hoursPerDay).toFixed(0);
+        }
+        return timeInHours;
+      },
     },
   ].filter(col => data.some(row => !!row[col.field]));
 

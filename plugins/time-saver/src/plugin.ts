@@ -19,6 +19,7 @@ import {
 } from '@backstage/core-plugin-api';
 
 import { rootRouteRef } from './routes';
+import { HeaderProps } from './components/TimeSaverHeader/TimeSaverHeaderComponent';
 
 export const TimeSaverPlugin = createPlugin({
   id: 'time-saver',
@@ -27,13 +28,14 @@ export const TimeSaverPlugin = createPlugin({
   },
 });
 
-export const TimeSaverPage = TimeSaverPlugin.provide(
-  createRoutableExtension({
-    name: 'TimeSaverPage',
-    component: () =>
-      import('./components/TimeSaverPageComponent').then(
-        m => m.TimeSaverPageComponent,
-      ),
-    mountPoint: rootRouteRef,
-  }),
-);
+export const TimeSaverPage: (props: HeaderProps) => JSX.Element =
+  TimeSaverPlugin.provide(
+    createRoutableExtension({
+      name: 'TimeSaverPage',
+      component: () =>
+        import('./components/TimeSaverPageComponent').then(
+          m => m.TimeSaverPageComponent,
+        ),
+      mountPoint: rootRouteRef,
+    }),
+  );
