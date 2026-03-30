@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Gauge from './Gauge';
@@ -34,7 +34,7 @@ export function TimeSavedGauge({
   number,
   heading,
   dates,
-}: TimeSavedGaugeProps): React.ReactElement {
+}: TimeSavedGaugeProps): ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
   const [data, setData] = useState<TimeSavedResponse | null>(null);

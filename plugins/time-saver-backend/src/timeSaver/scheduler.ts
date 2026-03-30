@@ -17,8 +17,8 @@ import {
   AuthService,
   LoggerService,
   RootConfigService,
+  SchedulerServiceTaskRunner,
 } from '@backstage/backend-plugin-api';
-import { TaskRunner } from '@backstage/backend-tasks';
 import { TimeSaverHandler } from './handler';
 import { TimeSaverStore } from '../database/TimeSaverDatabase';
 
@@ -30,7 +30,7 @@ export class TsScheduler {
     private readonly db: TimeSaverStore,
   ) {}
 
-  async schedule(taskRunner: TaskRunner) {
+  async schedule(taskRunner: SchedulerServiceTaskRunner) {
     const tsHandler = new TimeSaverHandler(
       this.logger,
       this.config,

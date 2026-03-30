@@ -15,8 +15,10 @@
  */
 import {
   AuthService,
+  LifecycleService,
   LoggerService,
   RootConfigService,
+  SchedulerService,
   coreServices,
   createBackendPlugin,
   DiscoveryService,
@@ -24,11 +26,7 @@ import {
   HttpAuthService,
   DatabaseService,
 } from '@backstage/backend-plugin-api';
-import {
-  errorHandler,
-  createLegacyAuthAdapters,
-} from '@backstage/backend-common';
-import { PluginTaskScheduler } from '@backstage/backend-tasks';
+import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import express from 'express';
 import Router from 'express-promise-router';
 import { PluginInitializer } from './pluginInitializer';
@@ -38,9 +36,10 @@ export interface RouterOptions {
   config: RootConfigService;
   discovery: DiscoveryService;
   database: DatabaseService;
-  scheduler: PluginTaskScheduler;
+  scheduler: SchedulerService;
   urlReader: UrlReaderService;
-  auth?: AuthService;
+  lifecycle: LifecycleService;
+  auth: AuthService;
   httpAuth?: HttpAuthService;
 }
 
@@ -53,9 +52,8 @@ function registerRouter() {
 export async function createRouter(
   options: RouterOptions,
 ): Promise<express.Router> {
-  const { logger, config, database, scheduler } = options;
+  const { logger, config, database, scheduler, lifecycle, auth } = options;
   const baseRouter = registerRouter();
-  const { auth } = createLegacyAuthAdapters(options);
   const plugin = await PluginInitializer.builder(
     baseRouter,
     logger,
@@ -63,9 +61,10 @@ export async function createRouter(
     auth,
     database,
     scheduler,
+    lifecycle,
   );
   const router = plugin.timeSaverRouter;
-  router.use(errorHandler());
+  router.use(MiddlewareFactory.create({ config, logger }).error);
   return router;
 }
 
@@ -79,9 +78,9 @@ export const timeSaverPlugin = createBackendPlugin({
         auth: coreServices.auth,
         scheduler: coreServices.scheduler,
         database: coreServices.database,
-        http: coreServices.httpRouter,
         httpRouter: coreServices.httpRouter,
         urlReader: coreServices.urlReader,
+        lifecycle: coreServices.lifecycle,
       },
       async init({
         auth,
@@ -89,8 +88,8 @@ export const timeSaverPlugin = createBackendPlugin({
         logger,
         scheduler,
         database,
-        http,
         httpRouter,
+        lifecycle,
       }) {
         const baseRouter = registerRouter();
         const plugin = await PluginInitializer.builder(
@@ -100,9 +99,10 @@ export const timeSaverPlugin = createBackendPlugin({
           auth,
           database,
           scheduler,
+          lifecycle,
         );
         const router = plugin.timeSaverRouter;
-        http.use(router);
+        httpRouter.use(router);
 
         httpRouter.addAuthPolicy({
           path: '/migrate',

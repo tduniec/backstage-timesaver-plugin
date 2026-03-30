@@ -1,6 +1,6 @@
 import { Button, Chip, Grid, IconButton, Typography } from '@material-ui/core';
 import { DatePicker } from '@mui/x-date-pickers';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { DateTime } from 'luxon';
 
 import { makeStyles } from '@material-ui/core/styles';

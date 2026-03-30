@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DiscoveryService } from '@backstage/backend-plugin-api';
+import {
+  DiscoveryService,
+  SchedulerService,
+  SchedulerServiceTaskInvocationDefinition,
+  SchedulerServiceTaskRunner,
+} from '@backstage/backend-plugin-api';
 import { UrlReaders } from '@backstage/backend-defaults/urlReader';
 import { DatabaseManager } from '@backstage/backend-defaults/database';
 import express from 'express';
 import request from 'supertest';
 
 import { createRouter } from './router';
-// import { CatalogRequestOptions } from '@backstage/catalog-client';
 import { ConfigReader } from '@backstage/config';
-import {
-  PluginTaskScheduler,
-  TaskInvocationDefinition,
-  TaskRunner,
-} from '@backstage/backend-tasks';
 import { mockServices } from '@backstage/backend-test-utils';
 
 // let catalogRequestOptions: CatalogRequestOptions;
@@ -61,15 +60,18 @@ describe('createRouter', () => {
       },
     },
   });
-  const database = manager.forPlugin('time-saver');
-  class PersistingTaskRunner implements TaskRunner {
-    private tasks: TaskInvocationDefinition[] = [];
+  const database = manager.forPlugin('time-saver', {
+    logger: mockServices.rootLogger.mock(),
+    lifecycle: mockServices.lifecycle.mock(),
+  });
+  class PersistingTaskRunner implements SchedulerServiceTaskRunner {
+    private tasks: SchedulerServiceTaskInvocationDefinition[] = [];
 
     getTasks() {
       return this.tasks;
     }
 
-    run(task: TaskInvocationDefinition): Promise<void> {
+    run(task: SchedulerServiceTaskInvocationDefinition): Promise<void> {
       this.tasks.push(task);
       return Promise.resolve(undefined);
     }
@@ -78,7 +80,7 @@ describe('createRouter', () => {
   const taskRunner = new PersistingTaskRunner();
   const scheduler = {
     createScheduledTaskRunner: (_: unknown) => taskRunner,
-  } as unknown as PluginTaskScheduler;
+  } as unknown as SchedulerService;
   //  TODO : validate createScheduledTaskRunner parameters types.
 
   beforeAll(async () => {
@@ -100,6 +102,7 @@ describe('createRouter', () => {
       discovery: testDiscovery,
       urlReader: mockUrlReader,
       scheduler: scheduler,
+      lifecycle: mockServices.lifecycle.mock(),
       auth: mockServices.auth(),
       httpAuth: mockServices.httpAuth(),
     });

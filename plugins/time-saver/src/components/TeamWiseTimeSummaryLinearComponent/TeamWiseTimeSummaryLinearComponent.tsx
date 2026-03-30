@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   LineElement,
@@ -49,7 +49,7 @@ interface TeamWiseTimeSummaryLinearProps {
 export function TeamWiseTimeSummaryLinearChart({
   team,
   dates,
-}: TeamWiseTimeSummaryLinearProps): React.ReactElement {
+}: TeamWiseTimeSummaryLinearProps): ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
 

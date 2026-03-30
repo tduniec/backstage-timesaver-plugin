@@ -15,6 +15,7 @@
  */
 import {
   AuthService,
+  LifecycleService,
   LoggerService,
   DatabaseService,
   RootConfigService,
@@ -37,6 +38,7 @@ interface PluginDependencies {
   auth: AuthService;
   database: DatabaseService;
   scheduler: SchedulerService;
+  lifecycle: LifecycleService;
 }
 
 const TS_PLUGIN_DEFAULT_SCHEDULE: SchedulerServiceTaskScheduleDefinition = {
@@ -57,6 +59,7 @@ export class PluginInitializer {
   private auth!: AuthService;
   private scheduler!: SchedulerService;
   private database!: DatabaseService;
+  private lifecycle!: LifecycleService;
   private tsHandler!: TimeSaverHandler;
   private apiHandler!: TimeSaverApi;
   private tsScheduler!: TsScheduler;
@@ -69,6 +72,7 @@ export class PluginInitializer {
     auth: AuthService,
     database: DatabaseService,
     scheduler: SchedulerService,
+    lifecycle: LifecycleService,
   ) {
     this.router = router;
     this.logger = logger;
@@ -76,6 +80,7 @@ export class PluginInitializer {
     this.auth = auth;
     this.database = database;
     this.scheduler = scheduler;
+    this.lifecycle = lifecycle;
   }
 
   static async builder(
@@ -85,6 +90,7 @@ export class PluginInitializer {
     auth: AuthService,
     database: DatabaseService,
     scheduler: SchedulerService,
+    lifecycle: LifecycleService,
   ): Promise<PluginInitializer> {
     const instance = new PluginInitializer(
       router,
@@ -93,6 +99,7 @@ export class PluginInitializer {
       auth,
       database,
       scheduler,
+      lifecycle,
     );
     await instance.initialize();
     return instance;
@@ -105,6 +112,7 @@ export class PluginInitializer {
     this.auth = this.dependencies.auth;
     this.database = this.dependencies.database;
     this.scheduler = this.dependencies.scheduler;
+    this.lifecycle = this.dependencies.lifecycle;
 
     // Initialize TsDatabase and run migrations
 
@@ -115,6 +123,7 @@ export class PluginInitializer {
     const scaffolderDbInstance = await ScaffolderDatabase.create(
       this.config,
       this.logger,
+      this.lifecycle,
     );
 
     // Initialize handlers
@@ -175,7 +184,8 @@ export class PluginInitializer {
       !this.config ||
       !this.auth ||
       !this.database ||
-      !this.scheduler
+      !this.scheduler ||
+      !this.lifecycle
     ) {
       throw new Error('PluginInitializer not properly initialized');
     }
@@ -186,6 +196,7 @@ export class PluginInitializer {
       auth: this.auth,
       database: this.database,
       scheduler: this.scheduler,
+      lifecycle: this.lifecycle,
     };
   }
 

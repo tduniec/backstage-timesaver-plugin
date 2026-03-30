@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   LineElement,
@@ -48,7 +48,7 @@ interface TemplateWiseTimeSummaryLinearProps {
 export function TemplateWiseTimeSummaryLinearChart({
   templateName,
   dates,
-}: TemplateWiseTimeSummaryLinearProps): React.ReactElement {
+}: TemplateWiseTimeSummaryLinearProps): ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
   const [data, setData] =

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -48,7 +48,7 @@ interface ByTemplateBarChartProps {
 export function ByTemplateBarChart({
   templateName,
   dates,
-}: ByTemplateBarChartProps): React.ReactElement {
+}: ByTemplateBarChartProps): ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
   const [data, setData] = useState<TemplateChartResponse | null>(null);

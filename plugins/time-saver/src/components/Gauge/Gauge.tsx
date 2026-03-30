@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { FC } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { getRandomColor } from '../utils';
 import { useTheme } from '@material-ui/core';
@@ -23,7 +23,7 @@ interface GaugeProps {
   heading?: string;
 }
 
-const Gauge: React.FC<GaugeProps> = ({ number, heading }) => {
+const Gauge: FC<GaugeProps> = ({ number, heading }) => {
   const theme = useTheme();
 
   return (

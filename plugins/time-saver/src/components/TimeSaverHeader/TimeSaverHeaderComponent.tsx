@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
+import { FC } from 'react';
 import { Header, HeaderLabel } from '@backstage/core-components';
 
 export interface HeaderProps {
@@ -22,11 +22,7 @@ export interface HeaderProps {
   headerLabel?: Record<string, string>;
 }
 
-const CustomHeader: React.FC<HeaderProps> = ({
-  title,
-  subtitle,
-  headerLabel,
-}) => {
+const CustomHeader: FC<HeaderProps> = ({ title, subtitle, headerLabel }) => {
   return (
     <Header title={title} subtitle={subtitle}>
       {headerLabel &&

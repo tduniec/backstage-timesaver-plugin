@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { CSSProperties, ReactElement, useEffect, useState } from 'react';
 import { configApiRef, fetchApiRef, useApi } from '@backstage/core-plugin-api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {
@@ -29,7 +29,7 @@ type TemplatesResponse = {
   templates: string[];
 };
 
-export function EmptyTimeSaver(): React.ReactElement {
+export function EmptyTimeSaver(): ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
 
@@ -50,7 +50,7 @@ export function EmptyTimeSaver(): React.ReactElement {
   if (!data) {
     return <CircularProgress />;
   }
-  const cellStyle: React.CSSProperties = {
+  const cellStyle: CSSProperties = {
     color: 'red',
     fontWeight: 'bold',
     fontSize: '20px',

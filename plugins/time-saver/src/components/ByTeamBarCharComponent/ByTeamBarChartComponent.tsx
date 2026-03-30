@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -48,7 +48,7 @@ interface ByTeamBarChartProps {
 export function ByTeamBarChart({
   team,
   dates,
-}: ByTeamBarChartProps): React.ReactElement {
+}: ByTeamBarChartProps): ReactElement {
   const configApi = useApi(configApiRef);
   const fetchApi = useApi(fetchApiRef);
 

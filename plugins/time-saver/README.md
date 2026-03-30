@@ -22,6 +22,19 @@ https://github.com/tduniec/backstage-timesaver-plugin.git
 
 1. Install the plugin package in your Backstage app:
 
+   ```sh
+   # From your Backstage root directory
+   yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
+   ```
+
+   Once installed, the plugin is automatically available in your app through the default feature discovery. For more details and alternative installation methods, see [installing plugins](https://backstage.io/docs/frontend-system/building-apps/installing-plugins).
+
+1. Install [time-saver-backend](../time-saver-backend/README.md) part if not installed already
+
+## Installation (Legacy Frontend)
+
+1. Install the plugin package in your Backstage app:
+
 ```sh
 # From your Backstage root directory
 yarn add --cwd packages/app @tduniec/backstage-plugin-time-saver
@@ -100,7 +113,7 @@ ts:
             "development_team": 8,
             "security": 3
           }
-        } 
+        }
       ]
     # extend this list if needed
 ```

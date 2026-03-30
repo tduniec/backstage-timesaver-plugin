@@ -68,7 +68,10 @@ const db = DatabaseManager.fromConfig(
       },
     },
   }),
-).forPlugin('timesaver');
+).forPlugin('timesaver', {
+  logger: mockServices.rootLogger.mock(),
+  lifecycle: mockServices.lifecycle.mock(),
+});
 
 const createDatabaseManager = (
   client: KnexType,
